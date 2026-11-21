@@ -69,6 +69,10 @@
   --header-block-size: 5rem;
 }
 
+@media (max-width: 40rem) {
+  :root { --page-gutter: 0.75rem; }
+}
+
 @media (min-width: 48rem) {
   :root {
     --page-gutter: clamp(2rem, 7.64vw - 1.67rem, 7.5rem);
@@ -270,6 +274,10 @@
 }
 
 .skip-link:focus { clip-path: none; }
+
+@media (max-width: 40rem) {
+  .skip-link { inset-inline-start: var(--page-gutter); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }

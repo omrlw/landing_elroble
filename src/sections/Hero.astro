@@ -16,6 +16,7 @@ import clock from '../assets/opening/clock.svg';
 import clockMobile from '../assets/opening/clock-mobile.svg';
 import heart from '../assets/opening/heart.svg';
 import sunrise from '../assets/opening/sunrise.svg';
+import activities from '../assets/opening/day-create-mobile.svg';
 import leaves from '../assets/opening/promo-leaves.png';
 import ring from '../assets/opening/promo-ring.svg';
 import ringTablet from '../assets/opening/promo-ring-tablet.svg';
@@ -34,6 +35,7 @@ const credentials = [
   { label: `Desde ${business.foundedYear}`, icon: clock, mobile: clockMobile },
   { label: 'Cuidado geriátrico', icon: heart },
   { label: 'Centro de día', icon: sunrise },
+  { label: 'Talleres y actividades', icon: activities, mobileOnly: true },
 ];
 ---
 
@@ -97,17 +99,25 @@ const credentials = [
       <button class="first-visit__dismiss" type="button" aria-label="Cerrar promoción" hidden>×</button>
     </aside>
 
-    <ul class="opening-hero__credentials" role="list">
-      {credentials.map(({ label, icon, mobile }, index) => (
-        <li class:list={[index > 1 && 'opening-hero__credential--wide']}>
-          <picture>
-            {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
-            <img src={icon.src} alt="" />
-          </picture>
-          {label}
-        </li>
-      ))}
-    </ul>
+    <div class="opening-hero__credentials">
+      <div class="opening-hero__credential-viewport">
+        <div class="opening-hero__credential-track" data-ambient="credentials">
+          {[false, true].map((copy) => (
+            <ul class:list={['opening-hero__credential-list', copy && 'opening-hero__credential-list--copy']} role="list" aria-hidden={copy ? 'true' : undefined}>
+              {credentials.map(({ label, icon, mobile, mobileOnly }) => (
+                <li class:list={[mobileOnly && 'opening-hero__credential--mobile-only']}>
+                  <picture>
+                    {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
+                    <img src={icon.src} alt="" />
+                  </picture>
+                  {label}
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -337,16 +347,14 @@ const credentials = [
   .first-visit[hidden], .first-visit__dismiss[hidden] { display: none; }
 
   .opening-hero__credentials {
+    --credentials-gap: clamp(.55rem, 1.4vw, 4.5rem);
     grid-area: badges;
     align-self: start;
     justify-self: center;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
     min-block-size: 3.5rem;
     inline-size: 100%;
-    gap: .5rem clamp(.55rem, 1.4vw, 4.5rem);
     padding: .65rem .875rem;
     border-radius: 999px;
     background: linear-gradient(#f4f1ec66, #f4f1ec33);
@@ -355,8 +363,17 @@ const credentials = [
     font-size: clamp(.9375rem, .87rem + .24vw, 1.0625rem);
     font-weight: 600;
   }
+  .opening-hero__credential-viewport { inline-size: 100%; }
+  .opening-hero__credential-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem var(--credentials-gap);
+  }
   .opening-hero__credentials li { display: flex; align-items: center; gap: clamp(.375rem, 1.3vw, .75rem); }
   .opening-hero__credentials picture { display: grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; }
+  .opening-hero__credential-list--copy, .opening-hero__credentials .opening-hero__credential--mobile-only { display: none; }
 
   @media (prefers-reduced-motion: no-preference) {
     .opening-hero h1, .opening-hero__intro {
@@ -387,14 +404,50 @@ const credentials = [
     .hero-media__year strong { font-size: 2rem; }
     .first-visit { --offer-size: 7rem; grid-area: lead; margin: 2rem .625rem 0 0; }
     .first-visit__dismiss { border-radius: .875rem; }
-    .opening-hero__credentials { gap: .5rem 1.25rem; justify-content: flex-start; border-radius: 1.5rem; }
+    .opening-hero__credentials {
+      --credentials-gap: 1.125rem;
+      border: 1px solid #a2856438;
+      border-radius: 1rem;
+      background: #faf7f1;
+      box-shadow: none;
+    }
+    .opening-hero__credential-list { justify-content: flex-start; }
     .opening-hero__credentials picture { inline-size: 1.25rem; block-size: 1.25rem; }
-    .opening-hero__credentials .opening-hero__credential--wide { display: none; }
+    .opening-hero__credentials .opening-hero__credential--mobile-only { display: flex; }
   }
   @media (max-width: 22.5rem) {
     .first-visit { --offer-size: 6.675rem; grid-area: photo; margin-block-start: 1rem; margin-inline-end: 1rem; }
     .first-visit__link picture { inset: .1rem; }
-    .opening-hero__credentials { gap: .5rem .75rem; padding-inline: .75rem; }
+    .opening-hero__credentials { --credentials-gap: .75rem; padding-inline: .75rem; }
+  }
+  @media (max-width: 40rem) and (prefers-reduced-motion: no-preference) {
+    .opening-hero__inner { grid-template-columns: minmax(0, 1fr); }
+    .opening-hero__credentials { padding-inline: 0; }
+    .opening-hero__credential-viewport { overflow-x: auto; scrollbar-width: none; }
+    .opening-hero__credential-viewport:has([data-ambient-started]) {
+      overflow: clip;
+      mask-image: linear-gradient(to right, transparent, #000 .875rem, #000 calc(100% - .875rem), transparent);
+    }
+    .opening-hero__credential-track {
+      --ambient-animation: credentials-loop;
+      --ambient-duration: 28s;
+      --ambient-ease: linear;
+      display: flex;
+      inline-size: max-content;
+    }
+    .opening-hero__credential-list { flex-wrap: nowrap; gap: 0; }
+    .opening-hero__credential-track[data-ambient-started] .opening-hero__credential-list--copy { display: flex; }
+    .opening-hero__credentials li { position: relative; padding-inline: 1rem; white-space: nowrap; }
+    .opening-hero__credentials li::after {
+      position: absolute;
+      inset-inline-end: -1px;
+      inline-size: 3px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #8d795a;
+      content: '';
+    }
+    @keyframes credentials-loop { to { translate: -50% 0; } }
   }
   @media (min-width: 40.001rem) and (max-width: 72.999rem) {
     .opening-hero { --opening-gap: 2rem; padding-block-start: 2.25rem; }
@@ -417,6 +470,6 @@ const credentials = [
     .hero-media :global(.hero-media__tour) { --cta-font-size: clamp(1.125rem, .8rem + .48vw, 1.375rem); }
     .hero-media__experience { inline-size: 17.5rem; }
     .hero-media__paging { inset-block-end: 1.375rem; }
-    .opening-hero__credentials { min-block-size: 4.5rem; inline-size: min(100%, 62.625rem); gap: clamp(2rem, 3.75vw, 4.5rem); box-shadow: none; }
+    .opening-hero__credentials { --credentials-gap: clamp(2rem, 3.75vw, 4.5rem); min-block-size: 4.5rem; inline-size: min(100%, 62.625rem); box-shadow: none; }
   }
 </style>

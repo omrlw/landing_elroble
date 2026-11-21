@@ -63,7 +63,7 @@ const supportingPhotos = [
         <div class="trust__slides" data-scene={index} data-photo-scene>
           <div class="trust__row">
             {slides.map(({ src, alt }) => (
-              <Image {src} {alt} widths={[360, 480, 720, 900]} sizes="(min-width: 100rem) 424px, (min-width: 73rem) 22vw, (max-width: 40rem) calc(100vw - 48px), 54vw" format="webp" />
+              <Image {src} {alt} widths={[360, 480, 720, 900]} sizes="(min-width: 100rem) 424px, (min-width: 73rem) 22vw, (max-width: 40rem) calc(100vw - 24px), 54vw" format="webp" />
             ))}
           </div>
           <div class="trust__row trust__row--extra" data-gallery-extra>
@@ -207,8 +207,8 @@ const supportingPhotos = [
     --reason-visibility: visible;
     --reason-padding: 1.5rem;
     display: grid;
-    background: linear-gradient(#f4f1ec45, #f4f1ec18);
-    box-shadow: inset 0 1px 1px #ffffff58, inset 0 -1px 1px #ffffff14, 0 10px 16px -12px #0b0d0e8a;
+    background: var(--trust-reason-surface, linear-gradient(#f4f1ec45, #f4f1ec18));
+    box-shadow: var(--trust-reason-shadow, inset 0 1px 1px #ffffff58, inset 0 -1px 1px #ffffff14, 0 10px 16px -12px #0b0d0e8a);
   }
   .trust__inner:has(#trust-scene-0:checked) .trust__dots:not([data-pagination-ready]) .trust__dot[data-scene="0"] span,
   .trust__inner:has(#trust-scene-1:checked) .trust__dots:not([data-pagination-ready]) .trust__dot[data-scene="1"] span,
@@ -232,19 +232,33 @@ const supportingPhotos = [
   .trust__invitation :global(.trust__visit--desktop) { display: none; }
 
   @media (max-width: 40rem) {
-    .trust__inner { padding-block: 3.5rem; }
-    .trust__message { margin-block-end: 1.5rem; }
-    .trust__leaf { inset: 11.75rem -.5rem auto auto; }
-    .trust__gallery, .trust__controls, .trust__reasons { margin-inline-end: clamp(.25rem, 6.15vw, 1.5rem); }
-    .trust__slides { grid-template-columns: minmax(0, 1fr); }
+    .trust {
+      --trust-reason-surface: #f4f1ec12;
+      --trust-reason-shadow: none;
+      border-radius: 0;
+      background: radial-gradient(ellipse at 95% 0, #88916227, transparent 48%), linear-gradient(#3b5136, #1c2b1a);
+    }
+    .trust__inner { padding-block: clamp(2.5rem, 8.5vw, 3rem); }
+    .trust__message { gap: .75rem; margin-block-end: 1.5rem; }
+    .trust__leaf { inset: 1rem -.25rem auto auto; opacity: .28; }
+    .trust__gallery { border-radius: 1rem; }
+    .trust__slides { grid-template-columns: minmax(0, 1fr); block-size: clamp(14rem, 52vw, 17rem); }
+    .trust__slides img { border-radius: 0; }
     .trust__slides img:nth-child(2) { display: none; }
     .trust__dots { padding-inline: .5rem; }
     .trust__dots::before { inset: .625rem 0; }
     .trust__dot { min-inline-size: 1rem; padding-inline: .25rem; }
     .trust__dots[data-pagination-ready] .trust__dot { min-inline-size: 1.5rem; }
-    .trust__reason { padding: 1rem; }
+    .trust__reason { padding: 1rem; border: 1px solid #f4f1ec29; border-radius: 1rem; }
     .trust__reason p { line-height: 1.5; }
-    .trust__invitation { align-items: start; flex-direction: column; margin-block-start: 2rem; gap: 1rem; }
+    .trust__invitation {
+      align-items: start;
+      flex-direction: column;
+      gap: .875rem;
+      margin-block-start: 1.5rem;
+      padding-block-start: 1.25rem;
+      border-block-start: 1px solid #f4f1ec29;
+    }
     .trust__invitation p { display: none; }
   }
   @media (width < 73rem) {

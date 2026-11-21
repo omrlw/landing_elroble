@@ -143,7 +143,7 @@ const posters = [
     color: var(--color-cream);
     padding-block: 3.5rem 2rem;
   }
-  .closing-container { width: calc(100% - 3rem); position: relative; }
+  .closing-container { position: relative; }
   .ornament { position: absolute; height: auto; pointer-events: none; }
   .beginning { --ambient-tempo: 16s; width: 5.75rem; right: -.75rem; bottom: 24.3rem; opacity: .34; }
   .accent { --ambient-tempo: 14s; --ambient-phase: -6s; display: none; opacity: .25; }
@@ -250,7 +250,6 @@ const posters = [
 
   @media (min-width: 40rem) {
     .closing { padding-block: clamp(3.5rem, 9.375vw, 4.5rem) 2.5rem; }
-    .closing-container { width: min(105rem, 100% - var(--page-gutter) * 2); }
     .beginning { width: 8.94rem; top: -1.5rem; left: -1.5rem; bottom: auto; right: auto; }
     .accent { display: block; width: 8.94rem; right: 3rem; bottom: 17.5rem; }
     .community { justify-items: center; gap: 1rem; padding: 2rem 1.5rem; border-radius: 2.5rem; }

@@ -342,4 +342,16 @@ const sizes = '(min-width: 1200px) 70vw, (min-width: 600px) 75vw, 92vw';
     .story-visit-action { padding-inline-end: 3.65rem; --cta-font-size: 1rem; --cta-gap: 0.35rem; }
     .story-oak { width: 3.25rem; }
   }
+
+  @media (max-width: 40rem) {
+    .story-visit-action :global(.cta) {
+      --cta-width: fit-content;
+      --cta-background: var(--color-forest);
+      justify-self: start;
+      white-space: nowrap;
+      box-shadow: none;
+    }
+    .story-visit-action :global(.cta:is(:hover, :active)) { translate: none; scale: none; box-shadow: none; }
+    .story-visit-action :global(.cta-icon) { background: none; box-shadow: none; }
+  }
 </style>

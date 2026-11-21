@@ -21,7 +21,7 @@
 
   [data-ambient][data-ambient-started] {
     animation: var(--ambient-animation) var(--ambient-tempo, var(--ambient-duration))
-      ease-in-out var(--ambient-phase, 0s) infinite paused;
+      var(--ambient-ease, ease-in-out) var(--ambient-phase, 0s) infinite paused;
   }
 
   html:not([data-ambient-paused]) [data-ambient-started][data-ambient-visible] {

@@ -133,9 +133,13 @@ const navigation = [
     }
   }
   @media (max-width: 40rem) {
-    .opening-header__inner { width: calc(100% - 3rem); gap: .5rem; padding-block: 1rem; }
+    .opening-header__inner { gap: .5rem; padding-block: 1rem; }
     .opening-header__brand { inline-size: 10.25rem; max-inline-size: 57%; }
     .opening-header__actions { gap: .25rem; }
+    .opening-header__navigation {
+      inset-inline-end: var(--page-gutter);
+      inline-size: min(22rem, 100% - var(--page-gutter) * 2);
+    }
   }
   @media (min-width: 41rem) and (max-width: 72.999rem) {
     .opening-header__brand { inline-size: clamp(10.25rem, 5rem + 17vw, 13.125rem); }

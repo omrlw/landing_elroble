@@ -126,7 +126,7 @@ const placements = [
     border-radius: 1.25rem;
   }
 
-  .review-opening { position: relative; margin-block-end: 1.25rem; width: min(105rem, 100% - 3rem); }
+  .review-opening { position: relative; margin-block-end: 1.25rem; }
   .review-opening h2 {
     margin: 0;
     font: 700 clamp(1.75rem, .75rem + 3.6vw, 4rem)/1.12 var(--font-display);
@@ -141,7 +141,6 @@ const placements = [
     pointer-events: none;
   }
   .oak img { display: block; width: 100%; height: auto; }
-  .review-container { width: 100%; max-width: none; }
 
   .review-track {
     display: grid;
@@ -297,9 +296,17 @@ const placements = [
     }
   }
 
+  @media (max-width: 40rem) {
+    .review-popover { max-inline-size: min(34rem, 100% - var(--page-gutter) * 2); }
+  }
+
+  @media (40rem < width < 80rem) {
+    .review-container { width: 100%; max-width: none; }
+  }
+
   @media (min-width: 40rem) {
     .testimonials { --track-gap: 1.5rem; border-radius: 0; padding-block: clamp(3.5rem, 9.375vw, 4.5rem); }
-    .review-opening { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 1rem; width: min(105rem, 100% - var(--page-gutter) * 2); margin-block-end: 1.75rem; }
+    .review-opening { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 1rem; margin-block-end: 1.75rem; }
     .review-opening h2 { font-size: clamp(2rem, 1.75rem + 2.08vw, 4rem); line-height: 1.08; }
     .review-opening p { display: block; font-size: clamp(1rem, 1rem + .26vw, 1.25rem); line-height: 1.55; margin: 0; }
     .review-track { grid-auto-columns: clamp(13rem, 27vw, 16rem); }
@@ -320,7 +327,6 @@ const placements = [
     .review-opening { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
     .review-opening h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
     .oak { display: block; position: absolute; width: clamp(4rem, 5.83vw, 7rem); left: 40.6%; top: 65%; }
-    .review-container { max-width: 105rem; width: calc(100% - var(--page-gutter) * 2); }
     .review-track { height: clamp(40rem, 39.583vw, 47.5rem); grid-auto-columns: calc((100% - var(--track-gap) * 3) / 4); grid-template-rows: repeat(95, minmax(0, 1fr)); row-gap: 0; }
     .review-card { grid-column: var(--column); grid-row: var(--start) / var(--end); min-height: 0; gap: .75rem; padding: clamp(1rem, 5vw - 4rem, 2rem); border-radius: 1.75rem; }
     .review-body { font-size: clamp(1rem, 1.25vw - .25rem, 1.25rem); line-height: clamp(1.5rem, 2.5vw - 1rem, 2rem); }

@@ -96,7 +96,7 @@ const questions = [
     background: radial-gradient(ellipse at 10% 0, #fff9, transparent 43%), #f2efe9;
     color: var(--color-ink);
   }
-  .faq-container { position: relative; width: calc(100% - 3rem); }
+  .faq-container { position: relative; }
   .faq-heading { margin-block-end: 1.5rem; }
   h2 { margin: 0; font: 700 clamp(2rem, 1.4rem + 3.5vw, 2.25rem)/1.11 var(--font-display); color: var(--color-ink); }
   h2 em { font-weight: inherit; color: var(--color-oak, #532d12); }
@@ -154,7 +154,6 @@ const questions = [
 
   @media (min-width: 40rem) {
     .faq { padding-block: clamp(3.5rem, 9.375vw, 4.5rem); }
-    .faq-container { width: min(105rem, 100% - var(--page-gutter) * 2); }
     .faq-heading { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: center; margin-block-end: 2rem; }
     h2 { font-size: clamp(2.25rem, 1.915rem + 1.74vw, 4rem); }
     .faq-heading p { display: block; margin: 0; font-size: clamp(1.0625rem, 1.04rem + .18vw, 1.25rem); line-height: 1.55; color: var(--color-text, #3d3935); }
