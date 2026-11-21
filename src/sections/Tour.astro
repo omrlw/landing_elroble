@@ -2,9 +2,6 @@
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import activities from '../assets/tour/activities.png';
-import conceptActivities from '../assets/tour/concept-activities.jpg';
-import conceptEntrance from '../assets/tour/concept-entrance.jpg';
-import conceptMeeting from '../assets/tour/concept-meeting.jpg';
 import details from '../assets/tour/details.png';
 import entrance from '../assets/tour/entrance.png';
 import leavesBottom from '../assets/tour/leaves-bottom.png';
@@ -45,23 +42,7 @@ const interiorPhotos = [
   },
 ];
 
-const galleryPhotos = [
-  {
-    photo: conceptEntrance,
-    label: 'Entrada y jardín',
-    alt: 'Imagen conceptual de la entrada y el jardín.',
-  },
-  {
-    photo: conceptActivities,
-    label: 'Salón de actividades',
-    alt: 'Imagen conceptual de un salón de actividades.',
-  },
-  {
-    photo: conceptMeeting,
-    label: 'Rincón de encuentro',
-    alt: 'Imagen conceptual de un rincón de encuentro.',
-  },
-];
+const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 ---
 
 <section class="tour" id="recorrido" tabindex="-1" aria-labelledby="tour-title">
@@ -139,29 +120,29 @@ const galleryPhotos = [
 
       <div class="tour-gallery" data-tour-gallery data-reveal="card">
         <div class="tour-track" id="tour-photos" role="region" aria-label="Galería del centro" tabindex="0">
-          {galleryPhotos.map(({ photo, alt, label }, index) => (
-            <figure class="tour-slide">
-              <Image src={photo} alt={alt} format="webp" widths={[342, 684]} sizes="calc(100vw - 48px)" />
+          {galleryPhotos.map(({ id, photo, alt, label }) => (
+            <figure class={`tour-slide tour-slide--${id}`}>
+              {/* Cover scales these 1200:540 photos to the card's 420px height before cropping. */}
+              <Image src={photo} alt={alt} format="webp" widths={[960, 1200]} sizes="934px" />
               <figcaption class="tour-tag">
-                {index === 0 && <span class="tour-tag-symbol" aria-hidden="true">
-                  <img src="/images/tour/entrance-compact.svg" alt="" loading="lazy" />
-                </span>}
+                <span class="tour-tag-symbol" aria-hidden="true">
+                  <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
+                </span>
                 {label}
               </figcaption>
             </figure>
           ))}
         </div>
-        <div class="tour-pagination" data-gallery-pagination role="group" aria-label="Seleccionar foto">
+        <div class="tour-pagination" role="group" aria-label="Seleccionar foto">
           {galleryPhotos.map(({ label }, index) => (
             <button
               class="tour-dot"
-              data-gallery-dot
               type="button"
               aria-label={`Ver foto: ${label}`}
               aria-controls="tour-photos"
               aria-current={index === 0 ? 'true' : undefined}
               hidden
-            ><span data-gallery-mark aria-hidden="true"></span></button>
+            ></button>
           ))}
         </div>
       </div>
@@ -305,6 +286,9 @@ const galleryPhotos = [
     height: 100%;
     object-fit: cover;
   }
+
+  .tour-slide--entrance > img { object-position: 43% center; }
+  .tour-slide--activities > img { object-position: 66.6% center; }
 
   .tour-tag {
     position: absolute;
