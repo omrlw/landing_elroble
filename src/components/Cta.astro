@@ -1,0 +1,97 @@
+---
+import { whatsappUrl } from '../config/business';
+
+interface Props {
+  label?: string;
+  href?: string;
+  variant?: 'primary' | 'outline' | 'light';
+  icon?: string | false;
+  class?: string;
+}
+
+const {
+  label = 'Agendar una visita',
+  href = whatsappUrl,
+  variant = 'primary',
+  icon = '/icons/cta-arrow.svg',
+  class: className,
+} = Astro.props;
+---
+
+<a class:list={['cta', `cta--${variant}`, className]} href={href}>
+  <span>{label}</span>
+  {icon && <span class="cta-icon" aria-hidden="true"><img src={icon} width="22" height="22" alt="" /></span>}
+</a>
+
+<style>
+  .cta {
+    display: inline-flex;
+    width: var(--cta-width, fit-content);
+    max-width: 100%;
+    min-height: var(--cta-height, 3.5rem);
+    align-items: center;
+    justify-content: var(--cta-justify, space-between);
+    gap: var(--cta-gap, 0.75rem);
+    padding: var(--cta-padding, 0.65rem clamp(1rem, 2vw, 1.5rem));
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--cta-background, linear-gradient(#2b4027, #1c2b1a));
+    color: var(--cta-color, var(--color-cream));
+    font-size: var(--cta-font-size, clamp(1rem, 0.96rem + 0.28vw, 1.375rem));
+    line-height: 1.25;
+    font-weight: 600;
+    text-align: start;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0.5px #ffffff47, inset 0 -1px 1px #ffffff0d;
+    transition: filter var(--motion-state), box-shadow var(--motion-state) var(--ease-soft);
+  }
+
+  .cta--outline {
+    --cta-background: transparent;
+    --cta-color: var(--color-cream);
+    border-color: currentColor;
+  }
+
+  .cta--light {
+    --cta-background: var(--color-paper);
+    --cta-color: var(--color-forest);
+  }
+
+  .cta-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    inline-size: var(--cta-icon-size, 2rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(#ffffff3a, #ffffff14);
+    box-shadow: inset 0 1px 1px #ffffff38;
+  }
+
+  .cta--light .cta-icon { background: var(--color-forest); }
+
+  @media (hover: hover) {
+    .cta:hover {
+      box-shadow: inset 0 1px 0.5px #ffffff47, 0 6px 16px #14201328;
+      filter: brightness(1.08);
+    }
+  }
+
+  .cta:active { filter: brightness(.91); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cta { transition-property: filter, box-shadow, translate, scale; }
+    .cta-icon img { transition: translate var(--motion-state) var(--ease-soft); }
+    .cta-icon { transition: scale var(--motion-panel) var(--ease-soft); }
+    .cta:focus-visible img { translate: .15rem 0; }
+    .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
+    .cta:active .cta-icon { scale: .91; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .cta:hover { translate: 0 -1px; }
+      .cta:hover img { translate: .19rem 0; }
+      .cta:hover:not(:active) .cta-icon { scale: 1.06; }
+      .cta:active { translate: 0 1px; }
+    }
+  }
+</style>

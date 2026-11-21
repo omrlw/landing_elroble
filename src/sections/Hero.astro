@@ -1,0 +1,422 @@
+---
+import { Image, Picture } from 'astro:assets';
+import Cta from '../components/Cta.astro';
+import GalleryPlay from '../components/GalleryPlay.astro';
+import { business, firstVisitUrl } from '../config/business';
+import hero from '../assets/opening/hero.png';
+import room from '../assets/opening/trust-room.png';
+import table from '../assets/opening/day-table.png';
+import blocks from '../assets/opening/day-blocks.png';
+import garden from '../assets/opening/day-garden.png';
+import discoverArrow from '../assets/opening/discover-arrow.svg';
+import tourArrow from '../assets/opening/tour-arrow.svg';
+import mimp from '../assets/opening/mimp.svg';
+import mimpMobile from '../assets/opening/mimp-mobile.svg';
+import clock from '../assets/opening/clock.svg';
+import clockMobile from '../assets/opening/clock-mobile.svg';
+import heart from '../assets/opening/heart.svg';
+import sunrise from '../assets/opening/sunrise.svg';
+import leaves from '../assets/opening/promo-leaves.png';
+import ring from '../assets/opening/promo-ring.svg';
+import ringTablet from '../assets/opening/promo-ring-tablet.svg';
+import ringMobile from '../assets/opening/promo-ring-mobile.svg';
+
+const photos = [
+  { src: hero, alt: 'Entrada de El Roble con un sendero entre jardines' },
+  { src: room, alt: 'Sala de actividades de El Roble' },
+  { src: table, alt: 'Personas mayores participan en un juego de mesa' },
+  { src: blocks, alt: 'Participantes y cuidadora en una actividad con piezas de colores' },
+  { src: garden, alt: 'Camino de acceso y jardín del centro de día' },
+];
+
+const credentials = [
+  { label: 'Acreditación MIMP', icon: mimp, mobile: mimpMobile },
+  { label: `Desde ${business.foundedYear}`, icon: clock, mobile: clockMobile },
+  { label: 'Cuidado geriátrico', icon: heart },
+  { label: 'Centro de día', icon: sunrise },
+];
+---
+
+<section class="opening-hero" aria-labelledby="opening-title">
+  <div class="container opening-hero__inner">
+    <div class="opening-hero__lead">
+      <h1 id="opening-title">
+        <span>Una vida activa,</span>
+        <em>acompañada <span>con dignidad.</span></em>
+      </h1>
+      <div class="opening-hero__intro">
+        <p>Acompañamiento integral durante el día para cuidar la autonomía, el bienestar y los vínculos de cada persona mayor.</p>
+        <a class="opening-hero__discover" href="#centro-de-dia">
+          Descubre nuestro centro <img src={discoverArrow.src} width="20" height="20" alt="" />
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-media" data-swipe-gallery>
+      <div class="hero-media__photos" id="hero-gallery-photos">
+        {photos.map(({ src, alt }, index) => (
+          <div class="hero-media__scene" data-photo-scene>
+            <Picture {src} {alt} formats={['avif', 'webp']} fallbackFormat="jpg" quality={82}
+              widths={[480, 768, 960, 1200, 1680, 2240].filter((width) => width <= src.width)}
+              sizes="(max-width: 40rem) 52rem, (max-width: 73rem) max(60rem, calc(100vw - 64px)), (max-width: 120rem) 87.5vw, 1680px"
+              loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'low'} decoding="async" />
+          </div>
+        ))}
+      </div>
+      <div class="hero-media__shade" aria-hidden="true"></div>
+      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} />
+      <div class="hero-media__experience">
+        <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
+        <p>Acompañando a personas mayores y sus familias.</p>
+      </div>
+      <fieldset class="hero-media__paging" data-gallery-pagination>
+        <legend class="sr-only">Fotografías de El Roble</legend>
+        <GalleryPlay controls="hero-gallery-photos" />
+        {photos.map(({ alt }, index) => (
+          <label class="hero-media__dot" data-gallery-dot>
+            <input type="radio" name="opening-photo" value={index} checked={index === 0} aria-label={alt} />
+            <span data-gallery-mark aria-hidden="true"></span>
+          </label>
+        ))}
+      </fieldset>
+    </div>
+
+    <aside class="first-visit" aria-label="Primera visita gratis" data-first-visit>
+      <a class="first-visit__link" href={firstVisitUrl}>
+        <picture aria-hidden="true">
+          <source media="(max-width: 40rem)" srcset={ringMobile.src} />
+          <source media="(max-width: 72.999rem)" srcset={ringTablet.src} />
+          <img src={ring.src} alt="" />
+        </picture>
+        <span>Primera visita</span>
+        <strong>GRATIS</strong>
+      </a>
+      <span class="first-visit__leaves" aria-hidden="true">
+        <Image src={leaves} alt="" width={144} format="webp" data-ambient="leaf" />
+      </span>
+      <button class="first-visit__dismiss" type="button" aria-label="Cerrar promoción" hidden>×</button>
+    </aside>
+
+    <ul class="opening-hero__credentials" role="list">
+      {credentials.map(({ label, icon, mobile }, index) => (
+        <li class:list={[index > 1 && 'opening-hero__credential--wide']}>
+          <picture>
+            {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
+            <img src={icon.src} alt="" />
+          </picture>
+          {label}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { setupRadioGallery } from '../scripts/gallery';
+
+  const media = document.querySelector<HTMLElement>('.hero-media');
+  if (media) setupRadioGallery(media, [...media.querySelectorAll<HTMLInputElement>('input[type="radio"]')], [...media.querySelectorAll<HTMLElement>('[data-photo-scene]')], { autoplay: true });
+
+  const promo = document.querySelector<HTMLElement>('[data-first-visit]');
+  const dismiss = promo?.querySelector<HTMLButtonElement>('.first-visit__dismiss');
+  const storageKey = 'el-roble-first-visit-dismissed';
+
+  if (promo && dismiss) {
+    try { promo.hidden = sessionStorage.getItem(storageKey) === 'true'; } catch { /* Optional storage. */ }
+    dismiss.hidden = false;
+    dismiss.addEventListener('click', () => {
+      try { sessionStorage.setItem(storageKey, 'true'); } catch { /* Storage is optional. */ }
+      if (promo.contains(document.activeElement)) document.querySelector<HTMLAnchorElement>('.opening-hero__discover')?.focus({ preventScroll: true });
+      promo.inert = true;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        promo.hidden = true;
+        return;
+      }
+      const exit = promo.animate([{ opacity: 1, scale: '1' }, { opacity: 0, scale: '.94' }], { duration: 170, easing: 'ease-in', fill: 'forwards' });
+      void exit.finished.then(() => { promo.hidden = true; }, () => { promo.hidden = true; });
+    }, { once: true });
+  }
+</script>
+
+<style>
+  .opening-hero {
+    --opening-gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(1.75rem, 1rem + 2.6vw, 4rem) clamp(2.5rem, 1.75rem + 1.6vw, 3rem);
+    background: var(--color-cream);
+  }
+  .opening-hero::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse clamp(9rem, 24vw, 30rem) clamp(8rem, 21vw, 23rem) at 5% 12%, #e8e2db85, transparent 98%),
+      radial-gradient(ellipse clamp(9rem, 23vw, 28rem) clamp(9rem, 19vw, 25rem) at 96% 30%, #a2856454, transparent 100%),
+      linear-gradient(var(--color-cream) 46%, #e8e2db 79%, var(--color-cream));
+    mask-image: linear-gradient(transparent, #000 clamp(3rem, 8vw, 8rem));
+  }
+  .opening-hero__inner {
+    display: grid;
+    grid-template-areas: "lead" "photo" "badges";
+    gap: var(--opening-gap);
+    position: relative;
+  }
+  .opening-hero__lead { grid-area: lead; display: grid; gap: clamp(1rem, .72rem + .55vw, 1.25rem); }
+  .opening-hero h1 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(2.15rem, 1.47rem + 4.22vw, 6rem);
+    font-weight: 700;
+    line-height: 1.08;
+  }
+  .opening-hero h1 > span, .opening-hero h1 > em { display: block; }
+  .opening-hero h1 em { color: var(--color-oak); }
+  .opening-hero__intro { display: grid; justify-items: start; gap: clamp(1rem, .58rem + 1.2vw, 2rem); color: var(--color-text); }
+  .opening-hero__intro p { max-inline-size: 35rem; font-size: var(--text-copy); line-height: 1.55; }
+  .opening-hero__discover {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    min-block-size: 3.5rem;
+    max-inline-size: 100%;
+    padding: .625rem 1.5rem;
+    border-radius: 999px;
+    background: linear-gradient(#7a4a22, #5f3715);
+    color: var(--color-cream);
+    font-size: clamp(1.0625rem, .89rem + .4vw, 1.375rem);
+    font-weight: 600;
+    box-shadow: 0 6px 12px #5f371526, inset 0 1px 1px #ffffff52;
+  }
+  .opening-hero__discover img { flex: none; }
+  .opening-hero__discover:is(:focus-visible, :active) { background: linear-gradient(#8b5526, #693b15); }
+  .opening-hero__discover { transition: box-shadow var(--motion-state), filter var(--motion-state); }
+  .opening-hero__discover:active { filter: brightness(.92); }
+  @media (hover: hover) {
+    .opening-hero__discover:hover { background: linear-gradient(#8b5526, #693b15); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .opening-hero__discover img { transition: translate var(--motion-state) var(--ease-soft); }
+    .opening-hero__discover:is(:hover, :focus-visible) img { translate: .18rem 0; }
+  }
+
+  .hero-media {
+    grid-area: photo;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    min-block-size: clamp(23.375rem, 14rem + 25vw, 40rem);
+    border-radius: 2rem;
+    overflow: clip;
+    padding: 1rem clamp(1rem, 4vw, 3.5rem) 2.75rem;
+    background: var(--color-forest);
+    color: var(--color-cream);
+    box-shadow: 0 16px 32px -16px #3c2d202d;
+  }
+  .hero-media__photos, .hero-media__scene, .hero-media__shade { position: absolute; inset: 0; }
+  .hero-media__photos { z-index: -2; }
+  .hero-media__scene { display: none; }
+  .hero-media:not([data-gallery-ready]) .hero-media__scene:first-child { display: block; }
+  .hero-media__scene picture, .hero-media__scene img { display: block; inline-size: 100%; block-size: 100%; }
+  .hero-media__scene img { object-fit: cover; }
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+    .hero-media__scene img { transition: scale var(--motion-photo) var(--ease-soft); }
+    .hero-media:hover:not([data-scene-dragging]) .hero-media__scene img { scale: 1.016; }
+  }
+  .hero-media:not([data-gallery-ready]):has(input:not([value="0"]):checked) .hero-media__scene:first-child { display: none; }
+  .hero-media:not([data-gallery-ready]):has(input[value="1"]:checked) .hero-media__scene:nth-child(2),
+  .hero-media:not([data-gallery-ready]):has(input[value="2"]:checked) .hero-media__scene:nth-child(3),
+  .hero-media:not([data-gallery-ready]):has(input[value="3"]:checked) .hero-media__scene:nth-child(4),
+  .hero-media:not([data-gallery-ready]):has(input[value="4"]:checked) .hero-media__scene:nth-child(5) { display: block; }
+  .hero-media__shade { z-index: -1; pointer-events: none; background: linear-gradient(180deg, #0b0d0e00 62%, #0b0d0e3d 78%, #0b0d0e7a 87%, #0b0d0e9e); }
+  .hero-media__experience, .hero-media__paging::before {
+    background: linear-gradient(#f4f1ec55, #f4f1ec1a);
+    backdrop-filter: blur(16px);
+    box-shadow: inset 0 1px 1px #ffffff66, inset 0 -1px 1px #ffffff14, 0 8px 16px #0b0d0e38;
+  }
+  .hero-media :global(.hero-media__tour) {
+    --cta-background: linear-gradient(#f4f1ec55, #f4f1ec1a);
+    --cta-padding: .63rem 1.5rem;
+    white-space: nowrap;
+    backdrop-filter: blur(16px);
+  }
+  .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
+  .hero-media__experience {
+    inline-size: clamp(15.5rem, 13.9rem + 2.4vw, 17.5rem);
+    min-inline-size: 0;
+    padding: clamp(1.125rem, .85rem + .5vw, 1.5rem);
+    border-radius: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .hero-media__year { display: grid; gap: .75rem; margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, #f4f1ec80, transparent) left bottom / 100% 1px no-repeat; }
+  .hero-media__year span { color: #f4f1ece0; }
+  .hero-media__year strong { font: 700 clamp(3rem, 2.65rem + .75vw, 4rem) / 1 var(--font-display); }
+
+  .hero-media__paging {
+    position: absolute;
+    inset: auto auto 0 50%;
+    display: flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+    padding: 0 .5rem;
+    transform: translateX(-50%);
+  }
+  .hero-media__paging::before { position: absolute; z-index: -1; inset: .625rem 0; border-radius: 999px; content: ''; }
+  .hero-media__dot { display: grid; position: relative; inline-size: 1.5rem; min-block-size: 2.75rem; place-items: center; cursor: pointer; }
+  .hero-media__dot input { position: absolute; opacity: 0; }
+  .hero-media__dot span { inline-size: .5rem; block-size: .5rem; border-radius: .1875rem; background: #f4f1ec80; transition: background-color var(--motion-press); }
+  .hero-media__dot:active span { background-color: var(--color-cream); }
+  @media (hover: hover) { .hero-media__dot:hover span { background-color: var(--color-cream); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media__dot span { transition: inline-size var(--motion-state) var(--ease-soft), background-color var(--motion-press); }
+  }
+  .hero-media__paging:not([data-pagination-ready]) input:checked + span { inline-size: 1.5rem; background: var(--color-cream); }
+  .hero-media__dot input:focus-visible + span { outline: 2px solid white; outline-offset: 3px; }
+  .hero-media__dot:has(input:focus-visible) { outline: 2px solid white; outline-offset: -4px; border-radius: 999px; }
+
+  .first-visit {
+    --offer-size: 7.6rem;
+    grid-area: photo;
+    z-index: 2;
+    align-self: start;
+    justify-self: end;
+    position: absolute;
+    inset: 0 0 auto auto;
+    margin: 1rem;
+    inline-size: var(--offer-size);
+    block-size: var(--offer-size);
+    color: #fcfcfc;
+    filter: drop-shadow(0 8px 8px #5f371529);
+  }
+  .first-visit__link {
+    display: grid;
+    position: relative;
+    inline-size: 100%;
+    block-size: 100%;
+    align-content: center;
+    justify-items: center;
+    border-radius: 50%;
+    background: #945c23;
+    font-size: clamp(.875rem, .79rem + .25vw, 1rem);
+    line-height: 1.35;
+  }
+  .first-visit__link picture { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .first-visit__link strong { font: 700 clamp(1.5rem, 1.3rem + .48vw, 2rem) / 1.15 var(--font-display); }
+  .first-visit__link { transition: background-color var(--motion-state); }
+  .first-visit__link:active { background-color: #80501d; }
+  @media (hover: hover) { .first-visit__link:hover { background-color: #80501d; } }
+  .first-visit__leaves {
+    --ambient-phase: -1s;
+    --leaf-pivot: 78% 82%;
+    position: absolute;
+    inline-size: 47%;
+    inset: -13% auto auto -4%;
+    pointer-events: none;
+  }
+  .first-visit__leaves img { display: block; width: 100%; height: auto; }
+  .first-visit__dismiss {
+    position: absolute;
+    inset: -.75rem -.375rem auto auto;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border: 1px solid #945c23;
+    border-radius: 50%;
+    background: linear-gradient(#ffffffd1, #fffcf680);
+    color: var(--color-forest);
+    backdrop-filter: blur(6px);
+  }
+  .first-visit__dismiss { transition: background-color var(--motion-press); }
+  .first-visit__dismiss:active { background-color: var(--color-paper); }
+  @media (hover: hover) { .first-visit__dismiss:hover { background-color: var(--color-paper); } }
+  .first-visit[hidden], .first-visit__dismiss[hidden] { display: none; }
+
+  .opening-hero__credentials {
+    grid-area: badges;
+    align-self: start;
+    justify-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 3.5rem;
+    inline-size: 100%;
+    gap: .5rem clamp(.55rem, 1.4vw, 4.5rem);
+    padding: .65rem .875rem;
+    border-radius: 999px;
+    background: linear-gradient(#f4f1ec66, #f4f1ec33);
+    box-shadow: inset 0 1px 1px #ffffff80, 0 5px 10px #25221d14;
+    color: var(--color-forest);
+    font-size: clamp(.9375rem, .87rem + .24vw, 1.0625rem);
+    font-weight: 600;
+  }
+  .opening-hero__credentials li { display: flex; align-items: center; gap: clamp(.375rem, 1.3vw, .75rem); }
+  .opening-hero__credentials picture { display: grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .opening-hero h1, .opening-hero__intro {
+      animation: opening-arrival 1.15s cubic-bezier(.22, .72, .24, 1) backwards;
+    }
+    .opening-hero h1 { --opening-distance: clamp(.625rem, 1.2vw, 1.125rem); }
+    .opening-hero__intro { animation-delay: 90ms; }
+    .hero-media__photos { animation: opening-photo 1.45s cubic-bezier(.22, .68, .23, 1); }
+
+    @keyframes opening-arrival {
+      from { opacity: .58; translate: 0 var(--opening-distance, .625rem); }
+    }
+
+    @keyframes opening-photo {
+      from { opacity: .8; scale: 1.035; }
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
+    .opening-hero h1 em > span { display: block; }
+    .opening-hero__intro p { line-height: 1.5; }
+    .opening-hero__discover { justify-content: space-between; min-block-size: 3.25rem; inline-size: 18.375rem; font-size: 1.125rem; }
+    .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }
+    .hero-media :global(.hero-media__tour) { display: none; }
+    .hero-media__experience { padding: 1rem; inline-size: 100%; }
+    .hero-media__year { display: flex; align-items: center; gap: .5rem; margin-block-end: .375rem; padding: 0; background: none; }
+    .hero-media__year strong { font-size: 2rem; }
+    .first-visit { --offer-size: 7rem; grid-area: lead; margin: 2rem .625rem 0 0; }
+    .first-visit__dismiss { border-radius: .875rem; }
+    .opening-hero__credentials { gap: .5rem 1.25rem; justify-content: flex-start; border-radius: 1.5rem; }
+    .opening-hero__credentials picture { inline-size: 1.25rem; block-size: 1.25rem; }
+    .opening-hero__credentials .opening-hero__credential--wide { display: none; }
+  }
+  @media (max-width: 22.5rem) {
+    .first-visit { --offer-size: 6.675rem; grid-area: photo; margin-block-start: 1rem; margin-inline-end: 1rem; }
+    .first-visit__link picture { inset: .1rem; }
+    .opening-hero__credentials { gap: .5rem .75rem; padding-inline: .75rem; }
+  }
+  @media (min-width: 40.001rem) and (max-width: 72.999rem) {
+    .opening-hero { --opening-gap: 2rem; padding-block-start: 2.25rem; }
+    .opening-hero__intro { gap: 1.25rem; }
+    .opening-hero__discover { min-inline-size: 18.375rem; font-size: 1.125rem; }
+    .hero-media { padding-inline: 1.5rem; }
+    .hero-media :global(.hero-media__tour) { --cta-width: 14.0625rem; --cta-font-size: 1.125rem; --cta-padding: .625rem 1.375rem; }
+  }
+  @media (min-width: 73rem) {
+    .opening-hero__lead { grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; min-block-size: clamp(9.5rem, 11.25vw, 13.5rem); }
+    .opening-hero h1 { font-size: clamp(3.9rem, 5vw, 6rem); line-height: 1; }
+    .opening-hero__intro { padding-inline-start: clamp(.75rem, 1.66vw, 2rem); }
+    .first-visit {
+      --offer-size: clamp(7.5rem, 8vw, 9.5rem);
+      grid-area: photo;
+      margin: clamp(1.5rem, 2vw, 2.25rem) clamp(1rem, 2vw, 2.25rem) 0 0;
+    }
+    .first-visit__dismiss { inset: -1rem -.75rem auto auto; color: #945c23; }
+    .hero-media { padding-block-end: 2.5rem; }
+    .hero-media :global(.hero-media__tour) { --cta-font-size: clamp(1.125rem, .8rem + .48vw, 1.375rem); }
+    .hero-media__experience { inline-size: 17.5rem; }
+    .hero-media__paging { inset-block-end: 1.375rem; }
+    .opening-hero__credentials { min-block-size: 4.5rem; inline-size: min(100%, 62.625rem); gap: clamp(2rem, 3.75vw, 4.5rem); box-shadow: none; }
+  }
+</style>

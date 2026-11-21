@@ -1,0 +1,290 @@
+---
+import { Image } from 'astro:assets';
+import Cta from '../components/Cta.astro';
+import GalleryPlay from '../components/GalleryPlay.astro';
+import painting from '../assets/opening/trust-painting.png';
+import room from '../assets/opening/trust-room.png';
+import table from '../assets/opening/trust-table.png';
+import conversation from '../assets/opening/trust-conversation.png';
+import caregiver from '../assets/opening/day-table.png';
+import leaf from '../assets/opening/trust-leaf.png';
+import tourArrow from '../assets/opening/tour-arrow.svg';
+import visitArrow from '../assets/opening/visit-arrow-light.svg';
+
+const photos = {
+  painting: { src: painting, alt: 'Una mujer mayor participa en una actividad de pintura' },
+  room: { src: room, alt: 'Sala de actividades de El Roble' },
+  table: { src: table, alt: 'Una persona mayor realiza una actividad manual' },
+  conversation: { src: conversation, alt: 'Dos personas conversan en El Roble' },
+  caregiver: { src: caregiver, alt: 'Una persona mayor y su cuidadora juegan juntas' },
+};
+
+const reasons = [
+  {
+    title: 'Primero, conocer a la persona.',
+    text: 'Partimos de su historia, sus intereses y sus necesidades. La evaluación previa al ingreso orienta una atención acorde con sus capacidades.',
+    photos: [photos.painting, photos.room],
+  },
+  {
+    title: 'Un equipo que puedes conocer.',
+    text: 'En tu visita, conversa con el equipo disponible y pregunta cómo acompaña a las personas mayores en su día a día.',
+    photos: [photos.caregiver, photos.table],
+  },
+  {
+    title: 'La familia también forma parte.',
+    text: 'Cuéntanos sus rutinas y preferencias, y comparte tus dudas. Juntos valoramos la propuesta de atención.',
+    photos: [photos.conversation, photos.painting],
+  },
+];
+const supportingPhotos = [
+  [photos.table, photos.conversation],
+  [photos.painting, photos.conversation],
+  [photos.table, photos.room],
+];
+---
+
+<section class="trust" aria-labelledby="trust-title" data-trust>
+  <div class="container trust__inner">
+    <span class="trust__leaf" aria-hidden="true">
+      <Image src={leaf} alt="" width={320} format="webp" data-ambient="leaf" />
+    </span>
+    <div class="trust__message" data-reveal>
+      <h2 id="trust-title">La confianza empieza<br /><em>por conocernos.</em></h2>
+      <p>Antes de decidir, conversemos. Escuchamos a tu familia y valoramos juntos el apoyo que tu familiar necesita.</p>
+    </div>
+
+    {reasons.map(({ title }, index) => (
+      <input class="trust__radio" id={`trust-scene-${index}`} type="radio" name="trust-scene"
+        value={index} checked={index === 0} aria-label={title} />
+    ))}
+
+    <div class="trust__gallery" id="trust-gallery-photos" data-swipe-gallery data-reveal="card">
+      {reasons.map(({ photos: slides }, index) => (
+        <div class="trust__slides" data-scene={index} data-photo-scene>
+          <div class="trust__row">
+            {slides.map(({ src, alt }) => (
+              <Image {src} {alt} widths={[360, 480, 720, 900]} sizes="(min-width: 100rem) 424px, (min-width: 73rem) 22vw, (max-width: 40rem) calc(100vw - 48px), 54vw" format="webp" />
+            ))}
+          </div>
+          <div class="trust__row trust__row--extra" data-gallery-extra>
+            {supportingPhotos[index].map(({ src, alt }) => (
+              <Image {src} {alt} widths={[320, 480, 720]} sizes="(max-width: 100rem) 22vw, 424px" format="webp" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="trust__controls">
+      <p>Desliza o toca un punto</p>
+      <div class="trust__dots" data-gallery-pagination role="group" aria-label="Escenas de confianza">
+        <GalleryPlay controls="trust-gallery-photos" />
+        {reasons.map(({ title }, index) => (
+          <label class="trust__dot" for={`trust-scene-${index}`} title={title} data-scene={index} data-gallery-dot><span data-gallery-mark aria-hidden="true"></span></label>
+        ))}
+      </div>
+    </div>
+
+    <div class="trust__reasons" data-reveal="card">
+      {reasons.map(({ title, text }, index) => (
+        <article class="trust__reason" data-scene={index}>
+          <h3>{title}</h3>
+          <p>{text}</p>
+          <label class="trust__reason-action" for={`trust-scene-${index}`}><span class="sr-only">{title}</span></label>
+        </article>
+      ))}
+    </div>
+
+    <div class="trust__invitation" data-reveal="card">
+      <div>
+        <h3>Ven a conocernos.</h3>
+        <p>Conoce el espacio, conversa con nuestro equipo y decide con tranquilidad.</p>
+      </div>
+      <Cta class="trust__visit trust__visit--desktop" icon={visitArrow.src} />
+      <Cta class="trust__visit trust__visit--compact" icon={tourArrow.src} />
+    </div>
+  </div>
+</section>
+
+<script>
+  import { setupRadioGallery } from '../scripts/gallery';
+  const trust = document.querySelector<HTMLElement>('[data-trust]');
+  const carousel = trust?.querySelector<HTMLElement>('[data-swipe-gallery]');
+  if (trust && carousel) setupRadioGallery(carousel, [...trust.querySelectorAll<HTMLInputElement>('input[name="trust-scene"]')], [...carousel.querySelectorAll<HTMLElement>('[data-photo-scene]')], { controlsRoot: trust, autoplay: true });
+</script>
+
+<style>
+  .trust {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+    border-radius: clamp(1.5rem, 2.7vw, 1.75rem);
+    background: linear-gradient(#455b3b, #1c2b1a);
+    color: var(--color-cream);
+  }
+  .trust__inner {
+    display: grid;
+    position: relative;
+    grid-template-areas: "heading" "gallery" "controls" "reasons" "invitation";
+    padding-block: 3.5rem 3.25rem;
+  }
+  .trust__message { grid-area: heading; position: relative; display: grid; gap: 1rem; margin-block-end: 1.75rem; }
+  .trust h2 {
+    color: inherit;
+    font: 700 clamp(2.25rem, 1.76rem + 2.05vw, 4rem) / 1.1 var(--font-display);
+  }
+  .trust h2 em { color: inherit; }
+  .trust__message p { max-inline-size: 36rem; font-size: var(--text-copy); line-height: 1.55; }
+  .trust__leaf {
+    --ambient-tempo: 13s;
+    --ambient-phase: -4s;
+    --leaf-pivot: 82% 91%;
+    position: absolute;
+    z-index: -1;
+    inset: 1.75rem 1% auto auto;
+    inline-size: clamp(5.5rem, 12vw, 10.5rem);
+    opacity: .55;
+    pointer-events: none;
+  }
+  .trust__leaf img { display: block; width: 100%; height: auto; }
+  .trust__slides img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 0;
+    object-fit: cover;
+  }
+  .trust__gallery { grid-area: gallery; display: grid; grid-template-areas: 'scene'; isolation: isolate; overflow: clip; align-self: start; }
+  .trust__slides { --photo-display: grid; display: none; grid-area: scene; position: relative; grid-template-columns: minmax(0, 400fr) minmax(0, 288fr); grid-template-rows: minmax(0, 1fr); gap: 1rem; block-size: clamp(14rem, 34.375vw, 16.5rem); }
+  .trust__row { display: contents; }
+  .trust__row--extra { display: none; }
+  .trust__slides img { border-radius: 1rem; }
+  .trust__slides[data-scene="0"] img:first-child { object-position: center 22.8%; }
+  .trust__controls { grid-area: controls; display: flex; align-items: center; justify-content: center; gap: 1rem; margin-block: .5rem; font-size: clamp(.875rem, .79rem + .25vw, 1rem); }
+  .trust__dots { display: flex; position: relative; align-items: center; padding-inline: .25rem; }
+  .trust__dots::before {
+    position: absolute;
+    inset: .4375rem 0;
+    border-radius: 999px;
+    background: linear-gradient(#f4f1ec55, #f4f1ec1a);
+    box-shadow: inset 0 1px 1px #ffffff66, 0 6px 9px #0b0d0e30;
+    content: '';
+  }
+  .trust__radio { position: absolute; opacity: 0; pointer-events: none; }
+  .trust__dot { position: relative; display: grid; place-items: center; min-block-size: 2.75rem; min-inline-size: 2.625rem; cursor: pointer; }
+  .trust__dot span { inline-size: .5rem; block-size: .5rem; border-radius: .1875rem; background: #f4f1ec80; }
+  .trust__dot span { transition: background-color var(--motion-press); }
+  @media (hover: hover) {
+    .trust__dot:hover span { background: var(--color-cream); }
+    .trust__reason-action:hover { background: #f4f1ec0e; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .trust__dot span { transition: inline-size var(--motion-state) var(--ease-soft), background-color var(--motion-press); }
+    .trust__reason:not(:has(.trust__reason-action:hover)) { transition: box-shadow var(--motion-state); }
+    .trust[data-gallery-changed][data-gallery-index="0"] .trust__reason[data-scene="0"] > :is(h3,p),
+    .trust[data-gallery-changed][data-gallery-index="1"] .trust__reason[data-scene="1"] > :is(h3,p),
+    .trust[data-gallery-changed][data-gallery-index="2"] .trust__reason[data-scene="2"] > :is(h3,p) {
+      animation: trust-copy 520ms var(--ease-soft);
+    }
+    @keyframes trust-copy { from { opacity: .65; translate: 0 .25rem; } }
+  }
+
+  .trust__reasons { grid-area: reasons; position: relative; display: grid; }
+  .trust__reason { display: none; position: relative; padding: .5rem 1.25rem; border-radius: 1.25rem; }
+  .trust__reason h3 { font: 700 clamp(1.5rem, 1.3rem + .62vw, 2.25rem) / 1.15 var(--font-display); color: inherit; }
+  .trust__reason p { margin-block-start: .5rem; font-size: var(--text-copy); line-height: 1.55; }
+  .trust__reason-action { display: none; }
+  .trust__inner:has(#trust-scene-0:checked) .trust__gallery:not([data-gallery-ready]) .trust__slides[data-scene="0"],
+  .trust__inner:has(#trust-scene-1:checked) .trust__gallery:not([data-gallery-ready]) .trust__slides[data-scene="1"],
+  .trust__inner:has(#trust-scene-2:checked) .trust__gallery:not([data-gallery-ready]) .trust__slides[data-scene="2"] { display: grid; }
+  .trust:not([data-gallery-index]) .trust__inner:has(#trust-scene-0:checked) .trust__reason[data-scene="0"],
+  .trust:not([data-gallery-index]) .trust__inner:has(#trust-scene-1:checked) .trust__reason[data-scene="1"],
+  .trust:not([data-gallery-index]) .trust__inner:has(#trust-scene-2:checked) .trust__reason[data-scene="2"],
+  .trust[data-gallery-index="0"] .trust__reason[data-scene="0"],
+  .trust[data-gallery-index="1"] .trust__reason[data-scene="1"],
+  .trust[data-gallery-index="2"] .trust__reason[data-scene="2"] {
+    --reason-visibility: visible;
+    --reason-padding: 1.5rem;
+    display: grid;
+    background: linear-gradient(#f4f1ec45, #f4f1ec18);
+    box-shadow: inset 0 1px 1px #ffffff58, inset 0 -1px 1px #ffffff14, 0 10px 16px -12px #0b0d0e8a;
+  }
+  .trust__inner:has(#trust-scene-0:checked) .trust__dots:not([data-pagination-ready]) .trust__dot[data-scene="0"] span,
+  .trust__inner:has(#trust-scene-1:checked) .trust__dots:not([data-pagination-ready]) .trust__dot[data-scene="1"] span,
+  .trust__inner:has(#trust-scene-2:checked) .trust__dots:not([data-pagination-ready]) .trust__dot[data-scene="2"] span { inline-size: 1.5rem; background: var(--color-cream); }
+  .trust__inner:has(#trust-scene-0:focus-visible) [data-scene="0"]:is(.trust__dot, .trust__reason),
+  .trust__inner:has(#trust-scene-1:focus-visible) [data-scene="1"]:is(.trust__dot, .trust__reason),
+  .trust__inner:has(#trust-scene-2:focus-visible) [data-scene="2"]:is(.trust__dot, .trust__reason) { outline: 2px solid white; outline-offset: 3px; }
+  .trust__invitation { grid-area: invitation; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-block-start: 1.75rem; }
+  .trust__invitation h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.1 var(--font-display); color: inherit; }
+  .trust__invitation p { margin-block-start: .5rem; font-size: clamp(1rem, .84rem + .37vw, 1.25rem); line-height: 1.55; }
+  .trust__invitation :global(.trust__visit) {
+    --cta-width: 15.75rem;
+    --cta-gap: .5rem;
+    --cta-padding: .625rem 1.5rem;
+    --cta-font-size: 1.125rem;
+    --cta-background: linear-gradient(#f4f1ec55, #f4f1ec1a);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .trust__invitation :global(.trust__visit .cta-icon img) { inline-size: 20px; block-size: 20px; }
+  .trust__invitation :global(.trust__visit--desktop) { display: none; }
+
+  @media (max-width: 40rem) {
+    .trust__inner { padding-block: 3.5rem; }
+    .trust__message { margin-block-end: 1.5rem; }
+    .trust__leaf { inset: 11.75rem -.5rem auto auto; }
+    .trust__gallery, .trust__controls, .trust__reasons { margin-inline-end: clamp(.25rem, 6.15vw, 1.5rem); }
+    .trust__slides { grid-template-columns: minmax(0, 1fr); }
+    .trust__slides img:nth-child(2) { display: none; }
+    .trust__dots { padding-inline: .5rem; }
+    .trust__dots::before { inset: .625rem 0; }
+    .trust__dot { min-inline-size: 1rem; padding-inline: .25rem; }
+    .trust__dots[data-pagination-ready] .trust__dot { min-inline-size: 1.5rem; }
+    .trust__reason { padding: 1rem; }
+    .trust__reason p { line-height: 1.5; }
+    .trust__invitation { align-items: start; flex-direction: column; margin-block-start: 2rem; gap: 1rem; }
+    .trust__invitation p { display: none; }
+  }
+  @media (width < 73rem) {
+    .trust[data-gallery-index] .trust__reason { display: block; grid-area: 1 / 1; visibility: var(--reason-visibility, hidden); }
+  }
+  @media (min-width: 73rem) {
+    .trust { background: none; }
+    .trust::before { position: absolute; z-index: -2; inset: 2rem 0 0; border-radius: inherit; background: linear-gradient(#455b3b, #1c2b1a); content: ''; }
+    .trust__inner {
+      --trust-mosaic-height: calc(2 * clamp(13rem, 18.75vw, 22.5rem) + 1rem);
+      grid-template-columns: 744fr 872fr;
+      grid-template-areas: "gallery heading" "gallery reasons" "invitation invitation";
+      column-gap: clamp(2rem, 3.33vw, 4rem);
+      padding-block: 0 clamp(4rem, 5vw, 6rem);
+    }
+    .trust__leaf { inset: clamp(8rem, 10.4vw, 12.5rem) max(-6rem, -5vw) auto auto; inline-size: clamp(9rem, 14vw, 17rem); }
+    .trust__message { padding-inline: clamp(1rem, 1.66vw, 2rem); padding-block-start: clamp(4.5rem, 6.25vw, 7.5rem); margin-block-end: 2rem; gap: 1.5rem; }
+    .trust__message p { max-inline-size: 40rem; }
+    .trust__slides { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); block-size: var(--trust-mosaic-height); }
+    .trust__row { display: grid; grid-template-columns: 304fr 424fr; grid-template-rows: minmax(0, 1fr); gap: 1rem; }
+    .trust__row--extra { grid-template-columns: 424fr 304fr; }
+    .trust__slides img { border-radius: .75rem; }
+    .trust__slides[data-scene="0"] img:first-child { object-position: center; }
+    .trust__controls { display: none; }
+    .trust[data-gallery-index] .trust__controls { display: flex; grid-area: gallery; align-self: start; justify-self: center; z-index: 1; margin-block: calc(var(--trust-mosaic-height) - 3.75rem) 0; }
+    .trust__controls p { display: none; }
+    .trust__dots { background: #1c2b1ada; border-radius: 999px; }
+    .trust__reasons { gap: 1.5rem; }
+    .trust__reason { display: block; padding: var(--reason-padding, .5rem) clamp(1rem, 1.66vw, 2rem); border-radius: 1rem; }
+    .trust__reason-action { display: block; position: absolute; inset: 0; border-radius: inherit; cursor: pointer; }
+    .trust__reason-action:hover { box-shadow: inset 0 0 0 1px #f4f1ec2e; }
+    .trust__invitation { min-block-size: 5.5rem; margin-block-start: 1.75rem; }
+    .trust__invitation :global(.trust__visit--compact) { display: none; }
+    .trust__invitation :global(.trust__visit--desktop) {
+      --cta-width: fit-content;
+      --cta-gap: .75rem;
+      --cta-font-size: 1.375rem;
+      --cta-background: linear-gradient(#f4f1ecdf, #f4f1ec88);
+      --cta-color: var(--color-forest);
+      display: inline-flex;
+    }
+  }
+</style>

@@ -1,0 +1,276 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans Flex';
+  src: url('/fonts/google-sans-flex.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT');
+  font-weight: 600 700;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Times New Roman Bold Italic'), local('TimesNewRomanPS-BoldItalicMT');
+  font-style: italic;
+  font-weight: 700;
+  size-adjust: 86%;
+}
+
+@theme {
+  --font-display: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
+  --font-body: 'Google Sans Flex', system-ui, sans-serif;
+  --color-ink: #142013;
+  --color-forest: #1c2b1a;
+  --color-action: #2b4027;
+  --color-oak: #532d12;
+  --color-cream: #f4f1ec;
+  --color-paper: #fcfaf5;
+  --color-text: #3d3935;
+  --color-white-warm: #fffdf9;
+  --radius-card: 1.5rem;
+  --text-section: clamp(2.25rem, 1.75rem + 2.1vw, 4rem);
+  --text-copy: clamp(1rem, 0.87rem + 0.53vw, 1.125rem);
+}
+
+:root {
+  --page-gutter: clamp(0.75rem, 5.29vw - 0.54rem, 2rem);
+  --section-space: clamp(3.5rem, 2.46rem + 4.23vw, 6rem);
+  --section-gap: clamp(1.5rem, 0.98rem + 2.1vw, 3rem);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.25, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --motion-press: 120ms;
+  --motion-state: 240ms;
+  --motion-panel: 360ms;
+  --motion-photo: 760ms;
+  --header-block-size: 5rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --page-gutter: clamp(2rem, 7.64vw - 1.67rem, 7.5rem);
+    --text-copy: clamp(1.125rem, 1.04rem + 0.174vw, 1.25rem);
+  }
+}
+
+@layer base {
+  html { scroll-padding-block-start: var(--header-block-size); }
+
+  body {
+    min-width: 0;
+    margin: 0;
+    background: var(--color-cream);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-copy);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.08;
+  }
+
+  h2 { font-size: var(--text-section); }
+
+  img { max-inline-size: 100%; }
+
+  button, summary { cursor: pointer; }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  ::selection {
+    background: #e3d1b5;
+    color: var(--color-ink);
+  }
+}
+
+@media (min-width: 42rem) { :root { --header-block-size: 6rem; } }
+@media (min-width: 73rem) { :root { --header-block-size: 7rem; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+#inicio { position: absolute; inset-block-start: 0; inline-size: 1px; block-size: 1px; }
+
+@media (hover: hover) and (pointer: fine) {
+  [data-drag-track] { cursor: grab; }
+  [data-drag-track][data-track-dragging] { cursor: grabbing; user-select: none; scroll-snap-type: none; }
+  [data-swipe-gallery] { cursor: grab; }
+  [data-swipe-gallery][data-scene-dragging] { cursor: grabbing; user-select: none; }
+}
+
+[data-swipe-gallery] { touch-action: pan-y pinch-zoom; }
+
+[data-gallery-ready] [data-photo-scene][data-photo-state] { display: var(--photo-display, block); }
+[data-photo-state='staged'] { visibility: hidden; }
+[data-photo-state='leaving'] { z-index: 1; pointer-events: none; }
+[data-photo-state='active'] { z-index: 2; }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-photo-state='active'] { translate: var(--scene-displacement, 0px) 0; transition: translate var(--motion-state) var(--ease-soft); }
+  [data-scene-dragging] [data-photo-state='active'] { transition: none; }
+}
+
+[data-pagination-ready] { isolation: isolate; }
+[data-pagination-ready] [data-gallery-dot] { z-index: 1; }
+[data-pagination-ready] [data-gallery-dot]::before { content: none; }
+[data-pagination-ready] [data-gallery-mark] {
+  display: block;
+  inline-size: .375rem;
+  block-size: .375rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: .5;
+  pointer-events: none;
+}
+[data-pagination-ready] [data-dot-active] [data-gallery-mark] { opacity: 0; }
+.gallery-indicator {
+  position: absolute;
+  z-index: 0;
+  inset: calc(50% - .1875rem) auto auto 0;
+  inline-size: var(--gallery-pill-width, 1rem);
+  block-size: .375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 68%, transparent);
+  translate: calc(var(--dot-position, 0px) - 50%) 0;
+  pointer-events: none;
+}
+.gallery-indicator > span { display: block; block-size: 100%; background: currentColor; transform: scaleX(0); transform-origin: left; }
+
+.gallery-play {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  min-block-size: 2.75rem;
+  color: inherit;
+  border-radius: 999px;
+}
+.gallery-play[inert] { visibility: hidden; }
+.gallery-indicator[hidden] { display: none; }
+.gallery-play__resume, [data-play-state='paused'] .gallery-play__pause { display: none; }
+[data-play-state='paused'] .gallery-play__resume { display: initial; }
+.gallery-play:active { opacity: .68; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-indicator { transition: translate var(--motion-panel) var(--ease-soft); }
+  [data-pagination-ready] [data-gallery-mark] { transition: scale var(--motion-state) var(--ease-soft), opacity var(--motion-press); }
+  [data-pagination-ready] [data-gallery-dot]:active [data-gallery-mark] { scale: .8; }
+  .gallery-play svg { transition: scale var(--motion-state) var(--ease-soft); }
+  .gallery-play:active svg { scale: .9; }
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-pagination-ready] [data-gallery-dot]:not([data-dot-active]):hover [data-gallery-mark] { opacity: 1; scale: 1.3; }
+  .gallery-play:hover { background: #ffffff24; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-pagination-ready] [data-gallery-dot]:hover [data-gallery-mark] { scale: 1; }
+}
+
+.container {
+  width: min(105rem, 100% - var(--page-gutter) * 2);
+  max-width: 105rem;
+  margin-inline: auto;
+}
+
+.opening {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--color-cream);
+}
+
+.opening-glass { display: none; }
+
+@media (min-width: 42rem) {
+  .opening-glass {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    width: var(--glass-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 24%, #ffffffb3, #ffffff2b 48%, #d6c8b029);
+    box-shadow: 0 20px 48px #5f371519, inset 0 1px 1px #ffffff99;
+  }
+
+  .opening-glass--left {
+    --glass-size: clamp(10.69rem, 16.15vw, 19.375rem);
+    --ambient-tempo: 17s;
+    top: clamp(2.06rem, 4.55rem - 5.2vw, 2.19rem);
+    left: calc(var(--glass-size) * -.68);
+  }
+
+  .opening-glass--right {
+    --glass-size: clamp(9.625rem, 14.59vw, 17.5rem);
+    --ambient-tempo: 21s;
+    --ambient-phase: -4s;
+    --ambient-direction: -1;
+    top: calc(var(--glass-size) * -.74);
+    right: calc(var(--glass-size) * -.625);
+    mask-image: linear-gradient(transparent 74%, #000 93%);
+  }
+}
+
+.story-and-day {
+  background: var(--color-cream);
+}
+
+@media (min-width: 75rem) {
+  .story-and-day {
+    --color-story: transparent;
+    background:
+      radial-gradient(ellipse at 24% 35%, #ffffff88, transparent 56%),
+      radial-gradient(ellipse at 90% 50%, #fffaf066, transparent 57%),
+      linear-gradient(var(--color-cream), #f2ede4);
+  }
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 50;
+  inset: 1rem auto auto 1rem;
+  clip-path: inset(50%);
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--color-paper);
+  background: var(--color-forest);
+}
+
+.skip-link:focus { clip-path: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

@@ -1,0 +1,508 @@
+---
+import { getImage, Image } from 'astro:assets';
+import clay from '../assets/approach/clay.png';
+import oakDesktop from '../assets/approach/oak-desktop.png';
+import oakTablet from '../assets/approach/oak-tablet.png';
+import portrait from '../assets/approach/portrait.png';
+import portraitMobile from '../assets/approach/portrait-mobile.png';
+
+const mobilePortrait = await getImage({ src: portraitMobile, width: 768, format: 'webp' });
+const principles = [
+  {
+    id: 'listen',
+    title: ['Escuchar', 'su historia.'],
+    description: 'Conocer sus intereses, hábitos y preferencias nos ayuda a proponer una participación que tenga sentido para esa persona.',
+    tabletDescription: 'Proponemos actividades según sus gustos y hábitos.',
+  },
+  {
+    id: 'autonomy',
+    title: ['Dar espacio', 'a su autonomía.'],
+    description: 'Acompañar también implica dar tiempo para elegir, intentar y hacer. Ofrecemos apoyo según sus capacidades, respetando lo que puede realizar por sí misma.',
+    tabletDescription: 'Le damos tiempo y apoyo para elegir y hacer a su ritmo.',
+  },
+  {
+    id: 'family',
+    title: ['Contar con', 'la familia.'],
+    description: 'La familia aporta una mirada valiosa sobre su historia y su vida cotidiana. Esa información ayuda a orientar el acompañamiento y conversar sobre sus necesidades.',
+    tabletDescription: 'Lo que comparte la familia nos ayuda a orientar el cuidado.',
+  },
+];
+---
+
+<section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
+  <div class="approach-decoration" aria-hidden="true">
+    <Image class="oak-desktop" src={oakDesktop} alt="" format="webp" width={644} data-ambient="leaf" />
+    <Image class="oak-tablet" src={oakTablet} alt="" format="webp" width={488} data-ambient="leaf" />
+    <span class="approach-sphere"><span data-ambient="glass"></span></span>
+  </div>
+
+  <div class="container approach-inner">
+    <header class="approach-heading" data-reveal>
+      <h2 id="approach-title">Cuidar también es<br /><em>reconocer quién es.</em></h2>
+      <p class="approach-intro-desktop">
+        Sus gustos, sus decisiones y su manera de hacer las cosas forman parte del cuidado. En El
+        Roble, acompañamos desde lo que cada persona necesita y también desde lo que disfruta.
+      </p>
+      <p class="approach-intro-compact">
+        Acompañamos a cada persona desde lo que necesita y lo que disfruta.
+      </p>
+    </header>
+
+    <div class="approach-layout">
+      <picture class="approach-portrait" data-reveal="card">
+        <source media="(max-width: 767px)" srcset={mobilePortrait.src} />
+        <Image
+          src={portrait}
+          alt="Una mujer mayor con chaleco verde durante una actividad."
+          format="webp"
+          widths={[384, 560, 768, 1120]}
+          sizes="(max-width: 1199px) 384px, (max-width: 1920px) 30vw, 560px"
+        />
+      </picture>
+
+      <div class="approach-note">
+        <span class="approach-note-symbol" aria-hidden="true">
+          <img src="/images/approach/autonomy-note.svg" alt="" loading="lazy" />
+        </span>
+        <p class="approach-note-desktop">Seguir eligiendo. Seguir participando.</p>
+        <p><em>Seguir siendo uno mismo.</em></p>
+      </div>
+
+      {principles.map(({ id, title, description, tabletDescription }) => (
+        <article class={`approach-principle approach-principle--${id}`} data-reveal="card">
+          <div class="approach-principle-heading">
+            <h3><span>{title[0]}</span>{' '}{title[1]}</h3>
+            <span class="approach-principle-icon">
+              <img src={`/images/approach/${id}.svg`} alt="" loading="lazy" />
+            </span>
+          </div>
+          <p class="approach-intro-desktop">{description}</p>
+          <p class="approach-principle-tablet">{tabletDescription}</p>
+        </article>
+      ))}
+
+      <div class="approach-clay">
+        <Image
+          src={clay}
+          alt="Manos que sostienen figuras hechas con arcilla."
+          format="webp"
+          widths={[520, 780, 1040]}
+          sizes="(max-width: 1920px) 28vw, 520px"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .approach {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    border-radius: 28px 28px 0 0;
+    background: #233322;
+    --approach-glow: radial-gradient(
+      ellipse 102.6% 102.6% at 30% 25%,
+      rgb(233 217 174 / 16%),
+      rgb(191 199 147 / 5.4%) 45%,
+      transparent 100%
+    );
+    background-image: var(--approach-glow);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+  }
+
+  .approach-inner {
+    position: relative;
+    padding: 40px 12px;
+  }
+
+  .approach-decoration {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .approach-decoration img {
+    --ambient-tempo: 16s;
+    --leaf-pivot: 12% 88%;
+    display: none;
+    position: absolute;
+    height: auto;
+  }
+
+  .approach-sphere {
+    --ambient-phase: -5s;
+    position: absolute;
+    top: -96px;
+    right: -94px;
+    width: 236px;
+    aspect-ratio: 1;
+  }
+
+  .approach-sphere > span {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: 0.42;
+    background: radial-gradient(
+      circle at 30% 25%,
+      rgb(244 241 236 / 55%),
+      rgb(244 241 236 / 17%) 45%,
+      rgb(244 241 236 / 4.5%)
+    );
+    box-shadow: inset 0 1px 1px rgb(244 241 236 / 42%), inset -8px -10px 36px rgb(244 241 236 / 9%);
+  }
+
+  .approach-heading {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .approach-heading h2,
+  .approach-principle h3,
+  .approach-note {
+    color: inherit;
+    font-family: var(--font-display);
+  }
+
+  .approach-heading h2 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 40px;
+  }
+
+  .approach-heading p {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .approach-layout {
+    display: grid;
+    grid-template-areas: "portrait" "note" "listen" "autonomy" "family";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .approach-portrait,
+  .approach-clay {
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .approach-portrait {
+    grid-area: portrait;
+    height: 418px;
+    border-radius: 192px 192px 16px 16px;
+  }
+
+  .approach-portrait img,
+  .approach-clay img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .approach-clay {
+    display: none;
+  }
+
+  .approach-note {
+    grid-area: note;
+    margin: 2px 0 14px;
+    font-size: 32px;
+    line-height: 36px;
+    text-align: center;
+  }
+
+  .approach-note em {
+    font-weight: 700;
+  }
+
+  .approach-note-symbol,
+  .approach-note-desktop,
+  .approach-intro-desktop,
+  .approach-principle-tablet {
+    display: none;
+  }
+
+  .approach-principle {
+    padding: 16px;
+    border: 1px solid rgb(218 192 149 / 21%);
+    border-radius: 24px;
+    background: linear-gradient(rgb(244 241 236 / 9%), rgb(244 241 236 / 3%));
+    box-shadow: inset 0 1px 1px rgb(244 241 236 / 27%),
+      inset 0 -1px 1px rgb(0 0 0 / 10%), 0 16px 32px -16px rgb(6 11 6 / 26%);
+    backdrop-filter: blur(12px);
+  }
+
+  .approach-principle--listen { grid-area: listen; }
+  .approach-principle--autonomy { grid-area: autonomy; }
+  .approach-principle--family { grid-area: family; }
+
+  .approach-principle-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .approach-principle h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: -0.006em;
+  }
+
+  .approach-principle-icon,
+  .approach-note-symbol {
+    flex: none;
+    place-items: center;
+    width: 34px;
+    aspect-ratio: 1;
+    border: 1px solid rgb(218 192 149 / 20%);
+    border-radius: 50%;
+    background: rgb(244 241 236 / 5%);
+  }
+
+  .approach-principle-icon {
+    display: grid;
+    order: -1;
+  }
+
+  @media (min-width: 768px) {
+    .approach-inner {
+      padding: 72px 0;
+    }
+
+    .approach-decoration .oak-tablet {
+      display: block;
+      top: 335px;
+      left: -66px;
+      width: 244px;
+      opacity: 0.48;
+      transform: rotate(-3.26deg);
+    }
+
+    .approach-sphere {
+      top: -48px;
+      right: -86px;
+    }
+
+    .approach-heading {
+      margin-bottom: 32px;
+    }
+
+    .approach-heading h2 {
+      font-size: 44px;
+      line-height: 48px;
+    }
+
+    .approach-heading p {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    .approach-layout {
+      grid-template-areas: "portrait portrait portrait" "listen autonomy family" "note note note";
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 16px;
+      row-gap: 32px;
+    }
+
+    .approach-portrait {
+      justify-self: center;
+      width: 384px;
+      height: 472px;
+    }
+
+    .approach-portrait img {
+      object-position: center 58%;
+    }
+
+    .approach-principle {
+      min-height: 170px;
+    }
+
+    .approach-principle-heading {
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .approach-principle h3 span {
+      display: block;
+    }
+
+    .approach-principle h3 {
+      letter-spacing: normal;
+    }
+
+    .approach-principle-icon {
+      order: 0;
+    }
+
+    .approach-principle-tablet {
+      display: block;
+      margin-top: 12px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .approach-note {
+      margin: -8px 0 0;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .approach {
+      background-image: none;
+    }
+
+    .approach-inner {
+      padding-block: 96px;
+    }
+
+    .approach-decoration::before {
+      position: absolute;
+      inset: 55.12% 34.11% 17.62% 39.74%;
+      background-image: var(--approach-glow);
+      content: "";
+    }
+
+    .approach-decoration .oak-tablet {
+      display: none;
+    }
+
+    .approach-decoration .oak-desktop {
+      display: block;
+      top: 95px;
+      left: -36px;
+      width: 322px;
+      opacity: 0.38;
+    }
+
+    .approach-sphere {
+      top: auto;
+      right: -164px;
+      bottom: -4px;
+      width: 356px;
+      opacity: 0.3;
+    }
+
+    .approach-heading {
+      min-height: 296px;
+      align-content: center;
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .approach-heading h2 {
+      min-height: 144px;
+      font-size: 64px;
+      line-height: 64px;
+    }
+
+    .approach-heading p {
+      max-width: 720px;
+      font-size: 20px;
+      line-height: 32px;
+    }
+
+    .approach-intro-compact,
+    .approach-principle-tablet {
+      display: none;
+    }
+
+    .approach-intro-desktop,
+    .approach-note-desktop {
+      display: block;
+    }
+
+    .approach-layout {
+      --card-height: clamp(300px, 19.17vw, 368px);
+      grid-template-areas: "listen portrait autonomy" "clay portrait family" ". portrait ." "note note note";
+      grid-template-columns: 520fr 560fr 520fr;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      column-gap: clamp(24px, 2.1vw, 40px);
+      row-gap: 32px;
+      align-items: start;
+    }
+
+    .approach-portrait {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      border-radius: 400px 400px 16px 16px;
+    }
+
+    .approach-portrait img {
+      position: absolute;
+      inset: 0;
+      object-position: center;
+    }
+
+    .approach-clay {
+      display: block;
+      grid-area: clay;
+      width: 100%;
+      min-height: 0;
+      aspect-ratio: 520 / 364;
+      border-radius: 16px;
+    }
+
+    .approach-clay img {
+      position: absolute;
+      inset: 0;
+      object-position: center 93%;
+    }
+
+    .approach-principle {
+      min-height: var(--card-height);
+      padding: clamp(24px, 2.1vw, 40px);
+    }
+
+    .approach-principle-heading {
+      min-height: 96px;
+      gap: 12px;
+    }
+
+    .approach-principle h3 {
+      font-size: clamp(30px, 1.875vw, 36px);
+      line-height: 1.111;
+    }
+
+    .approach-principle-icon {
+      width: 48px;
+    }
+
+    .approach-principle p {
+      margin-top: 24px;
+      font-size: clamp(16px, 1.042vw, 20px);
+      line-height: 1.6;
+    }
+
+    .approach-note {
+      margin: 16px 0 0;
+      padding-top: 16px;
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 48px;
+    }
+
+    .approach-note p + p {
+      margin-top: 12px;
+    }
+
+    .approach-note-symbol {
+      display: grid;
+      width: 44px;
+      margin: 0 auto 32px;
+      box-shadow: 0 8px 16px -8px rgb(6 11 6 / 40%);
+    }
+  }
+</style>

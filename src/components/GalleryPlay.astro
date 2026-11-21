@@ -1,0 +1,13 @@
+---
+interface Props {
+  controls: string;
+}
+const { controls } = Astro.props;
+---
+
+<button class="gallery-play" type="button" data-gallery-play aria-controls={controls} aria-label="Pausar carrusel" inert>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path class="gallery-play__pause" d="M6 4.5v7m4-7v7" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" />
+    <path class="gallery-play__resume" d="M6 4.25 12 8l-6 3.75v-7.5Z" fill="currentColor" />
+  </svg>
+</button>

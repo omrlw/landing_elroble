@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="177" height="264.999" viewBox="0 0 177 264.999" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="Vidrio / Curva suave en el margen" d="M37.1488 2.2916C124.229 -10.1148 195.941 43.6464 170.33 109.814C149.84 155.304 201.064 180.117 160.085 233.879C129.351 283.504 21.7817 271.098 6.4147 209.066C-14.0747 147.033 26.9041 113.95 6.4147 64.3238C-8.95233 35.3755 11.537 6.42708 37.1488 2.2916Z" fill="url(#paint0_linear_0_16)" stroke="url(#paint1_linear_0_16)"/>
+<defs>
+<linearGradient id="paint0_linear_0_16" x1="88.4999" y1="0.499905" x2="88.4999" y2="264.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.18"/>
+<stop offset="1" stop-color="#F4F1EC" stop-opacity="0.04"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_16" x1="88.4999" y1="0.499905" x2="88.4999" y2="264.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.5"/>
+<stop offset="1" stop-color="#F4F1EC" stop-opacity="0.05"/>
+</linearGradient>
+</defs>
+</svg>

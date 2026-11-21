@@ -1,0 +1,201 @@
+---
+import { Image } from 'astro:assets';
+import Cta from '../components/Cta.astro';
+import { business } from '../config/business';
+import branch from '../assets/lower/faq-branch.png';
+import acorn from '../assets/lower/faq-acorn.png';
+import rings from '../assets/lower/faq-rings.png';
+
+const questions = [
+  {
+    title: '¿El Roble es centro de día o residencia?',
+    compact: '¿Centro de día o residencia?',
+    answer: 'El Roble es un centro de día. Tu familiar participa en actividades, recibe acompañamiento durante la mañana y vuelve a casa al finalizar la jornada.',
+  },
+  {
+    title: '¿Qué horarios y modalidades ofrecen?',
+    compact: '¿Qué horarios ofrecen?',
+    answer: `${business.schedule} Las modalidades incluyen actividades, movimiento suave y acompañamiento.`,
+  },
+  {
+    title: '¿Qué incluye la atención?',
+    answer: 'Incluye actividades de memoria y reminiscencia, talleres creativos, motricidad fina, juegos, convivencia, movimiento suave y acompañamiento especializado durante la mañana. Cualquier necesidad adicional se conversa previamente con la familia.',
+  },
+  {
+    title: '¿Puede participar una persona con deterioro cognitivo?',
+    compact: '¿Y si hay deterioro cognitivo?',
+    tablet: '¿Puede participar alguien con deterioro cognitivo?',
+    answer: 'Antes de comenzar realizamos una evaluación para conocer las necesidades y capacidades de tu familiar, adaptar su participación y confirmar si El Roble es una alternativa adecuada.',
+  },
+  {
+    title: '¿Podemos conocer el centro antes de decidir?',
+    compact: '¿Podemos conocer el centro?',
+    answer: 'Sí. Puedes coordinar una visita para recorrer los ambientes, conocer al equipo, contarnos sobre tu familiar y resolver tus dudas antes de elegir una modalidad.',
+  },
+  {
+    title: '¿Cómo es una mañana en El Roble?',
+    compact: '¿Cómo es una mañana aquí?',
+    answer: 'La jornada combina actividades cognitivas, creativas y de movimiento con momentos para conversar, compartir y descansar. Adaptamos la participación al ritmo, los intereses y las capacidades de cada persona.',
+  },
+  {
+    title: '¿Cómo adaptan las actividades?',
+    answer: 'Partimos de la historia, los intereses y las capacidades de cada persona. Proponemos formas de participar que respeten su ritmo, su autonomía y aquello que disfruta hacer.',
+  },
+  {
+    title: '¿Qué papel tiene la familia?',
+    answer: 'La familia comparte información sobre hábitos, preferencias y necesidades. Esa mirada nos ayuda a orientar el acompañamiento y mantener una conversación cercana.',
+  },
+];
+---
+
+<section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
+  <Image class="ornament branch" src={branch} alt="" widths={[112, 192, 384]} sizes="(min-width: 80rem) 176px, (min-width: 40rem) 96px, 57px" data-ambient="leaf" />
+  <Image class="ornament rings" src={rings} alt="" widths={[120, 180, 360, 720]} sizes="(min-width: 80rem) 357px, (min-width: 40rem) 144px, 109px" data-ambient="glass" />
+  <div class="container faq-container">
+    <header class="faq-heading" data-reveal>
+      <h2 id="faq-heading">Lo importante,<br /><em>antes de la visita.</em></h2>
+      <p>Lo esencial para conocer cómo funciona El Roble, qué incluye cada modalidad y cómo acompañamos a tu familiar.</p>
+    </header>
+
+    <div class="questions" data-reveal>
+      {questions.map(({ title, compact, tablet, answer }, index) => (
+        <details name="preguntas-el-roble">
+          <summary>
+            <span class="question-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
+              <span class="full-question">{title}</span>
+              {compact && <span class="compact-question">{compact}</span>}
+              {tablet && <span class="tablet-question">{tablet}</span>}
+            </span>
+            <span class="question-icon" aria-hidden="true">
+              <picture>
+                <source media="(min-width: 80rem)" srcset="/lower/faq-plus-desktop.svg" />
+                <source media="(min-width: 40rem)" srcset="/lower/faq-plus-tablet.svg" />
+                <img src="/lower/faq-plus-mobile.svg" alt="" />
+              </picture>
+            </span>
+          </summary>
+          <p class="answer">{answer}</p>
+        </details>
+      ))}
+    </div>
+
+    <div class="faq-close">
+      <p>¿Tienes otra pregunta?</p>
+      <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
+      <Image class="ornament acorn" src={acorn} alt="" widths={[64, 112, 192]} sizes="(min-width: 80rem) 96px, 56px" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    position: relative;
+    overflow: clip;
+    padding-block: 3.5rem;
+    background: radial-gradient(ellipse at 10% 0, #fff9, transparent 43%), #f2efe9;
+    color: var(--color-ink);
+  }
+  .faq-container { position: relative; width: calc(100% - 3rem); }
+  .faq-heading { margin-block-end: 1.5rem; }
+  h2 { margin: 0; font: 700 clamp(2rem, 1.4rem + 3.5vw, 2.25rem)/1.11 var(--font-display); color: var(--color-ink); }
+  h2 em { font-weight: inherit; color: var(--color-oak, #532d12); }
+  .faq-heading p, .faq-close p, .question-number, .acorn { display: none; }
+  .questions { display: grid; align-items: start; gap: .375rem; }
+
+  details {
+    min-width: 0;
+    border-radius: clamp(1.5rem, 1.3vw, 1.75rem);
+    background: linear-gradient(180deg, #fff9, #eee9e0);
+    box-shadow: inset 0 1px 0 #fff, 0 16px 32px -12px #5f37153b;
+    transition: box-shadow 180ms ease, background-color 180ms ease;
+  }
+  details[open] { background: linear-gradient(180deg, #fffc, #f3ede1); }
+  summary {
+    min-height: 3.75rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.75rem;
+    gap: .25rem;
+    align-items: center;
+    padding: .5rem;
+    border-radius: inherit;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::marker { content: ''; }
+  .question-title { font: 600 clamp(1.325rem, .95rem + 2.25vw, 1.5rem)/1.1 var(--font-display); }
+  .has-compact .full-question, .tablet-question { display: none; }
+  .question-icon { display: grid; place-items: center; justify-self: end; width: 1.5rem; aspect-ratio: 1; transition: rotate 180ms ease; }
+  .question-icon img { display: block; }
+  [open] .question-icon { rotate: 45deg; }
+  .answer { margin: 0; padding: 0 .875rem 1rem; font-size: clamp(1rem, .88rem + .18vw, 1.125rem); line-height: 1.55; color: var(--color-text, #3d3935); }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (interpolate-size: allow-keywords) and (transition-behavior: allow-discrete) and selector(details::details-content) {
+      details { interpolate-size: allow-keywords; }
+      details::details-content {
+        block-size: auto;
+        opacity: 1;
+        overflow: clip;
+        transition: block-size var(--motion-panel) var(--ease-soft), opacity var(--motion-state), content-visibility var(--motion-panel) allow-discrete;
+      }
+      details:not([open])::details-content { block-size: 0; opacity: 0; }
+    }
+  }
+  .faq-close { position: relative; margin-block-start: 1.5rem; }
+  .faq-close :global(a) { --cta-height: 3.5rem; --cta-font-size: 1.125rem; --cta-padding: .65rem 1.45rem; --cta-width: 15.75rem; white-space: nowrap; }
+  .ornament { position: absolute; height: auto; pointer-events: none; }
+  .branch { --ambient-tempo: 14s; width: 3.56rem; opacity: .55; top: 3.3rem; right: 1rem; }
+  .rings { --ambient-tempo: 20s; width: 6.81rem; bottom: 0; right: 0; opacity: .5; }
+
+  @media (hover: hover) {
+    details:hover { box-shadow: inset 0 1px #fff, 0 16px 32px -9px #5f371547; }
+  }
+
+  @media (min-width: 40rem) {
+    .faq { padding-block: clamp(3.5rem, 9.375vw, 4.5rem); }
+    .faq-container { width: min(105rem, 100% - var(--page-gutter) * 2); }
+    .faq-heading { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: center; margin-block-end: 2rem; }
+    h2 { font-size: clamp(2.25rem, 1.915rem + 1.74vw, 4rem); }
+    .faq-heading p { display: block; margin: 0; font-size: clamp(1.0625rem, 1.04rem + .18vw, 1.25rem); line-height: 1.55; color: var(--color-text, #3d3935); }
+    .questions { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; row-gap: .75rem; }
+    summary { min-height: 6rem; grid-template-columns: auto minmax(0, 1fr) auto; gap: .25rem; }
+    .question-title { font-size: clamp(1.5rem, 1.2rem + .625vw, 2.25rem); }
+    .question-number { display: grid; place-items: center; width: 1.75rem; aspect-ratio: 1; border-radius: 50%; background: #fcfaf5aa; color: var(--color-oak, #532d12); font-size: .875rem; font-weight: 500; }
+    .question-icon { width: 2.75rem; border-radius: 50%; background: #fcfaf5aa; }
+    .has-compact .full-question, .tablet-question { display: inline; }
+    .has-tablet .full-question { display: none; }
+    .compact-question { display: none; }
+    .answer { padding-inline: 2.5rem; }
+    .faq-close { margin-block-start: 2.5rem; text-align: center; }
+    .faq-close p { display: block; margin: 0 0 1rem; font: 600 clamp(2rem, 1.65rem + .65vw, 2.5rem)/1.15 var(--font-display); }
+    .acorn { display: block; width: 3.5rem; left: 74%; top: 3rem; }
+    .branch { top: auto; right: auto; bottom: -1.7rem; left: .45rem; width: 6.05rem; }
+    .rings { width: 9rem; bottom: -.75rem; }
+  }
+
+  @media (min-width: 80rem) {
+    .faq { background: linear-gradient(#fff9, #fffcf680), #f4f1ec; padding-block: clamp(4.5rem, 5vw, 6rem); }
+    .faq-heading { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
+    h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
+    .questions { grid-auto-flow: column; grid-template-rows: repeat(4, auto); column-gap: clamp(1.5rem, 1.667vw, 2rem); row-gap: 1rem; }
+    summary { min-height: clamp(6rem, 6.667vw, 8rem); gap: 1.25rem; padding-inline: 1.5rem; }
+    .question-title { max-width: 40rem; font-size: clamp(1.5rem, 1rem + 1.05vw, 2.25rem); }
+    details:nth-child(4) .question-title { max-width: 29rem; }
+    .has-tablet .full-question { display: inline; }
+    .tablet-question { display: none; }
+    .question-number { width: 2.5rem; }
+    .question-icon { width: 3rem; }
+    .answer { padding-inline: 5.25rem 2rem; }
+    .faq-close { margin-block-start: clamp(3rem, 3.333vw, 4rem); min-height: 11.5rem; display: grid; align-content: center; justify-items: center; }
+    .faq-close p { margin-block-end: 1.5rem; }
+    .faq-close :global(a) { --cta-font-size: 1.375rem; --cta-width: fit-content; --cta-padding: .65rem 1.5rem; }
+    .branch { width: clamp(8rem, 9.17vw, 11rem); bottom: -3.5rem; left: .75rem; }
+    .rings { width: clamp(15rem, 18.6vw, 22.31rem); bottom: -3rem; }
+    .acorn { width: clamp(4rem, 5vw, 6rem); left: 72%; top: 5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    details, .question-icon { transition: none; }
+  }
+</style>

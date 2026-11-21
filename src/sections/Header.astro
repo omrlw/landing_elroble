@@ -1,0 +1,164 @@
+---
+import { Image } from 'astro:assets';
+import Cta from '../components/Cta.astro';
+import { pricingUrl } from '../config/business';
+import logo from '../assets/opening/brand.png';
+import menuIcon from '../assets/opening/menu.svg';
+import whatsappIcon from '../assets/opening/whatsapp.svg';
+
+const navigation = [
+  { label: 'Centro de día', href: '#centro-de-dia' },
+  { label: 'Enfoque', href: '#enfoque' },
+  { label: 'Programa', href: '#programa' },
+  { label: 'Precios', href: pricingUrl },
+  { label: 'Contacto', href: '#contacto' },
+];
+---
+
+<header class="opening-header" data-site-header>
+  <div class="container opening-header__inner">
+    <a class="opening-header__brand" href="#inicio" aria-label="El Roble, inicio">
+      <Image src={logo} alt="El Roble, centro geronto geriátrico" width={500} format="webp" quality={92} loading="eager" />
+    </a>
+    <nav class="opening-header__navigation" id="opening-menu" popover="auto" aria-label="Navegación principal">
+      {navigation.map(({ label, href }) => <a href={href}>{label}</a>)}
+      <Cta class="opening-header__menu-visit" />
+    </nav>
+    <div class="opening-header__actions">
+      <Cta class="opening-header__visit opening-header__visit--desktop" />
+      <Cta class="opening-header__visit opening-header__visit--tablet" icon={whatsappIcon.src} />
+      <button class="opening-header__menu" type="button" popovertarget="opening-menu" aria-controls="opening-menu">
+        Menú <img src={menuIcon.src} alt="" width="22" height="20" />
+      </button>
+      <button class="opening-header__motion" type="button" data-ambient-toggle inert>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { setupHeader } from '../scripts/header';
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  if (header) setupHeader(header);
+</script>
+
+<style>
+  .opening-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 20;
+    background: var(--color-cream);
+    box-shadow: 0 1px 0 #532d1200, 0 8px 22px #1c2b1a00;
+    transition: box-shadow var(--motion-state) var(--ease-soft);
+  }
+  .opening-header[data-scrolled] { box-shadow: 0 1px 0 #532d121c, 0 8px 22px #1c2b1a0c; }
+  .opening-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.25rem; }
+  .opening-header__brand { display: flex; align-items: center; inline-size: clamp(10.25rem, 9rem + 8.6vw, 15.5625rem); }
+  .opening-header__brand img { display: block; inline-size: 100%; block-size: auto; }
+  .opening-header__brand { transition: opacity var(--motion-state); }
+  .opening-header__brand:active { opacity: .75; }
+  .opening-header__actions { display: flex; align-items: center; gap: 1rem; }
+  .opening-header__actions :global(.opening-header__visit--tablet .cta-icon) { background: none; box-shadow: none; }
+  .opening-header__actions :global(.opening-header__visit--tablet .cta-icon img) { width: 20px; height: 20px; }
+  .opening-header__actions :global(.opening-header__visit) { display: none; }
+  .opening-header__menu { display: flex; align-items: center; gap: .5rem; min-block-size: 3rem; padding: .5rem; border-radius: .75rem; color: var(--color-forest); font-weight: 600; transition: background-color var(--motion-press); }
+  .opening-header__menu:is(:active, [aria-expanded="true"]) { background: #e8e2db; }
+  .opening-header__motion {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: var(--color-oak);
+    transition: background-color var(--motion-press);
+  }
+  .opening-header__motion[inert] { visibility: hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    .opening-header__motion { display: none; }
+  }
+  .opening-header__motion:active { background: #dfd3c1; }
+  .opening-header__motion span { width: .625rem; height: .72rem; border-inline: 2px solid currentColor; }
+  .opening-header__motion[data-show-play] span {
+    width: 0;
+    height: 0;
+    margin-inline-start: 2px;
+    border: .375rem solid transparent;
+    border-inline-start: .625rem solid currentColor;
+    border-inline-end: 0;
+  }
+
+  .opening-header__navigation {
+    position: fixed;
+    inset: calc(var(--header-block-size) + .35rem) max(1rem, calc((100% - 105rem) / 2)) auto auto;
+    inline-size: min(22rem, calc(100vw - 2rem));
+    max-block-size: calc(100dvh - var(--header-block-size) - 1.35rem);
+    margin: 0;
+    padding: .75rem;
+    overflow: auto;
+    border: 1px solid #a2856466;
+    border-radius: 1.25rem;
+    background: var(--color-cream);
+    color: var(--color-forest);
+    box-shadow: 0 12px 32px #1c2b1a24;
+  }
+  .opening-header__navigation:popover-open { display: grid; }
+  .opening-header__navigation > a:not(:global(.opening-header__menu-visit)) { display: flex; align-items: center; min-block-size: 3rem; border-radius: 999px; padding-inline: 1rem; transition: background-color var(--motion-state); }
+  .opening-header__navigation > a:not(:global(.opening-header__menu-visit)):is(:focus-visible, :active) { background: #e8e2db; }
+  .opening-header__navigation > a[aria-current="location"] { text-decoration: underline; text-underline-offset: .28em; text-decoration-color: var(--color-oak); }
+  @media (hover: hover) {
+    .opening-header__brand:hover { opacity: .87; }
+    .opening-header__menu:hover, .opening-header__navigation > a:not(:global(.opening-header__menu-visit)):hover { background: #e8e2db; }
+    .opening-header__motion:hover { background: #dfd3c1; }
+  }
+  .opening-header__navigation :global(.opening-header__menu-visit) { margin: .5rem .5rem .25rem; }
+  @media (width < 73rem) and (prefers-reduced-motion: no-preference) {
+    @supports (transition-behavior: allow-discrete) and selector(:popover-open) {
+      .opening-header__navigation[popover] {
+        opacity: 0;
+        transform: translateY(-.375rem) scale(.985);
+        transform-origin: top right;
+        transition: opacity 160ms var(--ease-exit), transform 160ms var(--ease-exit), display 160ms allow-discrete, overlay 160ms allow-discrete;
+      }
+      .opening-header__navigation:popover-open {
+        opacity: 1;
+        transform: none;
+        transition-duration: var(--motion-panel);
+        transition-timing-function: var(--ease-soft);
+      }
+      @starting-style {
+        .opening-header__navigation:popover-open { opacity: 0; transform: translateY(-.625rem) scale(.985); }
+      }
+    }
+  }
+  @media (max-width: 40rem) {
+    .opening-header__inner { width: calc(100% - 3rem); gap: .5rem; padding-block: 1rem; }
+    .opening-header__brand { inline-size: 10.25rem; max-inline-size: 57%; }
+    .opening-header__actions { gap: .25rem; }
+  }
+  @media (min-width: 41rem) and (max-width: 72.999rem) {
+    .opening-header__brand { inline-size: clamp(10.25rem, 5rem + 17vw, 13.125rem); }
+  }
+  @media (min-width: 42rem) and (max-width: 72.999rem) {
+    .opening-header__actions :global(.opening-header__visit--tablet) { display: inline-flex; min-inline-size: 15.75rem; --cta-font-size: 1.125rem; --cta-padding: .625rem 1.5rem; }
+  }
+  @media (min-width: 73rem) {
+    .opening-header__inner { padding-block: 1.5rem; }
+    .opening-header__navigation { position: static; display: flex; inline-size: auto; max-block-size: none; overflow: visible; padding: 0; border: 0; background: none; box-shadow: none; gap: .25rem; font-size: clamp(1rem, .75rem + .42vw, 1.25rem); font-weight: 500; white-space: nowrap; }
+    .opening-header__navigation > a:not(:global(.opening-header__menu-visit)) { padding-inline: clamp(.5rem, 1.05vw, 1.25rem); }
+    .opening-header__actions :global(.opening-header__visit--desktop) { display: inline-flex; --cta-font-size: clamp(1.0625rem, .8rem + .48vw, 1.375rem); }
+    .opening-header__menu, .opening-header__navigation :global(.opening-header__menu-visit) { display: none; }
+  }
+  @media (min-width: 73rem) and (max-width: 80rem) {
+    .opening-header__inner, .opening-header__actions { gap: .5rem; }
+    .opening-header__navigation > a:not(:global(.opening-header__menu-visit)) { padding-inline: .5rem; }
+  }
+  @supports not selector(:popover-open) {
+    @media (max-width: 72.999rem) {
+      .opening-header__inner { flex-wrap: wrap; }
+      .opening-header__menu { display: none; }
+      .opening-header__navigation { position: static; display: flex; flex: 1 0 100%; flex-wrap: wrap; order: 3; padding: 0; border: 0; background: none; box-shadow: none; }
+    }
+  }
+</style>

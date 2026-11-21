@@ -1,0 +1,285 @@
+---
+import { Image } from 'astro:assets';
+import Cta from '../components/Cta.astro';
+import painting from '../assets/opening/day-painting.png';
+import blocks from '../assets/opening/day-blocks.png';
+import table from '../assets/opening/day-table.png';
+import garden from '../assets/opening/day-garden.png';
+import leaves from '../assets/opening/day-leaves.png';
+import groupMovement from '../assets/program/group.png';
+import memory from '../assets/opening/day-memory.svg';
+import movement from '../assets/opening/day-move.svg';
+import creativity from '../assets/opening/day-create.svg';
+import memoryMobile from '../assets/opening/day-memory-mobile.svg';
+import movementMobile from '../assets/opening/day-move-mobile.svg';
+import creativityMobile from '../assets/opening/day-create-mobile.svg';
+
+const activities = [
+  {
+    title: 'Mantener la mente activa.',
+    mobileTitle: 'Memoria activa.',
+    description: 'Talleres de memoria y reminiscencia que invitan a recordar, conversar y participar.',
+    icon: memory,
+    mobileIcon: memoryMobile,
+    image: blocks,
+    alt: 'Personas mayores y una cuidadora realizan un juego con piezas de colores',
+  },
+  {
+    title: 'Moverse y expresarse.',
+    description: 'Taichí, expresión corporal y terapia ocupacional, con participación adaptada a las capacidades de cada persona.',
+    icon: movement,
+    mobileIcon: movementMobile,
+    image: groupMovement,
+    alt: 'Personas mayores participan en una actividad grupal de movimiento',
+  },
+  {
+    title: 'Crear y compartir.',
+    mobileTitle: 'Crear y compartir',
+    description: 'Manualidades y juegos para disfrutar y encontrarse con otros.',
+    icon: creativity,
+    mobileIcon: creativityMobile,
+    image: painting,
+    alt: 'Una mujer mayor sonríe mientras pinta con las manos',
+  },
+];
+
+const facilities = [
+  { image: table, alt: 'Una persona mayor y una cuidadora juegan juntas en una mesa' },
+  { image: garden, alt: 'Entrada y jardín de El Roble' },
+];
+---
+
+<section class="day" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
+  <div class="container day__inner">
+    <div class="day__heading" data-reveal>
+      <h2 id="day-title">Un día con compañía.<br /><em>Conectada con casa.</em></h2>
+      <div class="day__description">
+        <p>El Roble es un centro de día para personas adultas mayores en Arequipa.</p>
+        <p>Durante la jornada, ofrecemos acompañamiento y actividades para estimular la memoria, el movimiento y la participación. Al terminar, cada persona vuelve a casa y continúa su vida en familia.</p>
+      </div>
+    </div>
+
+    <div class="day__composition">
+      <div class="day__gallery" data-reveal="card">
+        <div class="day__photo" data-swipe-gallery>
+          {activities.map(({ image, alt }, index) => (
+            <Image class:list={['day__activity-photo', `day__activity-photo--${index}`]} src={image} alt={alt} data-photo-scene
+              widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
+              sizes="(max-width: 40rem) calc(100vw - 24px), (max-width: 73rem) 58vw, 27vw" format="webp" />
+          ))}
+        </div>
+        <label class="day__preview" for="day-activity-0">
+          <Image src={blocks} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
+          <span class="sr-only">Ver: Mantener la mente activa.</span>
+        </label>
+      </div>
+      <div class="day__panel" data-reveal="card">
+        <h3 id="day-panel-title">Así acompañamos sus días.</h3>
+        <fieldset class="day__activity-list" aria-labelledby="day-panel-title">
+          {activities.map(({ title, mobileTitle, description, icon, mobileIcon }, index) => (
+            <div class="day__activity">
+              <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 2} />
+              <label class="day__activity-label" for={`day-activity-${index}`}>
+                <span class="day__index" aria-hidden="true">0{index + 1}</span>
+                <span class="day__activity-title">
+                  <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
+                  {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
+                </span>
+                <picture>
+                  <source media="(max-width: 40rem)" srcset={mobileIcon.src} />
+                  <img src={icon.src} alt="" />
+                </picture>
+                <span class="day__activity-description">{description}</span>
+              </label>
+            </div>
+          ))}
+        </fieldset>
+      </div>
+
+      <div class="day__facilities" data-reveal="card">
+        {facilities.map(({ image, alt }) => (
+          <Image src={image} {alt} widths={[240, 360, 480, 640].filter((width) => width <= image.width)}
+            sizes="(max-width: 40rem) 44vw, (max-width: 73rem) 32vw, 24vw" format="webp" />
+        ))}
+      </div>
+
+      <div class="day__invite">
+        <div>
+          <h3 class="day__desktop-title">Conoce el espacio donde puede <br />compartir sus días.</h3>
+          <h3 class="day__mobile-title">Conoce El Roble.</h3>
+          <Cta class="day__visit--desktop" />
+        </div>
+        <Image class="day__leaves" src={leaves} alt="" width={148} format="webp" data-ambient="leaf" />
+        <Cta class="day__visit--compact" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { setupRadioGallery } from '../scripts/gallery';
+  const day = document.querySelector('#centro-de-dia');
+  const gallery = day?.querySelector<HTMLElement>('[data-swipe-gallery]');
+  if (day && gallery) setupRadioGallery(gallery, [...day.querySelectorAll<HTMLInputElement>('input[name="day-activity"]')], [...gallery.querySelectorAll<HTMLElement>('[data-photo-scene]')]);
+</script>
+
+<style>
+  .day { padding-block: 1rem 3.5rem; }
+  .day__inner { display: grid; gap: var(--section-gap); }
+  .day__heading { display: grid; gap: clamp(1rem, .5rem + 1vw, 1.5rem); }
+  .day__heading h2 { font-size: clamp(2.25rem, 1.735rem + 2.08vw, 4rem); line-height: 1.06; }
+  .day__heading em { color: var(--color-oak); }
+  .day__description { display: grid; gap: clamp(.75rem, .6rem + .23vw, 1rem); font-size: var(--text-copy); line-height: 1.6; }
+  .day__composition {
+    display: grid;
+    grid-template-areas: "gallery" "panel" "facilities" "invite";
+    gap: var(--section-gap);
+  }
+  .day__gallery { grid-area: gallery; display: grid; grid-template-columns: 1fr; gap: clamp(.75rem, 1.23vw, 1.5rem); }
+  .day__photo { position: relative; aspect-ratio: 366 / 320; overflow: hidden; border-radius: clamp(1rem, 2vw, 1.75rem); }
+  .day__activity-photo, .day__preview img, .day__facilities img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .day__activity-photo { position: absolute; inset: 0; object-position: center 21%; }
+  .day__activity-photo { display: none; }
+  .day__composition:has(#day-activity-0:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--0,
+  .day__composition:has(#day-activity-1:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--1,
+  .day__composition:has(#day-activity-2:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--2 { display: block; }
+  .day__activity-photo--1 { object-position: center; }
+  .day__preview { display: none; }
+  .day__panel { grid-area: panel; display: grid; align-content: center; gap: 1rem; padding: 1rem; border-radius: 1.75rem; background: linear-gradient(#455b3b, #1c2b1a); color: var(--color-cream); box-shadow: 0 10px 15px -14px #0b0d0e88; }
+  .day__panel h3 { color: inherit; font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.1 var(--font-display); }
+  .day__activity-list { display: grid; gap: .75rem; min-inline-size: 0; }
+  .day__activity { position: relative; }
+  .day__radio { position: absolute; opacity: 0; }
+  .day__activity-label {
+    --activity-row-gap: .4rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.125rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--activity-row-gap) clamp(.5rem, 1vw, 1rem);
+    padding: .45rem .75rem;
+    min-block-size: 3rem;
+    border-radius: .75rem;
+    cursor: pointer;
+  }
+  .day__activity-label::after {
+    position: absolute;
+    inset: auto .75rem 0;
+    block-size: 1px;
+    background: #f4f1ec29;
+    content: '';
+  }
+  .day__activity:last-child .day__activity-label::after,
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label::after { display: none; }
+  .day__activity-label { transition: background-color var(--motion-state), color var(--motion-state); }
+  .day__activity-label:active { background: #f4f1ec18; }
+  @media (hover: hover) { .day__activity-label:hover { background: #f4f1ec18; } }
+  .day__activity-title { font: 700 clamp(1.5rem, 1.16rem + .82vw, 2.25rem) / 1.15 var(--font-display); }
+  .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: .875rem; border-radius: 50%; }
+  .day__activity-label picture { display: grid; place-items: center; inline-size: 1.5rem; min-block-size: 1.5rem; }
+  .day__activity-description { grid-column: 2 / -1; display: none; font-size: clamp(1rem, .91rem + .25vw, 1.25rem); }
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label { background: linear-gradient(#f4f1ec, #f4f1ecc4); color: var(--color-forest); }
+  .day__radio:focus-visible + .day__activity-label { outline: 2px solid white; outline-offset: 2px; }
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__index { background: var(--color-forest); color: var(--color-cream); }
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { animation: day-description var(--motion-panel) var(--ease-soft) both; }
+    @keyframes day-description { from { opacity: .68; translate: 0 .18rem; } }
+
+    @supports (interpolate-size: allow-keywords) {
+      .day__activity-label { row-gap: 0; }
+      .day__activity-description {
+        display: block;
+        block-size: 0;
+        margin-block-start: 0;
+        overflow: clip;
+        opacity: 0;
+        visibility: hidden;
+        interpolate-size: allow-keywords;
+        transition: block-size var(--motion-panel) var(--ease-soft),
+          margin-block-start var(--motion-panel) var(--ease-soft), opacity var(--motion-state), visibility var(--motion-panel);
+      }
+      .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description {
+        block-size: auto;
+        margin-block-start: var(--activity-row-gap);
+        opacity: 1;
+        visibility: visible;
+        animation: none;
+      }
+    }
+  }
+  .day__activity:not(:last-child) .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(.4); }
+  .day__activity:last-child .day__radio:not([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(0) invert(.9); }
+  .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: clamp(.75rem, 1.3vw, 1.5rem); }
+  .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); box-shadow: 0 8px 12px -8px #47352026; }
+  .day__invite { grid-area: invite; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .day__invite h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.15 var(--font-display); color: var(--color-forest); }
+  .day__invite :global(.day__visit--compact) { --cta-width: 15.75rem; --cta-font-size: 1.125rem; --cta-gap: .5rem; --cta-padding: .625rem 1.5rem; flex: 0 0 auto; white-space: nowrap; }
+  .day__invite :global(.day__visit--desktop), .day__leaves, .day__mobile-title { display: none; }
+
+  @media (max-width: 40rem) {
+    .day__description p:nth-child(2) { display: none; }
+    .day__composition { row-gap: 1rem; }
+    .day__panel { margin-block-start: -.25rem; }
+    .day__activity-label { --activity-row-gap: .25rem; column-gap: .625rem; }
+    .day__activity-label picture { margin-inline-end: 1.25rem; }
+    .day__activity:last-child .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; white-space: nowrap; }
+    .day__facilities { margin-block-start: .5rem; max-inline-size: 94%; }
+    .day__invite { flex-direction: column; align-items: start; gap: .75rem; }
+    .day__desktop-title { display: none; }
+    .day__mobile-title { display: block; }
+  }
+  @media (min-width: 40.001rem) {
+    .day { padding-block: clamp(3rem, 9.37vw, 4.5rem); }
+    .day__inner { gap: 2.5rem; }
+    .day__composition {
+      grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
+      grid-template-areas: "gallery gallery" "panel facilities" "invite invite";
+      column-gap: 1.5rem;
+      row-gap: clamp(2rem, 4.25vw, 2.5rem);
+    }
+    .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
+    .day__photo { aspect-ratio: 440 / 360; box-shadow: 0 16px 26px -6px #3c2d2032; }
+    .day__preview { display: block; align-self: start; overflow: hidden; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; cursor: pointer; }
+    .day__preview { transition: box-shadow var(--motion-state); }
+    .day__preview:active { box-shadow: 0 4px 14px #3c2d2032; }
+    @media (hover: hover) { .day__preview:hover { box-shadow: 0 8px 20px #3c2d2032; } }
+    .day__panel { padding: 1.5rem; }
+    .day__activity-list { gap: 1rem; }
+    .day__activity-label { border-radius: 1.5rem; padding: .75rem; }
+    .day__facilities { grid-template-columns: 1fr; }
+    .day__facilities img { aspect-ratio: 240 / 184; }
+    .day__facilities img:first-child { inline-size: 86.3%; }
+    .day__invite br { display: none; }
+  }
+  @media (min-width: 73rem) {
+    .day { padding-block: clamp(2rem, 2.5vw, 3rem) clamp(4rem, 5vw, 6rem); }
+    .day__inner { gap: var(--section-gap); }
+    .day__heading { grid-template-columns: minmax(0, 1fr) minmax(0, 43.8%); align-items: center; }
+    .day__composition {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 43.8%);
+      grid-template-areas: "gallery panel" "invite facilities";
+      column-gap: clamp(3rem, 3.75vw, 4.5rem);
+      row-gap: clamp(2.5rem, 4.6vw, 5.5rem);
+    }
+    .day__gallery { grid-template-columns: 520fr 324fr; }
+    .day__photo { aspect-ratio: 520 / 592; }
+    .day__activity-photo { object-position: center; }
+    .day__preview { margin-block-start: clamp(2.75rem, 3.75vw, 4.5rem); aspect-ratio: 324 / 448; }
+    .day__panel { min-block-size: 93%; align-self: center; padding: clamp(1.5rem, 2.08vw, 2.5rem); }
+    .day__activity-list { gap: .75rem; }
+    .day__facilities { grid-template-columns: 456fr 216fr; max-inline-size: 94.5%; margin-inline-start: clamp(-2.5rem, -2vw, -1.5rem); }
+    .day__facilities img, .day__facilities img:first-child { inline-size: 100%; }
+    .day__facilities img { aspect-ratio: 216 / 224; }
+    .day__facilities img:first-child { aspect-ratio: 456 / 224; }
+    .day__invite br { display: initial; }
+    .day__invite :global(.day__visit--desktop) { display: inline-flex; margin-block-start: 1.5rem; }
+    .day__invite :global(.day__visit--compact) { display: none; }
+    .day__leaves { display: block; inline-size: clamp(5rem, 7.7vw, 9.25rem); block-size: auto; }
+  }
+</style>

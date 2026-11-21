@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../sections/Header.astro';
+import Hero from '../sections/Hero.astro';
+import Trust from '../sections/Trust.astro';
+import Story from '../sections/Story.astro';
+import Day from '../sections/Day.astro';
+import Approach from '../sections/Approach.astro';
+import Program from '../sections/Program.astro';
+import Tour from '../sections/Tour.astro';
+import Testimonials from '../sections/Testimonials.astro';
+import Faq from '../sections/Faq.astro';
+import Community from '../sections/Community.astro';
+---
+
+<BaseLayout>
+  <div id="inicio" aria-hidden="true"></div>
+  <Header />
+  <main id="contenido" tabindex="-1">
+    <div class="opening">
+      <span class="opening-glass opening-glass--left" data-ambient="glass" aria-hidden="true"></span>
+      <span class="opening-glass opening-glass--right" data-ambient="glass" aria-hidden="true"></span>
+      <Hero />
+    </div>
+    <Trust />
+    <div class="story-and-day">
+      <Story />
+      <Day />
+    </div>
+    <Approach />
+    <Program />
+    <Tour />
+    <Testimonials />
+    <Faq />
+  </main>
+  <Community />
+</BaseLayout>

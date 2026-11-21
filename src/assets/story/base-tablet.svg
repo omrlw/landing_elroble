@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="660.419" height="12.5714" viewBox="0 0 660.419 12.5714" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Laptop / Base met&#195;&#161;lica" clip-path="url(#clip0_0_6)">
+<path id="Vector" d="M0 0H660.419L656.648 6.70476C654.552 10.4762 647.848 12.5714 640.305 12.5714H20.1143C12.5714 12.5714 5.86667 10.4762 3.77143 6.70476L0 0Z" fill="url(#paint0_linear_0_6)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_6" x1="0" y1="0" x2="0" y2="12.5714" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DDDCD3"/>
+<stop offset="0.35" stop-color="#C6C6BB"/>
+<stop offset="0.75" stop-color="#9C9E93"/>
+<stop offset="1" stop-color="#757A6F"/>
+</linearGradient>
+<clipPath id="clip0_0_6">
+<rect width="660.419" height="12.5714" fill="white"/>
+</clipPath>
+</defs>
+</svg>
