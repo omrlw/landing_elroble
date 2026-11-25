@@ -1,104 +1,133 @@
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ease, gsap } from './gsap';
 
-const chapters = [
-  { label: 'crear', start: 2.5, end: 6.5 },
-  { label: 'apoyo', start: 9, end: 13.5 },
-  { label: 'compania', start: 16, end: 20.5 },
-] as const;
+const cinema = '(prefers-reduced-motion: no-preference) and (orientation: landscape) and (min-width: 60rem) and (min-height: 40rem)';
 
-export function createStory(section: HTMLElement, wide: boolean) {
-  const sequence = section.querySelector<HTMLElement>('[data-story-sequence]');
-  const presentation = section.querySelector<HTMLElement>('[data-story-presentation]');
+export function createStory(section: HTMLElement) {
   const stage = section.querySelector<HTMLElement>('[data-story-stage]');
-  const screen = stage?.querySelector('[data-story-screen]');
-  if (!sequence || !presentation || !stage || !screen) return;
+  const backdrop = section.querySelector('[data-story-backdrop]');
+  const title = section.querySelector('[data-story-title]');
+  const discovery = section.querySelector('[data-story-discovery]');
+  const encounter = section.querySelector('[data-story-encounter]');
+  const resolution = section.querySelector('[data-story-resolution]');
+  const portrait = section.querySelector<HTMLElement>('[data-story-portrait]');
+  const clay = portrait?.querySelector('img');
+  const group = section.querySelector('[data-story-group]');
+  const groupPhoto = group?.querySelector('img');
+  if (!stage || !backdrop || !title || !discovery || !encounter || !resolution || !portrait || !clay || !group || !groupPhoto) return;
 
-  const captions = presentation.querySelectorAll('[data-story-opening], [data-story-caption]');
-  const slides = presentation.querySelectorAll<HTMLElement>('[data-story-slide]');
-  const indicators = [...presentation.querySelectorAll('[data-story-indicator]')];
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const media = gsap.matchMedia();
 
-  const warmImages = new IntersectionObserver((entries, observer) => {
-    if (!entries.some((entry) => entry.isIntersecting)) return;
-    for (const slide of slides) {
-      const photo = slide.querySelector('img');
-      if (!photo) continue;
-      photo.loading = 'eager';
-      void photo.decode().then(() => { slide.setAttribute('data-story-ready', ''); }, () => {});
+  media.add(cinema, (context) => {
+    let active = true;
+    let waitForExit: IntersectionObserver | undefined;
+    let fragmentTimer = 0;
+    for (const photo of [clay, groupPhoto]) photo.loading = 'eager';
+
+    const mount = () => {
+      context.add(() => {
+        section.setAttribute('data-story-playing', '');
+
+        gsap.set(portrait, {
+          '--story-mask-top': '53%',
+          '--story-mask-side': '1.5%',
+          '--story-mask-bottom': '7%',
+          yPercent: -18,
+        });
+        gsap.set(clay, { scale: 1.08 });
+        gsap.set(title, { opacity: .7, y: 12 });
+
+        const timeline = gsap.timeline({ paused: true, defaults: { ease: ease.dissolve } });
+        // Timeline positions represent percentages of the pinned scroll distance.
+        timeline.to({}, { duration: 100 }, 0)
+          .addLabel('expectativa', 0)
+          .to(title, { opacity: 1, y: 0, duration: 10, ease: ease.settle }, 'expectativa')
+          .addLabel('descubrimiento', 20)
+          .to(title, { opacity: 0, y: -10, duration: 8 }, 'descubrimiento')
+          .to(portrait, {
+            '--story-mask-top': '0%',
+            '--story-mask-side': '0%',
+            '--story-mask-bottom': '0%',
+            yPercent: 0,
+            duration: 20,
+          }, 'descubrimiento')
+          .to(clay, { scale: 1, duration: 20 }, 'descubrimiento')
+          .fromTo(discovery, { y: 10 }, { opacity: 1, y: 0, duration: 9 }, 30)
+          .addLabel('encuentro', 55)
+          .to(discovery, { opacity: 0, y: -8, duration: 5 }, 52)
+          .to(group, { opacity: 1, duration: 11 }, 'encuentro')
+          .to(portrait, { opacity: 0, duration: 9 }, 'encuentro+=2')
+          .fromTo(encounter, { y: 8 }, { opacity: 1, y: 0, duration: 7 }, 62)
+          .addLabel('resolucion', 85)
+          .to([encounter, group], { opacity: 0, duration: 7 }, 'resolucion')
+          .to(backdrop, { opacity: 0, duration: 10 }, 'resolucion')
+          .fromTo(resolution, { y: 10 }, { opacity: 1, y: 0, duration: 6 }, 93);
+
+        const trigger = ScrollTrigger.create({
+          id: 'story',
+          animation: timeline,
+          trigger: section,
+          start: () => `top ${header?.offsetHeight ?? 0}px`,
+          end: () => `+=${section.offsetHeight - stage.offsetHeight}`,
+          scrub: .2,
+        });
+
+        let headerHeight = header?.offsetHeight ?? 0;
+        const resize = new ResizeObserver(() => {
+          const height = header?.offsetHeight ?? 0;
+          if (height === headerHeight) return;
+          headerHeight = height;
+          trigger.refresh();
+        });
+        if (header) resize.observe(header);
+
+        return () => {
+          resize.disconnect();
+          section.removeAttribute('data-story-playing');
+        };
+      });
+    };
+
+    function mountWhenClear() {
+      window.clearTimeout(fragmentTimer);
+      document.removeEventListener('scrollend', mountWhenClear);
+      const { top, bottom } = section.getBoundingClientRect();
+      if (top >= window.innerHeight || bottom <= (header?.offsetHeight ?? 0)) {
+        mount();
+        return;
+      }
+
+      waitForExit = new IntersectionObserver(([entry]) => {
+        if (!active || entry.isIntersecting) return;
+        waitForExit?.disconnect();
+        mount();
+      }, { rootMargin: `-${header?.offsetHeight ?? 0}px 0px 0px` });
+      waitForExit.observe(section);
     }
-    observer.disconnect();
-  }, { rootMargin: '1000px 0px' });
-  warmImages.observe(sequence);
 
-  section.setAttribute('data-story-playing', '');
-  const timeline = gsap.timeline({ defaults: { ease: ease.dissolve } });
-  // The last image gets a reading pause before the next section enters.
-  timeline.to({}, { duration: 24 }, 0);
-  const distance = wide ? 9 : 5;
+    // Keep the static essay while the assets load and for any reading already in progress.
+    void Promise.all([clay.decode(), groupPhoto.decode(), document.fonts.ready]).then(() => {
+      if (!active) return;
 
-  chapters.forEach(({ label, start, end }, index) => {
-    const length = end - start;
-    timeline.addLabel(label, start);
-    timeline.to(captions[index], { opacity: 0, y: -distance, duration: length * .4 }, label);
-    timeline.fromTo(captions[index + 1], { opacity: 0, y: distance }, {
-      opacity: 1, y: 0, duration: length * .55, immediateRender: false,
-    }, start + length * .45);
+      const fragment = document.getElementById(location.hash.slice(1));
+      const followsStory = fragment && !!(section.compareDocumentPosition(fragment) & Node.DOCUMENT_POSITION_FOLLOWING);
+      if (followsStory && fragment.getBoundingClientRect().top > (header?.offsetHeight ?? 0) + 12) {
+        // Reflowing the scene can interrupt the browser's initial smooth fragment navigation.
+        document.addEventListener('scrollend', mountWhenClear, { once: true });
+        fragmentTimer = window.setTimeout(mountWhenClear, 1500);
+        return;
+      }
+      mountWhenClear();
+    }, () => {});
 
-    // The outgoing image stays behind the incoming one while it decodes and dissolves.
-    timeline.to(slides[index + 1], { opacity: 1, duration: length }, label);
-    if (index > 0) {
-      timeline.to(indicators[index - 1], { opacity: .22, duration: length }, label);
-      timeline.to(indicators[index], { opacity: 1, duration: length }, label);
-    }
+    return () => {
+      active = false;
+      window.clearTimeout(fragmentTimer);
+      document.removeEventListener('scrollend', mountWhenClear);
+      waitForExit?.disconnect();
+    };
   });
 
-  const frame = stage.querySelectorAll('[data-story-camera], [data-story-base], [data-story-notch]');
-  timeline.to(frame, { opacity: 0, duration: 2.6 }, 4)
-    .to(screen, { scale: wide ? 1.05 : 1.03, duration: 2.6 }, 4);
-
-  if (wide) {
-    const laptop = stage.querySelector('[data-story-laptop]');
-    const meter = stage.querySelector('[data-story-indicators]');
-    const place = (x: number, y: number, scale: number) => ({
-      x: () => stage.clientWidth * x,
-      y: () => stage.clientHeight * y,
-      scale,
-      duration: 4.5,
-    });
-    if (laptop && meter) {
-      timeline.to(laptop, place(.344, 0, .69), 'apoyo')
-        .to(meter, place(.344, -.13, .8), 'apoyo')
-        .to(laptop, place(-.057, 0, .57), 'compania')
-        .to(meter, place(-.057, -.19, .75), 'compania');
-    }
-  }
-
-  ScrollTrigger.create({
-    animation: timeline,
-    trigger: sequence,
-    start: () => `top ${getComputedStyle(presentation).top}`,
-    end: () => `+=${Math.max(1, sequence.offsetHeight - presentation.offsetHeight)}`,
-    scrub: true,
-    invalidateOnRefresh: true,
-  });
-
-  // The sticky scene relies on the actual header height, including after font loading.
-  let refreshFrame = 0;
-  const resize = new ResizeObserver(() => {
-    if (refreshFrame) return;
-    refreshFrame = requestAnimationFrame(() => {
-      refreshFrame = 0;
-      ScrollTrigger.refresh();
-    });
-  });
-  resize.observe(presentation);
-  const header = document.querySelector('[data-site-header]');
-  if (header) resize.observe(header);
-
-  return () => {
-    cancelAnimationFrame(refreshFrame);
-    resize.disconnect();
-    warmImages.disconnect();
-    section.removeAttribute('data-story-playing');
-  };
+  return () => media.revert();
 }

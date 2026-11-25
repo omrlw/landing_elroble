@@ -1,356 +1,276 @@
 ---
 import { Image } from 'astro:assets';
-import Cta from '../components/Cta.astro';
-import opening from '../assets/story/apertura.png';
-import creating from '../assets/program/cognitive.png';
-import support from '../assets/opening/day-table.png';
-import company from '../assets/opening/trust-conversation.png';
-import oak from '../assets/story/roble.png';
-import camera from '../assets/story/camara.svg?url';
-import cameraTablet from '../assets/story/camara-tablet.svg?url';
-import cameraMobile from '../assets/story/camara-mobile.svg?url';
-import base from '../assets/story/base.svg?url';
-import baseTablet from '../assets/story/base-tablet.svg?url';
-import baseMobile from '../assets/story/base-mobile.svg?url';
-
-const moments = [
-  { title: 'Cuando quiere', emphasis: 'seguir creando.', photo: creating },
-  { title: 'Cuando necesita', emphasis: 'apoyo cercano.', photo: support, detail: 'Una mano cercana para participar, con tiempo y a su propio ritmo.', shortDetail: 'Una mano cercana, a su ritmo.' },
-  { title: 'Cuando extraña', emphasis: 'la compañía.', photo: company, detail: 'Alguien con quien conversar. Un día que también se comparte.', shortDetail: 'Tiempo para conversar y compartir.' },
-];
-
-const sizes = '(min-width: 1200px) 70vw, (min-width: 600px) 75vw, 92vw';
+import clay from '../assets/approach/clay.png';
+import group from '../assets/program/group.png';
 ---
 
 <section class="story" aria-labelledby="story-title" data-story>
-  <div class="story-glow" aria-hidden="true"></div>
-  <div class="story-orb story-orb--left" aria-hidden="true"></div>
-  <div class="story-orb story-orb--right" aria-hidden="true"></div>
-
-  <div class="container story-content">
-    <div class="story-sequence" data-story-sequence>
-      <div class="story-presentation" data-story-presentation>
-        <div class="story-opening" data-story-opening>
-          <h2 class="story-heading" id="story-title">
-            <span class="story-line">¿Cuándo puede ayudar</span>
-            <em class="story-line"> un centro de día?</em>
-          </h2>
-          <div class="story-intro">
-            <p class="story-long">Más actividades, una mano cercana o alguien con quien compartir el día. <br />Cada persona necesita algo distinto.</p>
-            <p class="story-short">Actividades, apoyo cercano y compañía.</p>
-          </div>
+  <div class="story-stage" data-story-stage>
+    <div class="story-backdrop" data-story-backdrop aria-hidden="true"></div>
+    <div class="container story-acts">
+      <div class="story-beat story-opening">
+        <h2 class="story-title" id="story-title" data-story-title>
+          La vida, en los <em>pequeños momentos.</em>
+        </h2>
+        <div class="story-detail" aria-hidden="true">
+          <Image src={clay} alt="" widths={[360, 576, 768, 1200]}
+            sizes="(min-width: 48rem) 38vw, 94vw" format="webp" loading="lazy" />
         </div>
+      </div>
 
-        {moments.map((moment, i) => (
-          <div class:list={['story-caption', `story-caption--${i + 1}`]} data-story-caption>
-            <h3 class="story-heading">
-              <span class="story-line">{moment.title}</span>
-              <em class="story-line">{' '}{moment.emphasis}</em>
-            </h3>
-            {moment.detail && <div class="story-detail">
-              <p class="story-long">{moment.detail}</p>
-              <p class="story-short">{moment.shortDetail}</p>
-            </div>}
-          </div>
-        ))}
+      <div class="story-beat story-discovery">
+        <h3 class="story-title" data-story-discovery>
+          Tiempo para hacer <em>lo que disfruta.</em>
+        </h3>
+        <div class="story-portrait" data-story-portrait>
+          <Image src={clay} alt="Una mujer mayor muestra dos figuras de arcilla de colores en las palmas de sus manos."
+            widths={[360, 576, 768, 960, 1200]}
+            sizes="(min-width: 75rem) min(35vw, 61svh), (min-width: 60rem) min(44vw, 61svh), (min-width: 48rem) 43vw, 88vw"
+            format="webp" loading="lazy" />
+        </div>
+      </div>
 
-        <div class="story-stage" data-story-stage>
-          <div class="story-laptop" data-story-laptop>
-            <div class="story-screen" data-story-screen>
-              <div class="story-slide" data-story-slide>
-                <Image src={opening} alt="Una mujer mayor mira hacia la luz de una ventana." width={opening.width} widths={[360, 640, opening.width].filter(width => width <= opening.width)} sizes={sizes} format="webp" loading="lazy" />
-              </div>
-              {moments.map(({ photo }) => <div class="story-slide story-slide--moment" data-story-slide aria-hidden="true">
-                <Image src={photo} alt="" width={photo.width} widths={[360, 640, 960, 1440].filter(width => width <= photo.width)} sizes={sizes} format="webp" loading="lazy" />
-              </div>)}
-            </div>
-            <picture class="story-camera" data-story-camera aria-hidden="true">
-              <source media="(max-width: 37.49rem)" srcset={cameraMobile} />
-              <source media="(max-width: 74.99rem)" srcset={cameraTablet} />
-              <img src={camera} width="5" height="5" alt="" />
-            </picture>
-          </div>
-          <picture class="story-base" data-story-base aria-hidden="true">
-            <source media="(max-width: 37.49rem)" srcset={baseMobile} />
-            <source media="(max-width: 74.99rem)" srcset={baseTablet} />
-            <img src={base} width="1576" height="30" alt="" />
-          </picture>
-          <div class="story-notch" data-story-notch aria-hidden="true"></div>
-          <div class="story-indicators" data-story-indicators aria-hidden="true">
-            <span data-story-indicator></span><span data-story-indicator></span><span data-story-indicator></span>
-          </div>
+      <div class="story-beat story-encounter">
+        <h3 class="story-title" data-story-encounter>
+          Y con quién <em>compartirlo.</em>
+        </h3>
+        <div class="story-group" data-story-group>
+          <Image src={group} alt="Dos mujeres se inclinan sobre sus cartones y colocan fichas en un juego de mesa compartido."
+            widths={[480, 720, 960, 1200]} sizes="(min-width: 75rem) 75vw, (min-width: 48rem) 85vw, 170vw"
+            format="webp" loading="lazy" />
         </div>
       </div>
     </div>
 
-    <div class="story-visit" data-reveal="heading">
-      <h3>Encontrar apoyo <em>también es cuidar.</em></h3>
-      <div class="story-visit-action">
-        <p>Cada familia vive una situación distinta. <br class="story-desktop-break" />Conversemos sobre sus necesidades<span class="story-tablet-only"> y valoremos juntos si el centro de día es una buena opción</span>.</p>
-        <Cta />
-      </div>
-      <span class="story-oak" aria-hidden="true">
-        <Image src={oak} alt="" width={184} widths={[64, 116, 184, 368]} sizes="(max-width: 599px) 64px, (max-width: 1199px) 116px, 184px" format="webp" loading="lazy" />
-      </span>
+    <div class="story-resolution" data-story-resolution>
+      <h3 class="story-title">A su propio ritmo. <em>Sin dejar de ser quien es.</em></h3>
     </div>
   </div>
 </section>
 
 <style>
   .story {
-    position: relative;
-    isolation: isolate;
-    overflow: clip;
-    background: var(--color-story, var(--color-cream));
-    padding-block: var(--section-space) 3rem;
+    --story-radius: .875rem;
+    background: var(--color-cream);
   }
 
-  .story-content { position: relative; }
+  .story-stage { position: relative; }
 
-  .story-orb {
+  .story-backdrop {
     position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    width: clamp(6.75rem, 16.8vw, 20rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--glass-ornament);
-    box-shadow: var(--highlight-light), var(--shadow-raised);
+    inset: 0;
+    background: var(--color-forest);
   }
 
-  .story-orb--left { left: -8.2%; top: 35.5%; opacity: 0.65; }
-  .story-orb--right { right: -3.2%; top: 27.2%; opacity: 0.75; }
-
-  .story-glow {
-    position: absolute;
-    z-index: -1;
-    inset: 0 -1.5rem;
-    background: radial-gradient(ellipse at 56% 55%, color-mix(in srgb, var(--color-paper) 16%, transparent), transparent 60%);
-    pointer-events: none;
-  }
-
-  .story[data-story-playing] .story-sequence {
-    --story-travel: clamp(40rem, 115svh, 86rem);
-  }
-
-  .story[data-story-playing] .story-sequence::after {
-    content: '';
-    display: block;
-    block-size: var(--story-travel);
-  }
-
-  .story-presentation {
+  .story-acts {
     position: relative;
-    --story-gap: clamp(1.5rem, 0.92rem + 1.736vw, 3rem);
     display: grid;
-    gap: var(--story-gap);
+    gap: clamp(4rem, 9vw, 8rem);
+    padding-block: clamp(4rem, 8vw, 7rem);
   }
 
-  .story[data-story-playing] .story-presentation {
-    position: sticky;
-    inset-block-start: calc(var(--header-block-size) + 1rem);
-    max-block-size: calc(100svh - var(--header-block-size) - 2rem);
-    grid-template-rows: auto minmax(0, 1fr);
+  .story-beat {
+    display: grid;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 3rem);
+  }
+
+  .story-title {
+    color: var(--color-paper);
+    font-size: clamp(2.5rem, 5.2vw, 6rem);
+    line-height: .99;
+    letter-spacing: -.025em;
+    text-wrap: balance;
+  }
+
+  .story-title em {
+    display: block;
+    color: var(--color-honey);
+  }
+
+  .story-detail,
+  .story-portrait,
+  .story-group {
+    overflow: hidden;
+    border-radius: var(--story-radius);
+    background: var(--color-section-forest);
+  }
+
+  .story-beat img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .story-detail {
+    inline-size: min(94%, 38rem);
+    justify-self: end;
+    aspect-ratio: 16 / 9;
+  }
+
+  .story-detail img { object-position: center 88%; }
+
+  .story-portrait {
+    inline-size: min(88%, 36rem);
+    aspect-ratio: 3 / 4;
+  }
+
+  .story-group {
+    aspect-ratio: 5 / 4;
+  }
+
+  .story-group img { object-position: 44% center; }
+
+  .story-resolution {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: clamp(4.75rem, 11vw, 9rem) var(--page-gutter);
+    background: var(--color-cream);
+    text-align: center;
+  }
+
+  .story-resolution .story-title { color: var(--color-ink); }
+  .story-resolution em { color: var(--color-oak); }
+
+  @media (min-width: 48rem) {
+    .story-opening,
+    .story-discovery {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .story-discovery .story-title { grid-column: 2; }
+    .story-discovery .story-portrait { grid-area: 1 / 1; }
+    .story-detail,
+    .story-portrait { inline-size: 100%; }
+    .story-group { aspect-ratio: 20 / 9; }
+  }
+
+  @media (min-width: 75rem) {
+    .story-acts { inline-size: min(84%, 88rem); }
+    .story-portrait { inline-size: min(86%, 36rem); }
+    .story-encounter .story-title { margin-inline-start: 8%; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (orientation: landscape) and (min-width: 60rem) and (min-height: 40rem) {
+    .story {
+      --story-height: calc(100svh - var(--header-block-size));
+      --story-travel: 165svh;
+      min-block-size: calc(var(--story-height) + var(--story-travel));
+    }
+
+    .story:not([data-story-playing]) .story-stage {
+      display: flex;
+      flex-direction: column;
+      /* Keep the content below Story in place while the photographs decode. */
+      min-block-size: inherit;
+    }
+
+    .story:not([data-story-playing]) .story-acts {
+      flex: 1;
+      align-content: space-evenly;
+      gap: min(5svh, 4rem);
+      padding-block: min(5svh, 4rem);
+    }
+
+    .story:not([data-story-playing]) .story-portrait { inline-size: min(100%, 52svh, 36rem); }
+    .story:not([data-story-playing]) .story-detail { max-block-size: 38svh; }
+    .story:not([data-story-playing]) .story-encounter { inline-size: min(100%, 75rem); }
+  }
+
+  @media (min-width: 75rem) {
+    .story { --story-travel: 235svh; }
   }
 
   .story[data-story-playing] .story-stage {
-    inline-size: 100%;
-    min-block-size: 0;
-    align-self: stretch;
-    contain: layout;
+    position: sticky;
+    inset-block-start: var(--header-block-size);
+    block-size: var(--story-height);
+    isolation: isolate;
+    overflow: clip;
   }
 
-  .story-opening {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--story-gap);
-    min-height: clamp(7rem, 7.5vw, 9rem);
+  .story[data-story-playing] .story-acts {
+    --story-portrait-width: min(47%, calc(var(--story-height) * .61), 40rem);
+    --story-portrait-inset: clamp(1.5rem, 7%, 8.5rem);
+    display: block;
+    block-size: 100%;
+    padding-block: 0;
   }
 
-  .story-heading { font-size: var(--text-section); line-height: clamp(2.5rem, 2rem + 2.08vw, 4rem); }
-  .story-line { display: block; }
-  .story-heading em, .story-visit em { color: var(--color-oak); }
-  .story-intro { width: min(28.5rem, 32%); }
-  .story-short { display: none; }
-
-  .story-caption {
+  .story[data-story-playing] .story-opening,
+  .story[data-story-playing] .story-discovery {
     position: absolute;
-    top: 0;
-    inset-inline-start: 0;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 2;
+    inset: 0;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+    gap: 0;
   }
 
-  .story-caption--2, .story-caption--3 { top: 42%; width: 43%; }
-  .story-caption--3 { inset-inline-start: 55.24%; }
-  .story-detail { max-width: 27ch; margin-block-start: 1.5rem; }
+  .story[data-story-playing] .story-detail { display: none; }
 
-  .story:not([data-story-playing]) .story-caption {
-    position: static;
-    width: auto;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .story:not([data-story-playing]) .story-stage { grid-row: 2; }
-
-  .story-stage {
-    position: relative;
-    container-type: inline-size;
-    aspect-ratio: 2;
-  }
-
-  .story-laptop {
-    position: absolute;
-    inset: 0 auto auto 9.524%;
-    inline-size: 80.952%;
-    block-size: 93.571%;
-    overflow: hidden;
-    border: clamp(0.5px, 0.12cqw, 2px) solid var(--color-surface-line-strong);
-    border-radius: 1.43cqw;
-    background: var(--color-ink);
-    box-shadow: var(--shadow-raised);
-    transform-origin: left center;
-  }
-
-  .story-screen {
-    position: absolute;
-    inset: 1.19cqw 1.43cqw 1.43cqw 1.19cqw;
-    overflow: hidden;
-    border-radius: 0.48cqw;
-  }
-
-  .story-slide, .story-slide img { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .story-slide img { object-fit: cover; }
-  .story-slide--moment { opacity: 0; visibility: hidden; }
-  .story-slide--moment[data-story-ready] { visibility: visible; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .story-slide--moment[data-story-ready] img { animation: story-photo-ready var(--motion-state) var(--ease-soft); }
-    @keyframes story-photo-ready { from { opacity: 0; } }
-  }
-
-  .story-camera {
-    position: absolute;
-    top: 0.4cqw;
-    left: calc(50% - 0.15cqw);
-    width: 0.3cqw;
-  }
-
-  .story-base { position: absolute; left: 3.095%; top: 93.333%; width: 93.81%; }
-  .story-base img, .story-camera img { width: 100%; height: auto; }
-
-  .story-notch {
-    position: absolute;
-    top: 93.333%;
-    left: 45%;
-    width: 10%;
-    height: 0.42cqw;
-    border-radius: 0 0 0.42cqw 0.42cqw;
-    background: var(--color-surface-line-strong);
-  }
-
-  .story-indicators {
-    position: absolute;
+  .story[data-story-playing] :is(.story-opening, .story-discovery) > .story-title {
+    grid-area: 1 / 1;
+    max-inline-size: calc(100% - var(--story-portrait-width) - var(--story-portrait-inset) - clamp(1.5rem, 2.5vw, 3rem));
     z-index: 1;
-    top: 81.19%;
-    left: 13.095%;
-    display: flex;
-    width: 9.2857cqw;
-    height: 2.857cqw;
-    align-items: center;
-    justify-content: center;
-    gap: 0.714cqw;
-    border-radius: 999px;
-    background: var(--color-forest);
-    box-shadow: var(--highlight-dark), var(--shadow-control);
   }
 
-  .story-indicators span {
-    width: 1.667cqw;
-    height: max(1px, 0.238cqw);
-    border-radius: 999px;
-    background: var(--color-paper);
+  .story[data-story-playing] .story-discovery > .story-title,
+  .story[data-story-playing] .story-encounter > .story-title,
+  .story[data-story-playing] .story-group {
+    opacity: 0;
   }
 
-  .story-indicators span:not(:first-child) { opacity: 0.22; }
-  .story:not([data-story-playing]) .story-indicators { display: none; }
-
-  .story-visit {
-    position: relative;
-    display: grid;
-    grid-template-columns: 5fr 7fr auto;
-    align-items: center;
-    gap: 1.5rem;
-    margin-block-start: var(--story-gap, var(--section-gap));
-    padding: 2rem clamp(1.25rem, 2.08vw, 2.5rem);
-    border-radius: var(--radius-card);
-    background: var(--surface-paper);
-    box-shadow: var(--highlight-light);
+  .story[data-story-playing] .story-portrait {
+    grid-area: 1 / 1;
+    justify-self: end;
+    margin-inline-end: var(--story-portrait-inset);
+    inline-size: var(--story-portrait-width);
+    clip-path: inset(var(--story-mask-top) var(--story-mask-side) var(--story-mask-bottom) round var(--story-radius));
   }
 
-  .story-visit h3 { font-size: clamp(1.75rem, 1.49rem + 1.05vw, 2.5rem); font-weight: 600; }
-  .story-visit h3 em { display: block; font-weight: 700; }
-  .story-visit-action { display: grid; gap: 1.5rem; }
-  .story-visit-action p { max-width: 35rem; }
-  .story-tablet-only { display: none; }
-  .story-oak { width: clamp(7.25rem, 9.58vw, 11.5rem); pointer-events: none; }
-  .story-oak img { display: block; width: 100%; height: auto; }
+  .story[data-story-playing] .story-portrait img { transform-origin: 50% 76%; }
 
-  @media (max-width: 74.99rem) {
-    .story { padding-bottom: 1.25rem; }
-    .story-opening { display: grid; gap: 1.5rem; min-height: auto; }
-    .story-intro { width: auto; max-width: 38rem; }
-    .story-caption--2, .story-caption--3 { top: 0; inset-inline-start: 0; width: 100%; }
-    .story-detail { max-width: 100%; }
-    .story-orb--left { top: 66.5%; left: -11.3%; }
-    .story-orb--right { top: 51%; right: -4.4%; }
-    .story-visit { grid-template-columns: 1fr auto; gap: 0.75rem 1rem; padding: 0; }
-    .story-visit h3 { grid-column: 1; align-self: start; }
-    .story-visit-action { grid-column: 1; gap: 1rem; }
-    .story-oak { grid-column: 2; grid-row: 1 / 3; width: 7.25rem; }
-    .story-desktop-break { display: none; }
-    .story-tablet-only { display: inline; }
-    .story-visit-action { --cta-width: 15.75rem; }
+  .story[data-story-playing] .story-encounter {
+    position: absolute;
+    inset: 0;
+    grid-template-columns: min(100%, calc(var(--story-height) * 1.48), 75rem);
+    place-content: center;
+    gap: clamp(1rem, 2.5svh, 2rem);
   }
 
-  @media (max-width: 37.49rem) {
-    .story { padding-bottom: 2.5rem; }
-    .story[data-story-playing] .story-sequence { --story-travel: 85svh; }
-    .story-presentation { --story-gap: 1.5rem; }
-    .story-opening { gap: 1.25rem; }
-    .story-heading { line-height: 1.11; }
-    .story-long { display: none; }
-    .story-short { display: block; }
-    .story-detail { margin-block-start: 1.25rem; }
-    .story-stage { aspect-ratio: 366 / 219; }
-    .story-laptop { inset-inline-start: -1.69%; inline-size: 96.82%; block-size: 93.52%; border-radius: 1.71cqw; }
-    .story-screen { inset: 1.43cqw; }
-    .story-base { inset-inline-start: -9.38%; width: 112.2%; top: 93.28%; }
-    .story-notch { inset-inline-start: 41%; top: 93.28%; }
-    .story-indicators { left: 2.582%; width: 11.11cqw; height: 3.42cqw; top: 81.15%; }
-    .story-orb--left { top: 50%; left: -14.3%; }
-    .story-orb--right { top: 38%; right: -5.6%; }
-    .story-visit { display: grid; margin-block-start: 1.5rem; }
-    .story-visit-action p { display: none; }
-    .story-visit-action { grid-column: 1 / -1; padding-inline-end: 4.5rem; --cta-padding: 0.65rem clamp(0.75rem, 4.8vw, 1.5rem); }
-    .story-oak { position: absolute; grid-area: auto; right: 0; bottom: 0.25rem; width: 4rem; }
+  .story[data-story-playing] .story-encounter > .story-title {
+    grid-row: 2;
+    margin: 0;
+    font-size: clamp(2.5rem, min(5vw, 7.4svh), 5.25rem);
   }
 
-  @media (max-width: 22rem) {
-    .story-visit-action { padding-inline-end: 3.65rem; --cta-gap: 0.35rem; }
-    .story-oak { width: 3.25rem; }
+  .story[data-story-playing] .story-encounter em { display: inline; }
+
+  .story[data-story-playing] .story-resolution {
+    position: absolute;
+    inset: 0;
+    padding-block: 0;
+    opacity: 0;
+    background: transparent;
+    pointer-events: none;
   }
 
-  @media (max-width: 40rem) {
-    .story-visit-action :global(.cta) {
-      --cta-width: fit-content;
-      justify-self: start;
-      white-space: nowrap;
+  @media (min-width: 60rem) and (max-width: 74.999rem) {
+    .story[data-story-playing] .story-acts { --story-portrait-inset: clamp(.5rem, 3%, 2rem); }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (width < 60rem), (prefers-reduced-motion: no-preference) and (orientation: portrait) {
+      .story:not([data-story-playing]) .story-beat > .story-title {
+        animation: story-read-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 100%;
+      }
     }
-    .story-visit-action :global(.cta:is(:hover, :active)) { translate: none; scale: none; }
-    .story-visit-action :global(.cta-icon) { background: none; box-shadow: none; }
+
+    @keyframes story-read-in {
+      from { opacity: .84; transform: translateY(.35rem); }
+    }
   }
 </style>
