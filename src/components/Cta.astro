@@ -4,7 +4,7 @@ import { whatsappUrl } from '../config/business';
 interface Props {
   label?: string;
   href?: string;
-  variant?: 'primary' | 'outline' | 'light' | 'glass';
+  variant?: 'primary' | 'light' | 'glass';
   icon?: string | false;
   class?: string;
 }
@@ -47,12 +47,6 @@ const {
     background: var(--cta-background, var(--surface-action));
     color: var(--cta-color, var(--color-paper));
     box-shadow: var(--cta-highlight, var(--highlight-dark));
-  }
-
-  .cta--outline {
-    --cta-background: transparent;
-    --cta-color: var(--color-paper);
-    border-color: currentColor;
   }
 
   .cta--light {

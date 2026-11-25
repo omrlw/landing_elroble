@@ -1,6 +1,4 @@
 export const business = {
-  name: 'Centro Geronto Geriátrico El Roble',
-  locality: 'Arequipa',
   foundedYear: 2009,
   phone: '+51 960 229 170',
   whatsappNumber: '51960229170',

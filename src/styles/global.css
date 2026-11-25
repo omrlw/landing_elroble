@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source('../');
 
 @font-face {
   font-family: 'Cormorant Garamond';
@@ -61,7 +61,6 @@
   --color-honey: #e8d7b9;
   --color-surface-line: color-mix(in srgb, var(--color-sand) 85%, var(--color-oak));
   --color-surface-line-strong: color-mix(in srgb, var(--color-sand) 60%, var(--color-oak));
-  --color-text-muted: color-mix(in srgb, var(--color-forest) 75%, var(--color-cream));
   --color-on-forest-muted: color-mix(in srgb, var(--color-paper) 90%, var(--color-forest));
   --color-on-forest-line: color-mix(in srgb, var(--color-cream) 22%, transparent);
   --color-dialog-backdrop: color-mix(in srgb, var(--color-ink) 70%, transparent);
@@ -102,7 +101,6 @@
     color-mix(in srgb, var(--color-cream) 24%, transparent) 48%,
     color-mix(in srgb, var(--color-sand) 18%, transparent));
   --page-gutter: clamp(0.75rem, 5.29vw - 0.54rem, 2rem);
-  --section-space: clamp(3.5rem, 2.46rem + 4.23vw, 6rem);
   --section-gap: clamp(1.5rem, 0.98rem + 2.1vw, 3rem);
   --text-button: clamp(1rem, 0.925rem + 0.36vw, 1.1875rem);
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
@@ -380,8 +378,8 @@
 
 @media (min-width: 75rem) {
   .story-and-day {
-    --color-story: transparent;
     background:
+      linear-gradient(var(--color-cream), transparent 8rem),
       radial-gradient(ellipse at 24% 35%, var(--color-paper), transparent 56%),
       linear-gradient(var(--color-cream), color-mix(in srgb, var(--color-cream) 65%, var(--color-sand)));
   }

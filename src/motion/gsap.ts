@@ -16,8 +16,6 @@ function curve(token: string) {
 }
 
 export const duration = {
-  press: seconds('press'),
-  state: seconds('state'),
   gallery: seconds('gallery'),
   reveal: seconds('reveal'),
   scene: seconds('scene'),
