@@ -75,17 +75,17 @@ const activities = [
 
 <section class="program" id="programa" tabindex="-1" aria-labelledby="program-title">
   <div class="program-decoration" aria-hidden="true">
-    <picture class="program-glass" data-ambient="glass">
+    <picture class="program-glass">
       <source media="(min-width: 1200px)" srcset="/images/program/glass-desktop.svg" />
       <source media="(min-width: 768px)" srcset="/images/program/glass-tablet.svg" />
       <img src="/images/program/glass-mobile.svg" alt="" loading="lazy" />
     </picture>
-    <Image class="program-leaves-left" src={leavesLeft} alt="" format="webp" width={480} data-ambient="leaf" />
-    <Image class="program-leaves-right" src={leavesRight} alt="" format="webp" width={480} data-ambient="leaf" />
+    <Image class="program-leaves-left" src={leavesLeft} alt="" format="webp" width={480} />
+    <Image class="program-leaves-right" src={leavesRight} alt="" format="webp" width={480} />
   </div>
 
   <div class="container program-inner">
-    <header class="program-heading" data-reveal>
+    <header class="program-heading" data-reveal="heading">
       <h2 id="program-title">
         <span class="program-title-default">Un programa para</span>
         <span class="program-title-tablet">Actividades para</span>
@@ -107,7 +107,7 @@ const activities = [
 
     <div class="program-grid">
       {activities.map((activity) => (
-        <article class={`program-card program-card--${activity.id}`} data-reveal="card">
+        <article class={`program-card program-card--${activity.id}`} data-reveal="program">
           {activity.photo && (
             <div class="program-photo">
               <Image
@@ -160,11 +160,7 @@ const activities = [
     position: relative;
     isolation: isolate;
     overflow: clip;
-    background:
-      radial-gradient(ellipse 45% 30% at 12% 6%, rgb(255 255 255 / 41%), transparent 70%),
-      radial-gradient(ellipse 40% 25% at 92% 30%, rgb(255 250 240 / 38%), transparent 70%),
-      radial-gradient(ellipse 50% 30% at 20% 85%, rgb(228 216 196 / 32%), transparent 70%),
-      linear-gradient(180deg, #f4f1ec, #f1ede6 55%, #f3efe8);
+    background: var(--surface-light-wash);
   }
 
   .program-inner {
@@ -182,9 +178,6 @@ const activities = [
     height: auto;
   }
 
-  .program-leaves-left { --ambient-tempo: 14s; --leaf-pivot: 12% 86%; }
-  .program-leaves-right { --ambient-tempo: 16s; --ambient-phase: -6s; --leaf-pivot: 96% 85%; }
-
   .program-glass,
   .program-leaves-left,
   .program-leaves-right {
@@ -192,8 +185,6 @@ const activities = [
   }
 
   .program-glass {
-    --ambient-tempo: 19s;
-    --ambient-phase: -4s;
     top: 624px;
     left: -69px;
   }
@@ -256,9 +247,8 @@ const activities = [
     padding: 8px;
     overflow: hidden;
     border-radius: 24px;
-    background: linear-gradient(180deg, rgb(255 255 255 / 82%), rgb(236 230 220 / 54%));
-    box-shadow: inset 0 1px 1px rgb(255 255 255 / 80%), inset 0 -1px 1px rgb(95 55 21 / 6%),
-      0 16px 32px -16px rgb(95 55 21 / 16%);
+    background: var(--surface-paper);
+    box-shadow: var(--shadow-card);
   }
 
   .program-photo {
@@ -276,10 +266,6 @@ const activities = [
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
-    .program-photo img { transition: scale var(--motion-photo) var(--ease-soft); }
-    .program-card:hover .program-photo img { scale: 1.025; }
   }
 
   .program-card--cognitive .program-photo { height: 176px; }
@@ -309,8 +295,8 @@ const activities = [
     width: 44px;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: linear-gradient(180deg, rgb(255 255 255 / 82%), rgb(255 252 246 / 50%));
-    box-shadow: inset 0 1px 1px rgb(255 255 255 / 80%), inset 0 -1px 1px rgb(95 55 21 / 6%);
+    background: var(--glass-lens);
+    box-shadow: var(--highlight-light);
   }
 
   .program-card h3 {
@@ -325,20 +311,20 @@ const activities = [
   }
 
   .program-card--art {
-    background: linear-gradient(180deg, #43583b, #1c2b1a);
+    background: var(--surface-forest);
     color: var(--color-cream);
-    box-shadow: inset 0 1px 1px rgb(244 241 236 / 27%), 0 16px 32px -16px rgb(6 11 6 / 26%);
+    box-shadow: var(--shadow-card);
   }
 
   .program-card--art h3 { color: inherit; }
 
   .program-card--art .program-symbol {
-    background: linear-gradient(rgb(244 241 236 / 19%), rgb(244 241 236 / 7%));
-    box-shadow: inset 0 1px 1px rgb(244 241 236 / 36%);
+    background: var(--surface-on-forest);
+    box-shadow: var(--highlight-dark);
   }
 
   .program-card--physio {
-    background: linear-gradient(180deg, #e5d9c3, #d3c1a2);
+    background: var(--surface-honey);
   }
 
   .program-card:is(.program-card--art, .program-card--physio) {
@@ -358,7 +344,6 @@ const activities = [
     margin-top: 24px;
     --cta-height: 52px;
     --cta-width: 247px;
-    --cta-font-size: 18px;
     --cta-padding: 9px 23px;
   }
 
@@ -483,7 +468,6 @@ const activities = [
 
   @media (min-width: 1200px) {
     .program {
-      background: linear-gradient(180deg, #fdfcfc, #fbf9f5);
     }
 
     .program-inner {
@@ -618,7 +602,6 @@ const activities = [
       min-height: 96px;
       margin-top: 48px;
       --cta-width: fit-content;
-      --cta-font-size: 22px;
       --cta-padding: 11px 24px;
     }
 

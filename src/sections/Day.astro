@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
+import GalleryPlayback from '../components/GalleryPlayback.astro';
 import painting from '../assets/opening/day-painting.png';
 import blocks from '../assets/opening/day-blocks.png';
 import table from '../assets/opening/day-table.png';
@@ -51,7 +52,7 @@ const facilities = [
 
 <section class="day" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
   <div class="container day__inner">
-    <div class="day__heading" data-reveal>
+    <div class="day__heading" data-reveal="heading">
       <h2 id="day-title">Un día con compañía.<br /><em>Conectada con casa.</em></h2>
       <div class="day__description">
         <p>El Roble es un centro de día para personas adultas mayores en Arequipa.</p>
@@ -60,25 +61,36 @@ const facilities = [
     </div>
 
     <div class="day__composition">
-      <div class="day__gallery" data-reveal="card">
-        <div class="day__photo" data-swipe-gallery>
-          {activities.map(({ image, alt }, index) => (
-            <Image class:list={['day__activity-photo', `day__activity-photo--${index}`]} src={image} alt={alt} data-photo-scene
-              widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
-              sizes="(max-width: 40rem) calc(100vw - 24px), (max-width: 73rem) 58vw, 27vw" format="webp" />
-          ))}
+      <div class="day__gallery" data-reveal="frame">
+        <div class="day__media">
+          <div class="day__photo" id="day-activity-photos" data-swipe-gallery data-reveal-image>
+            {activities.map(({ image, alt }, index) => (
+              <Image class:list={['day__activity-photo', `day__activity-photo--${index}`]} src={image} alt={alt} data-photo-scene
+                widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
+                sizes="(max-width: 40rem) calc(100vw - 24px), (max-width: 73rem) 58vw, 27vw" format="webp" />
+            ))}
+          </div>
+          <div class="gallery-pagination day__pagination" data-gallery-pagination>
+            {activities.map(({ title }, index) => (
+              <label data-gallery-dot for={`day-activity-${index}`} title={title}>
+                <span data-gallery-mark aria-hidden="true"></span>
+              </label>
+            ))}
+            <GalleryPlayback controls="day-activity-photos" />
+          </div>
         </div>
-        <label class="day__preview" for="day-activity-0">
-          <Image src={blocks} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
-          <span class="sr-only">Ver: Mantener la mente activa.</span>
+        <label class="day__preview" for="day-activity-2">
+          <Image src={painting} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
+          <span class="sr-only">Ver: Crear y compartir.</span>
         </label>
       </div>
-      <div class="day__panel" data-reveal="card">
+      <div class="day__panel" data-reveal="quiet">
         <h3 id="day-panel-title">Así acompañamos sus días.</h3>
         <fieldset class="day__activity-list" aria-labelledby="day-panel-title">
           {activities.map(({ title, mobileTitle, description, icon, mobileIcon }, index) => (
             <div class="day__activity">
-              <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 2} />
+              <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
+                aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />
               <label class="day__activity-label" for={`day-activity-${index}`}>
                 <span class="day__index" aria-hidden="true">0{index + 1}</span>
                 <span class="day__activity-title">
@@ -89,14 +101,14 @@ const facilities = [
                   <source media="(max-width: 40rem)" srcset={mobileIcon.src} />
                   <img src={icon.src} alt="" />
                 </picture>
-                <span class="day__activity-description">{description}</span>
+                <span class="day__activity-description" id={`day-activity-description-${index}`}>{description}</span>
               </label>
             </div>
           ))}
         </fieldset>
       </div>
 
-      <div class="day__facilities" data-reveal="card">
+      <div class="day__facilities">
         {facilities.map(({ image, alt }) => (
           <Image src={image} {alt} widths={[240, 360, 480, 640].filter((width) => width <= image.width)}
             sizes="(max-width: 40rem) 44vw, (max-width: 73rem) 32vw, 24vw" format="webp" />
@@ -109,7 +121,7 @@ const facilities = [
           <h3 class="day__mobile-title">Conoce El Roble.</h3>
           <Cta class="day__visit--desktop" />
         </div>
-        <Image class="day__leaves" src={leaves} alt="" width={148} format="webp" data-ambient="leaf" />
+        <Image class="day__leaves" src={leaves} alt="" width={148} format="webp" />
         <Cta class="day__visit--compact" />
       </div>
     </div>
@@ -118,9 +130,9 @@ const facilities = [
 
 <script>
   import { setupRadioGallery } from '../scripts/gallery';
-  const day = document.querySelector('#centro-de-dia');
+  const day = document.querySelector<HTMLElement>('#centro-de-dia');
   const gallery = day?.querySelector<HTMLElement>('[data-swipe-gallery]');
-  if (day && gallery) setupRadioGallery(gallery, [...day.querySelectorAll<HTMLInputElement>('input[name="day-activity"]')], [...gallery.querySelectorAll<HTMLElement>('[data-photo-scene]')]);
+  if (day && gallery) setupRadioGallery(gallery, [...day.querySelectorAll<HTMLInputElement>('input[name="day-activity"]')], [...gallery.querySelectorAll<HTMLElement>('[data-photo-scene]')], day);
 </script>
 
 <style>
@@ -136,7 +148,12 @@ const facilities = [
     gap: var(--section-gap);
   }
   .day__gallery { grid-area: gallery; display: grid; grid-template-columns: 1fr; gap: clamp(.75rem, 1.23vw, 1.5rem); }
+  .day__media { display: grid; align-content: start; gap: .375rem; min-inline-size: 0; }
   .day__photo { position: relative; aspect-ratio: 366 / 320; overflow: hidden; border-radius: clamp(1rem, 2vw, 1.75rem); }
+  .day__photo, .day__preview, .day__facilities img { box-shadow: var(--shadow-card); }
+  .day__composition:has(#day-activity-0:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(1) [data-gallery-mark],
+  .day__composition:has(#day-activity-1:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(2) [data-gallery-mark],
+  .day__composition:has(#day-activity-2:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(3) [data-gallery-mark] { inline-size: 1rem; opacity: 1; }
   .day__activity-photo, .day__preview img, .day__facilities img {
     display: block;
     inline-size: 100%;
@@ -150,7 +167,7 @@ const facilities = [
   .day__composition:has(#day-activity-2:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--2 { display: block; }
   .day__activity-photo--1 { object-position: center; }
   .day__preview { display: none; }
-  .day__panel { grid-area: panel; display: grid; align-content: center; gap: 1rem; padding: 1rem; border-radius: 1.75rem; background: linear-gradient(#455b3b, #1c2b1a); color: var(--color-cream); box-shadow: 0 10px 15px -14px #0b0d0e88; }
+  .day__panel { grid-area: panel; display: grid; align-content: center; gap: 1rem; padding: 1rem; border-radius: 1.75rem; background: var(--surface-forest); color: var(--color-cream); box-shadow: var(--shadow-card); }
   .day__panel h3 { color: inherit; font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.1 var(--font-display); }
   .day__activity-list { display: grid; gap: .75rem; min-inline-size: 0; }
   .day__activity { position: relative; }
@@ -171,19 +188,19 @@ const facilities = [
     position: absolute;
     inset: auto .75rem 0;
     block-size: 1px;
-    background: #f4f1ec29;
+    background: var(--color-on-forest-line);
     content: '';
   }
   .day__activity:last-child .day__activity-label::after,
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label::after { display: none; }
   .day__activity-label { transition: background-color var(--motion-state), color var(--motion-state); }
-  .day__activity-label:active { background: #f4f1ec18; }
-  @media (hover: hover) { .day__activity-label:hover { background: #f4f1ec18; } }
+  .day__activity-label:active { background: var(--surface-on-forest); }
+  @media (hover: hover) { .day__activity-label:hover { background: var(--surface-on-forest); } }
   .day__activity-title { font: 700 clamp(1.5rem, 1.16rem + .82vw, 2.25rem) / 1.15 var(--font-display); }
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: .875rem; border-radius: 50%; }
   .day__activity-label picture { display: grid; place-items: center; inline-size: 1.5rem; min-block-size: 1.5rem; }
   .day__activity-description { grid-column: 2 / -1; display: none; font-size: clamp(1rem, .91rem + .25vw, 1.25rem); }
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label { background: linear-gradient(#f4f1ec, #f4f1ecc4); color: var(--color-forest); }
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label { background: var(--surface-paper); color: var(--color-forest); }
   .day__radio:focus-visible + .day__activity-label { outline: 2px solid white; outline-offset: 2px; }
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__index { background: var(--color-forest); color: var(--color-cream); }
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { display: block; }
@@ -216,10 +233,10 @@ const facilities = [
   .day__activity:not(:last-child) .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(.4); }
   .day__activity:last-child .day__radio:not([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(0) invert(.9); }
   .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: clamp(.75rem, 1.3vw, 1.5rem); }
-  .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); box-shadow: 0 8px 12px -8px #47352026; }
+  .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); }
   .day__invite { grid-area: invite; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
   .day__invite h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.15 var(--font-display); color: var(--color-forest); }
-  .day__invite :global(.day__visit--compact) { --cta-width: 15.75rem; --cta-font-size: 1.125rem; --cta-gap: .5rem; --cta-padding: .625rem 1.5rem; flex: 0 0 auto; white-space: nowrap; }
+  .day__invite :global(.day__visit--compact) { --cta-width: 15.75rem; --cta-gap: .5rem; --cta-padding: .625rem 1.5rem; flex: 0 0 auto; white-space: nowrap; }
   .day__invite :global(.day__visit--desktop), .day__leaves, .day__mobile-title { display: none; }
 
   @media (max-width: 40rem) {
@@ -244,11 +261,11 @@ const facilities = [
       row-gap: clamp(2rem, 4.25vw, 2.5rem);
     }
     .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
-    .day__photo { aspect-ratio: 440 / 360; box-shadow: 0 16px 26px -6px #3c2d2032; }
+    .day__photo { aspect-ratio: 440 / 360; }
     .day__preview { display: block; align-self: start; overflow: hidden; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; cursor: pointer; }
     .day__preview { transition: box-shadow var(--motion-state); }
-    .day__preview:active { box-shadow: 0 4px 14px #3c2d2032; }
-    @media (hover: hover) { .day__preview:hover { box-shadow: 0 8px 20px #3c2d2032; } }
+    .day__preview:active { box-shadow: var(--shadow-control); }
+    @media (hover: hover) { .day__preview:hover { box-shadow: var(--shadow-raised); } }
     .day__panel { padding: 1.5rem; }
     .day__activity-list { gap: 1rem; }
     .day__activity-label { border-radius: 1.5rem; padding: .75rem; }
@@ -280,6 +297,6 @@ const facilities = [
     .day__invite br { display: initial; }
     .day__invite :global(.day__visit--desktop) { display: inline-flex; margin-block-start: 1.5rem; }
     .day__invite :global(.day__visit--compact) { display: none; }
-    .day__leaves { display: block; inline-size: clamp(5rem, 7.7vw, 9.25rem); block-size: auto; }
+    .day__leaves { display: block; inline-size: clamp(5rem, 7.7vw, 9.25rem); block-size: auto; pointer-events: none; }
   }
 </style>

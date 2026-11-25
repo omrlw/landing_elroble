@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import GalleryPlayback from '../components/GalleryPlayback.astro';
 import oak from '../assets/lower/testimonials-oak.png';
 import carmen from '../assets/lower/testimonial-carmen.png';
 import jorge from '../assets/lower/testimonial-jorge.png';
@@ -15,15 +16,15 @@ const placements = [
 ---
 
 <section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
-  <header class="container review-opening" data-reveal>
+  <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
     <span class="oak" aria-hidden="true">
-      <Image src={oak} alt="" widths={[112, 224]} sizes="112px" data-ambient="leaf" />
+      <Image src={oak} alt="" widths={[112, 224]} sizes="112px" />
     </span>
     <p>Historias de familias que encontraron en El Roble tranquilidad, compañía y un cuidado digno para quienes más quieren.</p>
   </header>
 
-  <div class="container review-container" data-reveal="card">
+  <div class="review-container" data-reveal="rail">
     <ul class="review-track" id="review-track" tabindex="0" aria-label="Reseñas de familias" data-review-track>
       {reviews.map((review, index) => {
         const [column, start, end] = placements[index];
@@ -32,14 +33,14 @@ const placements = [
 
         return (
           <li
-            class:list={['review-card', { featured: review.featured }]}
+            class:list={['review-card liquid-glass liquid-glass--light', { featured: review.featured }]}
             style={`--column:${column};--start:${start};--end:${end}`}
           >
             <div class="review-body">
               <span class="quote-mark" aria-hidden="true">“</span>
               <blockquote>
-                <p class="quote">“{review.excerpt ?? review.quote}”</p>
-                <p class="tablet-quote">“{review.tabletQuote}”</p>
+                <p class="quote">{review.excerpt ?? review.quote}</p>
+                <p class="tablet-quote">{review.tabletQuote}</p>
               </blockquote>
               {review.excerpt && (
                 <button type="button" class="read-review" popovertarget={popover} aria-label={`Leer reseña de ${review.name}`}>
@@ -52,7 +53,7 @@ const placements = [
               {avatar ? (
                 <Image class="avatar" src={avatar} alt="" widths={[40, 52, 104]} sizes="(min-width: 80rem) 52px, 40px" />
               ) : (
-                <span class="avatar initials" aria-hidden="true">{review.initials}</span>
+                <span class="avatar avatar--initials" aria-hidden="true">{review.initials}</span>
               )}
               <div class="identity">
                 <p class="name">{review.name}</p>
@@ -60,12 +61,9 @@ const placements = [
                 <div class="rating" role="img" aria-label={`${review.rating} estrellas de 5`}>
                   <span class="stars" aria-hidden="true">
                     {Array.from({ length: 5 }, (_, star) => (
-                      <img
-                        src={`/lower/${star >= review.rating ? 'star-empty' : review.featured ? 'star-light' : 'star'}.svg`}
-                        width="14"
-                        height="14"
-                        alt=""
-                      />
+                      <svg class:list={['star', { 'star--empty': star >= review.rating }]} width="14" height="14" viewBox="0 0 14 14">
+                        <path d="M7 1.26 8.75 4.97 12.74 5.46 9.8 8.26 10.57 12.25 7 10.22 3.43 12.25 4.2 8.26 1.26 5.46 5.25 4.97Z" />
+                      </svg>
                     ))}
                   </span>
                   <span class="rating-caption" aria-hidden="true">{review.rating} estrellas</span>
@@ -82,17 +80,18 @@ const placements = [
     <dialog class="review-popover" id={`review-${index + 1}`} popover="auto" aria-labelledby={`review-title-${index + 1}`}>
       <h3 id={`review-title-${index + 1}`}>{review.name}</h3>
       <blockquote><p>“{review.quote}”</p></blockquote>
-      <button type="button" autofocus popovertarget={`review-${index + 1}`} popovertargetaction="hide">Cerrar reseña</button>
+      <button class="liquid-glass--lens" type="button" autofocus popovertarget={`review-${index + 1}`} popovertargetaction="hide">Cerrar reseña</button>
     </dialog>
   ))}
 
   <div class="review-controls">
-    <div class="pagination" role="group" aria-label="Explorar reseñas" data-review-pagination data-gallery-pagination hidden>
+    <div class="gallery-pagination" role="group" aria-label="Explorar reseñas" data-review-pagination data-gallery-pagination hidden>
       {Array.from({ length: 4 }, (_, index) => (
         <button type="button" data-gallery-dot aria-label={`Ver grupo de reseñas ${index + 1}`} aria-controls="review-track" aria-pressed={index === 0 ? 'true' : 'false'}>
           <span data-gallery-mark aria-hidden="true"></span>
         </button>
       ))}
+      <GalleryPlayback controls="review-track" />
     </div>
     <p>Desliza para ver más reseñas</p>
   </div>
@@ -102,15 +101,23 @@ const placements = [
   import { setupSnapTrack } from '../scripts/gallery';
 
   const tablet = matchMedia('(min-width: 40rem) and (max-width: 79.999rem)');
-  for (const section of document.querySelectorAll('[data-reviews]')) {
+  for (const section of document.querySelectorAll<HTMLElement>('[data-reviews]')) {
     const track = section.querySelector<HTMLElement>('[data-review-track]');
-    const buttons = [...section.querySelectorAll<HTMLButtonElement>('[data-review-pagination] button')];
-    if (track) setupSnapTrack(track, buttons, () => tablet.matches ? 4 : 3);
+    const buttons = [...section.querySelectorAll<HTMLButtonElement>('[data-review-pagination] [data-gallery-dot]')];
+    if (track && track.children.length > 1) {
+      setupSnapTrack(track, buttons, {
+        playbackArea: section,
+        pageCount: () => tablet.matches ? 4 : 3,
+        readingTime: 12000,
+      });
+    }
     if (!('showPopover' in HTMLElement.prototype) && typeof HTMLDialogElement !== 'undefined' && 'showModal' in HTMLDialogElement.prototype) {
       for (const button of section.querySelectorAll<HTMLButtonElement>('.read-review')) {
         const dialog = document.getElementById(button.getAttribute('popovertarget') ?? '');
         if (!(dialog instanceof HTMLDialogElement)) continue;
         button.addEventListener('click', () => dialog.showModal());
+      }
+      for (const dialog of section.querySelectorAll('dialog')) {
         dialog.querySelector('button')?.addEventListener('click', () => dialog.close());
       }
     }
@@ -120,7 +127,9 @@ const placements = [
 <style>
   .testimonials {
     --track-gap: 0.75rem;
-    background: #233322;
+    position: relative;
+    isolation: isolate;
+    background: var(--surface-forest);
     color: var(--color-cream);
     padding-block: 2.25rem;
     border-radius: 1.25rem;
@@ -131,33 +140,40 @@ const placements = [
     margin: 0;
     font: 700 clamp(1.75rem, .75rem + 3.6vw, 4rem)/1.12 var(--font-display);
     color: inherit;
+    min-width: 0;
+    overflow-wrap: break-word;
+    text-wrap: balance;
   }
   .review-opening em { font-weight: inherit; }
   .review-opening p, .oak { display: none; }
-  .oak {
-    --ambient-tempo: 13s;
-    --ambient-phase: -5s;
-    --leaf-pivot: 14% 85%;
-    pointer-events: none;
-  }
+  .oak { pointer-events: none; }
   .oak img { display: block; width: 100%; height: auto; }
 
+  .review-container { overflow: clip; }
   .review-track {
+    --review-gutter: max(var(--page-gutter), (100% - 105rem) / 2);
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min(78%, 19rem);
     gap: var(--track-gap);
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: .125rem var(--review-gutter) .625rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--review-gutter);
     scrollbar-width: none;
     overscroll-behavior-x: contain;
   }
   .review-track::-webkit-scrollbar { display: none; }
+  .review-track:focus-visible { outline-offset: -.25rem; }
 
   .review-card {
+    --glass-color: var(--color-ink);
+    --glass-tint: linear-gradient(148deg,
+      color-mix(in srgb, var(--color-paper) var(--review-glass-top, 86%), transparent),
+      color-mix(in srgb, var(--color-cream) 65%, transparent));
+    box-shadow: var(--highlight-light), var(--shadow-control);
     min-width: 0;
     min-height: 16.5rem;
     display: flex;
@@ -166,35 +182,31 @@ const placements = [
     gap: .5rem;
     padding: 1rem;
     scroll-snap-align: start;
+    border: 1px solid color-mix(in srgb, var(--color-paper) 42%, transparent);
     border-radius: 1.25rem;
-    background: linear-gradient(165deg, #f5f0e6, #e3dac5);
-    color: #3d3935;
-    box-shadow: inset 0 1px 1px #fff9, inset 0 -1px 1px #5f37150f;
   }
 
-  .review-card.featured {
-    background: linear-gradient(155deg, #2a4025, #1b2a19);
-    color: var(--color-cream);
-    border: 1px solid #dac0953d;
-    box-shadow: inset 0 1px 1px #f4f1ec2b, inset 0 -1px 1px #0002;
-  }
+  .review-card.featured { --review-glass-top: 96%; }
   .review-body blockquote, .review-body p, .author p { margin: 0; }
   .review-body { font-size: clamp(1rem, .8rem + .18vw, 1.25rem); line-height: 1.55; }
-  .quote-mark, .tablet-quote { display: none; }
-  .quote-mark { color: #a48456; font: 600 3.5rem/2rem var(--font-display); }
-  .featured .quote-mark { color: #dac095; }
+  .tablet-quote { display: none; }
+  .quote-mark {
+    display: block;
+    block-size: 1.5rem;
+    color: var(--color-forest);
+    font: 600 2.5rem/1 var(--font-display);
+    opacity: .64;
+  }
 
   .read-review {
     min-height: 2.25rem;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    color: #1c2b1a;
-    font: 500 .875rem/1.3 var(--font-body);
-    cursor: pointer;
+    margin-block-start: .25rem;
+    color: var(--color-forest);
+    font: 600 .875rem/1.3 var(--font-body);
+    text-decoration: underline;
+    text-underline-offset: .2em;
   }
-  .read-review:hover { text-decoration: underline; }
-  .featured .read-review { color: inherit; }
+  .read-review:is(:hover, :focus-visible, :active) { text-decoration-thickness: 2px; }
 
   .author { display: flex; gap: .75rem; align-items: center; }
   .avatar {
@@ -205,83 +217,63 @@ const placements = [
     flex: none;
     object-fit: cover;
     border-radius: 50%;
-    border: 1.5px solid #ffffffb8;
-    color: #1c2b1a;
-    background: #f4f1ec;
     font-size: .875rem;
   }
-  .author .name { font-weight: 500; font-size: clamp(.875rem, .8rem + .3vw, 1.25rem); line-height: 1.25; color: #1c2b1a; }
-  .featured .author .name { color: inherit; }
-  .author .relationship, .rating { font-size: .875rem; line-height: 1.4; color: #665d4e; }
-  .featured .relationship, .featured .rating { color: #f4f1ec; }
-  .identity { display: flex; flex-direction: column; gap: .2rem; }
-  .rating { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
-  .stars { display: inline-flex; align-items: center; gap: .25rem; }
-  .stars img { flex: none; display: block; }
+  .avatar--initials { background: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .author .name { font-weight: 500; font-size: clamp(.875rem, .8rem + .3vw, 1.25rem); line-height: 1.25; color: var(--color-forest); }
+  .author .relationship { font-size: .875rem; line-height: 1.4; }
+  .identity { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+  .rating {
+    color: var(--color-forest);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-self: start;
+    gap: .15rem .375rem;
+    font-size: .875rem;
+    line-height: 1.4;
+  }
+  .stars { display: inline-flex; align-items: center; gap: .125rem; }
+  .star { display: block; flex: none; fill: currentColor; }
+  .star--empty { fill: none; stroke: currentColor; stroke-width: 1; stroke-linejoin: round; }
 
-  .review-controls { display: grid; justify-items: center; margin-block-start: .5rem; }
+  .review-controls { display: grid; justify-items: center; margin-block-start: .75rem; }
   .review-controls p { margin: 0; font-size: .875rem; line-height: 1.5; }
-  .pagination { display: flex; position: relative; align-items: center; justify-content: center; gap: .25rem; isolation: isolate; }
-  .pagination[hidden], .pagination button[hidden] { display: none; }
-  .pagination::before {
-    content: '';
-    position: absolute;
-    inset: .625rem -.25rem;
-    z-index: -1;
-    border-radius: 999px;
-    background: linear-gradient(#f4f1ec50, #f4f1ec26);
-    box-shadow: inset 0 1px #fff5;
-  }
-  .pagination button {
-    display: grid;
-    place-items: center;
-    min-width: 1.5rem;
-    min-height: 2.25rem;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-  }
-  .pagination button span { width: .5rem; height: .5rem; display: block; border-radius: 999px; background: #f4f1ec66; }
-  .pagination button[aria-pressed='true'] span { background: #f4f1ec; width: 1.5rem; }
-  .pagination[data-pagination-ready] button { inline-size: 2rem; min-height: 2.75rem; }
-  .pagination button:active span { background: var(--color-paper); }
-  .read-review:active { text-decoration: underline; }
-  @media (hover: hover) { .pagination button:hover span { background-color: var(--color-paper); } }
 
   .review-popover {
     position: fixed;
     inset: 0;
     box-sizing: border-box;
-    max-width: min(34rem, calc(100vw - 2rem));
+    max-inline-size: min(34rem, 100% - 2rem);
     max-height: calc(100dvh - 2rem);
     overflow: auto;
     margin: auto;
-    border: 1px solid #fff;
-    border-radius: 1.5rem;
-    background: var(--color-cream);
+    border: 1px solid var(--color-surface-line);
+    border-radius: var(--radius-card);
+    background: var(--color-paper);
     color: var(--color-ink);
     padding: clamp(1.25rem, 4vw, 2.5rem);
   }
-  .review-popover::backdrop { background: #142013b3; }
+  .review-popover::backdrop { background: var(--color-dialog-backdrop); }
   .review-popover:popover-open { display: block; }
   @supports not selector(:popover-open) {
     .review-popover:not([open]) { display: none; }
   }
   .review-popover h3 { margin: 0; font: 700 2rem/1.1 var(--font-display); }
   .review-popover blockquote { margin: 1rem 0; }
-  .review-popover button { border: 0; border-radius: 2em; background: var(--color-forest); color: var(--color-cream); padding: .75rem 1rem; cursor: pointer; }
-  .review-popover button:is(:hover, :focus-visible) { background: var(--color-action); }
-  .review-popover button:active { background: var(--color-ink); }
+  .review-popover button { border: 1px solid var(--color-surface-line); border-radius: 999px; padding: .65rem 1rem; font-weight: 600; }
+  .review-popover button:active { border-color: var(--color-surface-line-strong); }
+  @media (hover: hover) {
+    .review-popover button:hover { border-color: var(--color-surface-line-strong); }
+  }
 
   @media (prefers-reduced-motion: no-preference) {
-    .pagination button span { transition: width var(--motion-state) var(--ease-soft), background-color var(--motion-press); }
     @supports (transition-behavior: allow-discrete) and selector(:popover-open) {
       .review-popover {
         opacity: 0;
-        translate: 0 .5rem;
+        translate: 0 .25rem;
         scale: .985;
-        transition: opacity 160ms var(--ease-exit), translate 160ms var(--ease-exit), scale 160ms var(--ease-exit), display 160ms allow-discrete, overlay 160ms allow-discrete;
+        transition: opacity var(--motion-exit) var(--ease-soft), translate var(--motion-exit) var(--ease-soft), scale var(--motion-exit) var(--ease-soft), display var(--motion-exit) allow-discrete, overlay var(--motion-exit) allow-discrete;
       }
       .review-popover:popover-open {
         opacity: 1;
@@ -290,18 +282,20 @@ const placements = [
         transition-duration: var(--motion-panel);
         transition-timing-function: var(--ease-soft);
       }
+      .review-popover::backdrop {
+        opacity: 0;
+        transition: opacity var(--motion-exit) var(--ease-soft), display var(--motion-exit) allow-discrete, overlay var(--motion-exit) allow-discrete;
+      }
+      .review-popover:popover-open::backdrop { opacity: 1; transition-duration: var(--motion-panel); }
       @starting-style {
-        .review-popover:popover-open { opacity: 0; translate: 0 .8rem; scale: .985; }
+        .review-popover:popover-open { opacity: 0; translate: 0 .5rem; scale: .985; }
+        .review-popover:popover-open::backdrop { opacity: 0; }
       }
     }
   }
 
   @media (max-width: 40rem) {
     .review-popover { max-inline-size: min(34rem, 100% - var(--page-gutter) * 2); }
-  }
-
-  @media (40rem < width < 80rem) {
-    .review-container { width: 100%; max-width: none; }
   }
 
   @media (min-width: 40rem) {
@@ -313,13 +307,8 @@ const placements = [
     .review-card { min-height: 14rem; border-radius: 1.5rem; }
     .review-body { font-size: 1rem; line-height: 1.5; }
     .quote, .relationship, .rating-caption { display: none; }
-    .tablet-quote, .quote-mark { display: block; }
-    .quote-mark { font-size: 2.5rem; line-height: 1; height: 1.5rem; }
+    .tablet-quote { display: block; }
     .avatar { width: 2.25rem; height: 2.25rem; }
-    .review-controls { margin-block-start: 1rem; }
-    .pagination::before { content: none; }
-    .pagination button { min-height: 1.75rem; }
-    .pagination button[aria-pressed='true'] span { background: #dac095; }
   }
 
   @media (min-width: 80rem) {
@@ -327,18 +316,21 @@ const placements = [
     .review-opening { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
     .review-opening h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
     .oak { display: block; position: absolute; width: clamp(4rem, 5.83vw, 7rem); left: 40.6%; top: 65%; }
-    .review-track { height: clamp(40rem, 39.583vw, 47.5rem); grid-auto-columns: calc((100% - var(--track-gap) * 3) / 4); grid-template-rows: repeat(95, minmax(0, 1fr)); row-gap: 0; }
+    .review-track {
+      min-block-size: clamp(40rem, 39.583vw, 47.5rem);
+      grid-auto-columns: max(18rem, calc((100% - var(--track-gap) * 4) / 5));
+      grid-template-rows: repeat(95, minmax(0, 1fr));
+      row-gap: 0;
+    }
     .review-card { grid-column: var(--column); grid-row: var(--start) / var(--end); min-height: 0; gap: .75rem; padding: clamp(1rem, 5vw - 4rem, 2rem); border-radius: 1.75rem; }
     .review-body { font-size: clamp(1rem, 1.25vw - .25rem, 1.25rem); line-height: clamp(1.5rem, 2.5vw - 1rem, 2rem); }
-    .quote-mark { font-size: 3.5rem; height: 2rem; line-height: .78; margin-bottom: .625rem; }
+    .quote-mark { font-size: 3rem; block-size: 1.625rem; line-height: .85; margin-bottom: .25rem; }
     .tablet-quote { display: none; }
     .quote, .relationship, .rating-caption { display: block; }
     .author { gap: clamp(.5rem, 2.5vw - 2rem, 1rem); }
     .avatar { width: clamp(2.5rem, 2.71vw, 3.25rem); height: clamp(2.5rem, 2.71vw, 3.25rem); }
-    .review-controls { margin-block-start: clamp(2rem, 2.5vw, 3rem); }
     .review-controls p { display: none; }
-    .pagination button { min-height: 2rem; }
-    .pagination button[aria-pressed='true'] span { width: 2rem; }
+
   }
 
 </style>

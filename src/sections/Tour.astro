@@ -1,4 +1,5 @@
 ---
+import GalleryPlayback from '../components/GalleryPlayback.astro';
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import activities from '../assets/tour/activities.png';
@@ -48,12 +49,12 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 <section class="tour" id="recorrido" tabindex="-1" aria-labelledby="tour-title">
   <div class="tour-decoration" aria-hidden="true">
     <span class="tour-leaves-top">
-      <Image src={leavesTop} alt="" format="webp" width={394} data-ambient="leaf" />
+      <Image src={leavesTop} alt="" format="webp" width={394} />
     </span>
     <span class="tour-leaves-bottom">
-      <Image src={leavesBottom} alt="" format="webp" width={496} data-ambient="leaf" />
+      <Image src={leavesBottom} alt="" format="webp" width={496} />
     </span>
-    <picture class="tour-glass" data-ambient="glass">
+    <picture class="tour-glass">
       <source media="(min-width: 1200px)" srcset="/images/tour/glass-desktop.svg" />
       <source media="(min-width: 768px)" srcset="/images/tour/glass-tablet.svg" />
       <img src="/images/tour/glass-mobile.svg" alt="" loading="lazy" />
@@ -61,7 +62,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   </div>
 
   <div class="container tour-inner">
-    <header class="tour-heading" data-reveal>
+    <header class="tour-heading" data-reveal="heading">
       <h2 id="tour-title">El Roble,<br /><em>por dentro.</em></h2>
       <div class="tour-wide">
         <h3>Conocer el lugar también forma parte de elegir.</h3>
@@ -74,16 +75,17 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     <div class="tour-layout">
       <div class="tour-entrance">
         {entrancePhotos.map(({ id, photo, alt, label, desktopLabel }) => (
-          <figure class={`tour-photo tour-photo--${id}`} data-reveal="card">
+          <figure class={`tour-photo tour-photo--${id}`} data-reveal="frame">
             <Image
+              data-reveal-image
               src={photo}
               alt={alt}
               format="webp"
               widths={[448, 640, 960, 1200]}
               sizes={id === 'entrance' ? '(max-width: 1199px) 51vw, (max-width: 1920px) 50vw, 960px' : '(max-width: 1199px) 40vw, (max-width: 1920px) 35vw, 656px'}
             />
-            <figcaption class="tour-tag">
-              <span class="tour-tag-symbol" aria-hidden="true">
+            <figcaption class="tour-tag liquid-glass liquid-glass--light">
+              <span class="tour-tag-symbol liquid-glass--lens" aria-hidden="true">
                 <picture>
                   <source media="(min-width: 1200px)" srcset={`/images/tour/${id}-icon.svg`} />
                   <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
@@ -97,16 +99,17 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       </div>
 
       {interiorPhotos.map(({ id, photo, alt, label, desktopLabel }) => (
-        <figure class={`tour-photo tour-photo--framed tour-photo--${id}`} data-reveal="card">
+        <figure class={`tour-photo tour-photo--${id}`} data-reveal="frame">
           <Image
+            data-reveal-image
             src={photo}
             alt={alt}
             format="webp"
             widths={[448, 640, 960, 1200]}
             sizes="(max-width: 1199px) 43vw, (max-width: 1920px) 25vw, 480px"
           />
-          <figcaption class="tour-tag">
-            <span class="tour-tag-symbol" aria-hidden="true">
+          <figcaption class="tour-tag liquid-glass liquid-glass--light">
+            <span class="tour-tag-symbol liquid-glass--lens" aria-hidden="true">
               <picture>
                 <source media="(min-width: 1200px)" srcset={`/images/tour/${id}-icon.svg`} />
                 <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
@@ -118,14 +121,14 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
         </figure>
       ))}
 
-      <div class="tour-gallery" data-tour-gallery data-reveal="card">
+      <div class="tour-gallery" data-tour-gallery data-reveal="rail">
         <div class="tour-track" id="tour-photos" role="region" aria-label="Galería del centro" tabindex="0">
           {galleryPhotos.map(({ id, photo, alt, label }) => (
             <figure class={`tour-slide tour-slide--${id}`}>
               {/* Cover scales these 1200:540 photos to the card's 420px height before cropping. */}
               <Image src={photo} alt={alt} format="webp" widths={[960, 1200]} sizes="934px" />
-              <figcaption class="tour-tag">
-                <span class="tour-tag-symbol" aria-hidden="true">
+              <figcaption class="tour-tag liquid-glass liquid-glass--light">
+                <span class="tour-tag-symbol liquid-glass--lens" aria-hidden="true">
                   <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
                 </span>
                 {label}
@@ -133,21 +136,22 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
             </figure>
           ))}
         </div>
-        <div class="tour-pagination" role="group" aria-label="Seleccionar foto">
+        <div class="gallery-pagination tour-pagination" data-gallery-pagination role="group" aria-label="Seleccionar foto" hidden>
           {galleryPhotos.map(({ label }, index) => (
             <button
-              class="tour-dot"
+              data-gallery-dot
               type="button"
               aria-label={`Ver foto: ${label}`}
               aria-controls="tour-photos"
               aria-current={index === 0 ? 'true' : undefined}
               hidden
-            ></button>
+            ><span data-gallery-mark aria-hidden="true"></span></button>
           ))}
+          <GalleryPlayback controls="tour-photos" />
         </div>
       </div>
 
-      <div class="tour-invitation" data-reveal>
+      <div class="tour-invitation" data-reveal="heading">
         <img src="/images/tour/visit-icon.svg" alt="" loading="lazy" />
         <h3>Ven a recorrerlo.<br /><em>Conversemos sin prisa.</em></h3>
         <p class="tour-mobile">Conoce el centro y conversemos<br /> sobre tu familiar.</p>
@@ -161,9 +165,9 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 <script>
   import { setupSnapTrack } from '../scripts/gallery';
 
-  for (const gallery of document.querySelectorAll('[data-tour-gallery]')) {
+  for (const gallery of document.querySelectorAll<HTMLElement>('[data-tour-gallery]')) {
     const track = gallery.querySelector<HTMLElement>('.tour-track');
-    if (track) setupSnapTrack(track, [...gallery.querySelectorAll<HTMLButtonElement>('.tour-dot')]);
+    if (track) setupSnapTrack(track, [...gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-dot]')], { playbackArea: gallery });
   }
 </script>
 
@@ -172,11 +176,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     position: relative;
     isolation: isolate;
     overflow: clip;
-    background:
-      radial-gradient(ellipse 45% 30% at 12% 6%, rgb(255 255 255 / 41%), transparent 70%),
-      radial-gradient(ellipse 40% 25% at 92% 30%, rgb(255 250 240 / 38%), transparent 70%),
-      radial-gradient(ellipse 50% 30% at 20% 85%, rgb(228 216 196 / 32%), transparent 70%),
-      linear-gradient(180deg, #faf8f5, #f4f1ec);
+    background: var(--surface-light-wash);
   }
 
   .tour-decoration {
@@ -197,21 +197,16 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   }
 
   .tour-leaves-top {
-    --ambient-tempo: 12s;
-    --ambient-phase: -3s;
-    --leaf-pivot: 85% 84%;
     top: 56px;
     right: 24px;
     width: 75px;
     opacity: 0.66;
   }
 
-  .tour-leaves-bottom { --ambient-tempo: 15s; --leaf-pivot: 87% 75%; display: none; }
+  .tour-leaves-bottom { display: none; }
   .tour-decoration :is(.tour-leaves-top, .tour-leaves-bottom) img { display: block; width: 100%; }
 
   .tour-glass {
-    --ambient-tempo: 18s;
-    --ambient-phase: -8s;
     top: 420px;
     left: -64px;
   }
@@ -261,7 +256,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     overscroll-behavior-inline: contain;
-    filter: drop-shadow(0 16px 16px rgb(60 45 20 / 16%));
+    filter: drop-shadow(var(--shadow-cutout));
   }
 
   .tour-track::after {
@@ -301,15 +296,10 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     min-height: 48px;
     max-width: calc(100% - 26px);
     padding: 6px 12px 6px 8px;
-    border: 1px solid rgb(255 255 255 / 80%);
     border-radius: 999px;
-    background: linear-gradient(rgb(255 255 255 / 88%), rgb(244 241 236 / 76%));
-    color: var(--color-forest);
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
-    box-shadow: inset 0 1px 1px rgb(255 255 255 / 80%), 0 8px 16px -2px rgb(11 13 14 / 24%);
-    backdrop-filter: blur(16px);
   }
 
   .tour-tag-symbol {
@@ -318,57 +308,14 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     flex: none;
     width: 32px;
     aspect-ratio: 1;
-    border: 1px solid rgb(255 255 255 / 95%);
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 22%, white, #f7f4ed 48%, #eee6d8);
   }
 
-  .tour-pagination {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: calc(100% - 24px);
-    min-height: 64px;
-    margin-top: 12px;
-  }
+  .tour-pagination { margin-block-start: .375rem; }
 
-  .tour-dot:not([hidden]) {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 44px;
-    border-radius: 999px;
-    color: var(--color-forest);
-  }
-
-  .tour-dot::before {
-    content: "";
-    width: 8px;
-    height: 6px;
-    border-radius: 999px;
-    background: currentColor;
-    opacity: 0.25;
-    transition: opacity var(--motion-press);
-  }
-
-  .tour-dot[aria-current]::before {
-    width: 24px;
-    opacity: 1;
-  }
-  .tour-dot:active::before { opacity: .8; }
-  @media (hover: hover) { .tour-dot:hover::before { opacity: .85; } }
   @media (prefers-reduced-motion: no-preference) {
-    .tour-dot::before { transition: width var(--motion-state) var(--ease-soft), opacity var(--motion-press); }
     .tour-slide .tour-tag { transition: opacity var(--motion-panel), translate var(--motion-panel) var(--ease-soft); }
-    .tour-slide > img { transition: scale var(--motion-photo) var(--ease-soft); }
     .tour-track:has([data-snapped]) .tour-slide:not([data-snapped]) .tour-tag { opacity: .72; translate: .45rem 0; }
-    .tour-track:has([data-snapped]) .tour-slide:not([data-snapped]) > img { scale: 1.035; }
-    @media (hover: hover) and (pointer: fine) {
-      .tour-photo > img { transition: scale var(--motion-photo) var(--ease-soft); }
-      .tour-photo:hover > img { scale: 1.018; }
-    }
   }
 
   .tour-invitation {
@@ -381,7 +328,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     --cta-width: 208px;
     --cta-height: 52px;
     --cta-justify: center;
-    --cta-font-size: 18px;
     --cta-padding: 9px 23px;
   }
 
@@ -397,10 +343,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 
   .tour-invitation :global(.cta) { white-space: nowrap; }
   .tour-invitation :global(.cta-icon) { display: none; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tour-dot::before { transition: none; }
-  }
 
   @media (min-width: 768px) {
     .tour-inner { padding-block: 72px; }
@@ -468,29 +410,18 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       height: 252px;
       overflow: hidden;
       border-radius: 24px;
-      box-shadow: 0 12px 34px -24px rgb(60 45 20 / 27%);
+      box-shadow: var(--shadow-card);
     }
 
     .tour-photo:is(.tour-photo--entrance, .tour-photo--ramp)::after {
       position: absolute;
       inset: 0;
-      background: linear-gradient(rgb(255 255 255 / 18%), transparent 28% 60%, rgb(30 20 8 / 18%));
+      background: linear-gradient(color-mix(in srgb, var(--color-paper) 18%, transparent), transparent 28% 60%, color-mix(in srgb, var(--color-ink) 18%, transparent));
       content: "";
       pointer-events: none;
     }
 
     .tour-photo--ramp { border-radius: 10.5px; }
-
-    .tour-photo--framed {
-      box-sizing: border-box;
-      height: 256px;
-      border: 8px solid transparent;
-      border-radius: 32px;
-      background: linear-gradient(rgb(255 255 255 / 82%), rgb(255 252 246 / 50%)) border-box;
-      box-shadow: 0 12px 28px -12px rgb(95 55 21 / 16%);
-    }
-
-    .tour-photo--framed > img { border-radius: 24px; }
 
     .tour-tag {
       bottom: 12px;
@@ -510,10 +441,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   }
 
   @media (min-width: 1200px) {
-    .tour {
-      background: linear-gradient(180deg, #fbf9f5, #faf7f1);
-    }
-
     .tour-inner { padding-block: 96px; }
 
     .tour-leaves-top {
@@ -605,16 +532,11 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       left: 24px;
       gap: 16px;
       min-height: 76px;
-      max-width: calc(100% - 32px);
+      max-width: calc(100% - 48px);
       padding: 7px 22px 7px 8px;
       font-family: var(--font-display);
       font-size: clamp(22px, 1.667vw, 32px);
       line-height: 1;
-    }
-
-    .tour-photo--framed .tour-tag {
-      bottom: 18px;
-      left: 18px;
     }
 
     .tour-photo--details .tour-tag {
@@ -629,7 +551,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       gap: 24px;
       margin-top: 0;
       --cta-width: fit-content;
-      --cta-font-size: 22px;
       --cta-padding: 11px 24px;
     }
 

@@ -21,20 +21,20 @@ const posters = [
 ---
 
 <div class="closing">
-  <Image class="ornament beginning" src={leaves} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, (min-width: 40rem) 143px, 92px" data-ambient="leaf" />
-  <Image class="ornament accent" src={leaf} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, 143px" data-ambient="leaf" />
+  <Image class="ornament beginning" src={leaves} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, (min-width: 40rem) 143px, 92px" />
+  <Image class="ornament accent" src={leaf} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, 143px" />
   <div class="container closing-container">
     <section class="community" id="comunidad" aria-labelledby="community-heading">
-      <header data-reveal>
+      <header data-reveal="heading">
         <h2 id="community-heading">La vida que <em>compartimos.</em></h2>
         <p class="community-description">Pequeños momentos de nuestro día a día.</p>
         <p class="community-compact-description">Entre talleres, juegos y charlas, así se vive un día en El Roble.</p>
       </header>
 
-      <ul class="posters" aria-label="Vistas previas de la comunidad en TikTok" data-reveal="card">
+      <ul class="posters" aria-label="Vistas previas de la comunidad en TikTok" data-reveal="posters">
         {posters.map(({ photo, description }) => (
           <li>
-            <a href={profileUrl} class="poster" aria-label={`${description}. Abrir el perfil de El Roble en TikTok`} target="_blank" rel="noopener noreferrer">
+            <a href={profileUrl} class="poster" aria-label={`${profileHandle}. ${description}. Abrir el perfil de El Roble en TikTok`} target="_blank" rel="noopener noreferrer">
               <Image
                 class="poster-image"
                 src={photo}
@@ -44,7 +44,7 @@ const posters = [
                 loading="lazy"
                 decoding="async"
               />
-              <span class="play" aria-hidden="true">
+              <span class="play liquid-glass liquid-glass--light" aria-hidden="true">
                 <picture>
                   <source media="(min-width: 80rem)" srcset="/lower/tiktok-play.svg" />
                   <source media="(min-width: 40rem)" srcset="/lower/tiktok-play-tablet.svg" />
@@ -81,7 +81,7 @@ const posters = [
 
     <footer id="contacto" class="contact" tabindex="-1" aria-label="Información de contacto">
       <div class="footer-main">
-        <p class="footer-brand">
+        <p class="footer-brand" data-reveal="quiet">
           <picture>
             <source media="(min-width: 80rem)" srcset="/lower/footer-logo.svg" />
             <source media="(min-width: 40rem)" srcset="/lower/footer-logo-tablet.svg" />
@@ -139,14 +139,14 @@ const posters = [
   .closing {
     position: relative;
     overflow: clip;
-    background: #233322;
+    background: var(--surface-forest);
     color: var(--color-cream);
     padding-block: 3.5rem 2rem;
   }
   .closing-container { position: relative; }
   .ornament { position: absolute; height: auto; pointer-events: none; }
-  .beginning { --ambient-tempo: 16s; width: 5.75rem; right: -.75rem; bottom: 24.3rem; opacity: .34; }
-  .accent { --ambient-tempo: 14s; --ambient-phase: -6s; display: none; opacity: .25; }
+  .beginning { width: 5.75rem; right: -.75rem; bottom: 24.3rem; opacity: .34; }
+  .accent { display: none; opacity: .25; }
 
   .community {
     position: relative;
@@ -154,9 +154,9 @@ const posters = [
     gap: 1rem;
     padding: 1.5rem 1.25rem;
     border-radius: 2rem;
-    background: linear-gradient(180deg, #fffdfc, #f7f3ec);
+    background: var(--surface-paper);
     color: var(--color-ink);
-    box-shadow: 0 16px 32px -16px #5f371529;
+    box-shadow: var(--shadow-raised);
   }
   .community header { display: grid; gap: .75rem; }
   .community h2 {
@@ -164,7 +164,7 @@ const posters = [
     font: 700 clamp(2rem, 1.75rem + 2vw, 4rem)/1.05 var(--font-display);
     color: var(--color-ink);
   }
-  .community h2 em { display: block; color: var(--color-oak, #532d12); font-weight: inherit; }
+  .community h2 em { display: block; color: var(--color-oak); font-weight: inherit; }
   .community header p { margin: 0; font-size: clamp(1rem, .95rem + .25vw, 1.25rem); line-height: 1.5; }
   .community-description { display: none; }
 
@@ -178,7 +178,7 @@ const posters = [
     aspect-ratio: 9 / 16;
     background: var(--color-forest);
     color: var(--color-cream);
-    box-shadow: 0 16px 32px -16px #14201329;
+    box-shadow: var(--shadow-card);
     isolation: isolate;
   }
   .poster::after {
@@ -186,12 +186,12 @@ const posters = [
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(0deg, #142013b3, transparent 50%, #1420131a);
+    background: linear-gradient(0deg, var(--color-dialog-backdrop) 18%, transparent 52%);
   }
   .poster-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-  .play { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 3.75rem; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(160deg, #fcfaf6c7, #ece4d899); box-shadow: inset 0 1px 1px #fffc, 0 8px 16px -2px #0b0d0e3d; backdrop-filter: blur(16px); }
+  .play { position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 3.75rem; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; }
   .play img, .poster-profile img, .profile-links img { display: block; }
-  .poster-profile { position: absolute; inset: auto auto 1rem 1rem; display: inline-flex; align-items: center; gap: .5rem; color: #fcfaf5; font-size: 1rem; font-weight: 600; }
+  .poster-profile { position: absolute; inset: auto auto 1rem 1rem; display: inline-flex; align-items: center; gap: .5rem; color: var(--color-paper); font-size: 1rem; font-weight: 600; }
   .profile-links { display: grid; justify-items: start; }
   .profile-links p, .profile-text, .follow-desktop { display: none; }
   .profile-links .follow {
@@ -202,8 +202,9 @@ const posters = [
     padding: .5rem 1.25rem;
     border-radius: 999px;
     color: var(--color-cream);
-    background: linear-gradient(#2a4025, #1c2b1a);
-    box-shadow: inset 0 1px #fff5;
+    background: var(--surface-action);
+    box-shadow: var(--highlight-dark);
+    font-size: var(--text-button);
     font-weight: 600;
     text-decoration: none;
   }
@@ -217,33 +218,32 @@ const posters = [
   address { display: grid; gap: .75rem; margin: 0; font-style: normal; }
   .contact-row { display: flex; min-width: 0; min-height: 2.75rem; gap: .75rem; align-items: start; color: inherit; }
   .contact-copy { display: grid; gap: .125rem; min-width: 0; font-size: 1rem; line-height: 1.5; }
-  .contact-copy strong { font-weight: 600; color: #dbded0; }
+  .contact-copy strong { font-weight: 600; color: var(--color-on-forest-muted); }
   .contact-value { text-decoration: underline; text-underline-offset: .16em; overflow-wrap: anywhere; }
   .address-comma { display: none; }
   .address-locality { display: block; }
-  .contact-icon { display: grid; flex: none; place-items: center; width: 2.25rem; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(#f4f1ec16, #f4f1ec0a); }
-  .footer-meta { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; border-top: 1px solid #f4f1ec2e; margin-block-start: 1.5rem; padding-block-start: 1rem; }
+  .contact-icon { display: grid; flex: none; place-items: center; width: 2.25rem; aspect-ratio: 1; border-radius: 50%; background: var(--surface-on-forest); }
+  .footer-meta { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; border-top: 1px solid var(--color-on-forest-line); margin-block-start: 1.5rem; padding-block-start: 1rem; }
   .socials { display: flex; align-items: center; gap: .5rem; }
-  .socials a, .social-icon { display: grid; place-items: center; width: 2.75rem; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(#f4f1ec13, #f4f1ec05); }
+  .socials a, .social-icon { display: grid; place-items: center; width: 2.75rem; aspect-ratio: 1; border-radius: 50%; background: var(--surface-on-forest); }
   .social-label { display: none; }
   .footer-meta small { font-size: .875rem; }
   .legal { text-decoration: underline; text-underline-offset: .16em; }
 
   :is(.follow, .footer-navigation a, .socials a, .contact-icon, .play) { transition: filter var(--motion-state), background-color var(--motion-state); }
   :is(.follow, .footer-navigation a, .socials a):active { filter: brightness(.88); }
+  :is(.poster, .follow):focus-visible { outline-color: var(--color-forest); }
   .poster:focus-visible .play { filter: brightness(1.08); }
   .poster:active .play { filter: brightness(.92); }
-  .contact-row:is(:focus-visible, :active) .contact-icon { background-color: #f4f1ec22; }
+  .contact-row:is(:focus-visible, :active) .contact-icon { background-color: var(--color-on-forest-line); }
 
   @media (hover: hover) {
     .profile-links .follow:hover, .footer-navigation a:hover, .socials a:hover { filter: brightness(1.2); }
-    .contact-row:hover .contact-icon { background-color: #f4f1ec22; }
+    .contact-row:hover .contact-icon { background-color: var(--color-on-forest-line); }
     .profile-text:hover { text-decoration-thickness: .125em; }
   }
   @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
-    .poster-image { transition: scale var(--motion-photo) var(--ease-soft); }
     .play { transition-property: filter, scale; }
-    .poster:hover .poster-image { scale: 1.045; }
     .poster:hover .play { scale: 1.07; }
     .poster:active .play { scale: .96; }
   }
@@ -261,26 +261,26 @@ const posters = [
     .posters { width: min(100%, 54rem); grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 1rem; padding-block-end: .625rem; }
     .posters > li:nth-child(-n+3) { display: block; }
     .posters > li:nth-child(2) { translate: 0 -.625rem; }
-    .poster { aspect-ratio: auto; height: clamp(14rem, 38.54vw, 21rem); border-radius: 1.25rem; box-shadow: 0 24px 48px -24px #1420137a; }
-    .play { width: 3rem; backdrop-filter: blur(12px); }
+    .poster { aspect-ratio: auto; height: clamp(14rem, 38.54vw, 21rem); border-radius: 1.25rem; }
+    .play { width: 3rem; }
     .poster-profile { inset: auto 0 .75rem; justify-content: center; font-size: .875rem; font-weight: 500; }
     .profile-links { justify-items: center; }
     .profile-links p { display: block; margin: 0; font-size: 1rem; font-weight: 600; }
-    .profile-links .follow { min-height: 3.5rem; padding-inline: 1.5rem; gap: .75rem; font-size: 1.125rem; }
+    .profile-links .follow { min-height: 3.5rem; padding-inline: 1.5rem; gap: .75rem; }
     .profile-text { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.25rem; color: inherit; font-size: 1rem; text-decoration: underline; text-underline-offset: .16em; margin-block-end: .375rem; }
     .follow-desktop { display: inline; }
     .follow-mobile { display: none; }
-    .contact { border-top: 1px solid #f4f1ec2e; padding-block-start: 2rem; }
+    .contact { border-top: 1px solid var(--color-on-forest-line); padding-block-start: 2rem; }
     .footer-main { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 1.75rem 2rem; }
     .footer-brand { grid-column: 1 / -1; }
     .footer-navigation { display: grid; gap: 1rem; }
     .footer-navigation p { margin: 0; font: 600 clamp(2rem, 1.65rem + .7vw, 2.25rem)/1.1 var(--font-display); }
     .footer-navigation nav { display: flex; flex-direction: column; gap: .5rem; }
-    .footer-navigation a { display: grid; place-items: center; min-height: 3.5rem; padding: .5rem 1rem; text-align: center; border: 1px solid #f4f1ec3d; border-radius: 999px; background: linear-gradient(#f4f1ec16, #f4f1ec0a); color: inherit; text-decoration: none; font-weight: 600; }
+    .footer-navigation a { display: grid; place-items: center; min-height: 3.5rem; padding: .5rem 1rem; text-align: center; border: 1px solid var(--color-on-forest-line); border-radius: 999px; background: var(--surface-on-forest); color: inherit; text-decoration: none; font-weight: 600; }
     .contact-title { display: none; }
     address { gap: 1rem; }
     .contact-row { gap: 1rem; min-height: 3.75rem; align-items: center; }
-    .contact-icon { width: 3rem; border: 1px solid #f4f1ec3d; }
+    .contact-icon { width: 3rem; border: 1px solid var(--color-on-forest-line); }
     .address-comma, .address-locality { display: inline; }
     .phone { order: 1; }
     .footer-meta { flex-flow: row wrap; align-items: center; gap: 1rem; margin-block-start: 2rem; }
@@ -299,11 +299,11 @@ const posters = [
     .posters { grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 90.5rem); align-items: start; gap: 1.5rem; padding-block-end: 0; }
     .posters > li:last-child { display: block; }
     .posters > li:nth-child(even) { translate: none; margin-block-start: 1.5rem; }
-    .poster { height: auto; aspect-ratio: 43 / 77; border-radius: 1.5rem; box-shadow: 0 16px 32px -16px #14201329; }
-    .play { width: 4rem; backdrop-filter: blur(16px); }
+    .poster { height: auto; aspect-ratio: 43 / 77; border-radius: 1.5rem; }
+    .play { width: 4rem; }
     .poster-profile { inset: auto auto 1.25rem 1rem; }
     .profile-links p { font-size: 1.25rem; font-weight: 500; }
-    .profile-links .follow { margin-block-start: 1.25rem; font-size: 1.375rem; }
+    .profile-links .follow { margin-block-start: 1.25rem; }
     .contact { border: 0; margin-block-start: 4rem; padding-block-start: 0; }
     .footer-main { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2rem, 3.333vw, 4rem); align-items: center; }
     .footer-brand { grid-column: 2; grid-row: 1; margin-inline: auto; }

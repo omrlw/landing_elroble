@@ -31,13 +31,13 @@ const principles = [
 
 <section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
   <div class="approach-decoration" aria-hidden="true">
-    <Image class="oak-desktop" src={oakDesktop} alt="" format="webp" width={644} data-ambient="leaf" />
-    <Image class="oak-tablet" src={oakTablet} alt="" format="webp" width={488} data-ambient="leaf" />
-    <span class="approach-sphere"><span data-ambient="glass"></span></span>
+    <Image class="oak-desktop" src={oakDesktop} alt="" format="webp" width={644} />
+    <Image class="oak-tablet" src={oakTablet} alt="" format="webp" width={488} />
+    <span class="approach-sphere"></span>
   </div>
 
   <div class="container approach-inner">
-    <header class="approach-heading" data-reveal>
+    <header class="approach-heading" data-reveal="heading">
       <h2 id="approach-title">Cuidar también es<br /><em>reconocer quién es.</em></h2>
       <p class="approach-intro-desktop">
         Sus gustos, sus decisiones y su manera de hacer las cosas forman parte del cuidado. En El
@@ -49,9 +49,10 @@ const principles = [
     </header>
 
     <div class="approach-layout">
-      <picture class="approach-portrait" data-reveal="card">
+      <picture class="approach-portrait" data-reveal="frame">
         <source media="(max-width: 767px)" srcset={mobilePortrait.src} />
         <Image
+          data-reveal-image
           src={portrait}
           alt="Una mujer mayor con chaleco verde durante una actividad."
           format="webp"
@@ -69,7 +70,7 @@ const principles = [
       </div>
 
       {principles.map(({ id, title, description, tabletDescription }) => (
-        <article class={`approach-principle approach-principle--${id}`} data-reveal="card">
+        <article class={`approach-principle approach-principle--${id}`} data-reveal="quiet">
           <div class="approach-principle-heading">
             <h3><span>{title[0]}</span>{' '}{title[1]}</h3>
             <span class="approach-principle-icon">
@@ -100,14 +101,7 @@ const principles = [
     isolation: isolate;
     overflow: clip;
     border-radius: 28px 28px 0 0;
-    background: #233322;
-    --approach-glow: radial-gradient(
-      ellipse 102.6% 102.6% at 30% 25%,
-      rgb(233 217 174 / 16%),
-      rgb(191 199 147 / 5.4%) 45%,
-      transparent 100%
-    );
-    background-image: var(--approach-glow);
+    background: var(--surface-forest);
     color: var(--color-cream);
     font-family: var(--font-body);
   }
@@ -125,34 +119,21 @@ const principles = [
   }
 
   .approach-decoration img {
-    --ambient-tempo: 16s;
-    --leaf-pivot: 12% 88%;
     display: none;
     position: absolute;
     height: auto;
   }
 
   .approach-sphere {
-    --ambient-phase: -5s;
     position: absolute;
     top: -96px;
     right: -94px;
     width: 236px;
     aspect-ratio: 1;
-  }
-
-  .approach-sphere > span {
-    position: absolute;
-    inset: 0;
     border-radius: 50%;
     opacity: 0.42;
-    background: radial-gradient(
-      circle at 30% 25%,
-      rgb(244 241 236 / 55%),
-      rgb(244 241 236 / 17%) 45%,
-      rgb(244 241 236 / 4.5%)
-    );
-    box-shadow: inset 0 1px 1px rgb(244 241 236 / 42%), inset -8px -10px 36px rgb(244 241 236 / 9%);
+    background: var(--glass-ornament);
+    box-shadow: var(--highlight-dark);
   }
 
   .approach-heading {
@@ -234,12 +215,9 @@ const principles = [
 
   .approach-principle {
     padding: 16px;
-    border: 1px solid rgb(218 192 149 / 21%);
+    border: 1px solid var(--color-on-forest-line);
     border-radius: 24px;
-    background: linear-gradient(rgb(244 241 236 / 9%), rgb(244 241 236 / 3%));
-    box-shadow: inset 0 1px 1px rgb(244 241 236 / 27%),
-      inset 0 -1px 1px rgb(0 0 0 / 10%), 0 16px 32px -16px rgb(6 11 6 / 26%);
-    backdrop-filter: blur(12px);
+    background: var(--surface-on-forest);
   }
 
   .approach-principle--listen { grid-area: listen; }
@@ -265,9 +243,9 @@ const principles = [
     place-items: center;
     width: 34px;
     aspect-ratio: 1;
-    border: 1px solid rgb(218 192 149 / 20%);
+    border: 1px solid var(--color-on-forest-line);
     border-radius: 50%;
-    background: rgb(244 241 236 / 5%);
+    background: var(--surface-on-forest);
   }
 
   .approach-principle-icon {
@@ -363,19 +341,8 @@ const principles = [
   }
 
   @media (min-width: 1200px) {
-    .approach {
-      background-image: none;
-    }
-
     .approach-inner {
       padding-block: 96px;
-    }
-
-    .approach-decoration::before {
-      position: absolute;
-      inset: 55.12% 34.11% 17.62% 39.74%;
-      background-image: var(--approach-glow);
-      content: "";
     }
 
     .approach-decoration .oak-tablet {
@@ -506,7 +473,7 @@ const principles = [
       display: grid;
       width: 44px;
       margin: 0 auto 32px;
-      box-shadow: 0 8px 16px -8px rgb(6 11 6 / 40%);
+      box-shadow: var(--shadow-control);
     }
   }
 </style>

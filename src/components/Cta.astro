@@ -4,7 +4,7 @@ import { whatsappUrl } from '../config/business';
 interface Props {
   label?: string;
   href?: string;
-  variant?: 'primary' | 'outline' | 'light';
+  variant?: 'primary' | 'outline' | 'light' | 'glass';
   icon?: string | false;
   class?: string;
 }
@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 ---
 
-<a class:list={['cta', `cta--${variant}`, className]} href={href}>
+<a class:list={['cta', `cta--${variant}`, { 'liquid-glass': variant === 'glass' }, className]} href={href}>
   <span>{label}</span>
   {icon && <span class="cta-icon" aria-hidden="true"><img src={icon} width="22" height="22" alt="" /></span>}
 </a>
@@ -35,26 +35,30 @@ const {
     padding: var(--cta-padding, 0.65rem clamp(1rem, 2vw, 1.5rem));
     border: 1px solid transparent;
     border-radius: 999px;
-    background: var(--cta-background, linear-gradient(#2b4027, #1c2b1a));
-    color: var(--cta-color, var(--color-cream));
-    font-size: var(--cta-font-size, clamp(1rem, 0.96rem + 0.28vw, 1.375rem));
+    font-size: var(--text-button);
     line-height: 1.25;
     font-weight: 600;
     text-align: start;
     text-decoration: none;
-    box-shadow: inset 0 1px 0.5px #ffffff47, inset 0 -1px 1px #ffffff0d;
-    transition: filter var(--motion-state), box-shadow var(--motion-state) var(--ease-soft);
+    transition: filter var(--motion-state) var(--ease-soft), box-shadow var(--motion-state) var(--ease-soft);
+  }
+
+  .cta:not(:global(.liquid-glass)) {
+    background: var(--cta-background, var(--surface-action));
+    color: var(--cta-color, var(--color-paper));
+    box-shadow: var(--cta-highlight, var(--highlight-dark));
   }
 
   .cta--outline {
     --cta-background: transparent;
-    --cta-color: var(--color-cream);
+    --cta-color: var(--color-paper);
     border-color: currentColor;
   }
 
   .cta--light {
-    --cta-background: var(--color-paper);
+    --cta-background: var(--surface-paper);
     --cta-color: var(--color-forest);
+    --cta-highlight: var(--highlight-light);
   }
 
   .cta-icon {
@@ -64,17 +68,25 @@ const {
     inline-size: var(--cta-icon-size, 2rem);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: linear-gradient(#ffffff3a, #ffffff14);
-    box-shadow: inset 0 1px 1px #ffffff38;
+    background: var(--surface-on-forest);
+    box-shadow: var(--highlight-dark);
   }
 
   .cta--light .cta-icon { background: var(--color-forest); }
 
   @media (hover: hover) {
     .cta:hover {
-      box-shadow: inset 0 1px 0.5px #ffffff47, 0 6px 16px #14201328;
       filter: brightness(1.08);
     }
+    .cta:not(:global(.liquid-glass)):hover:not(:focus-visible) {
+      box-shadow: var(--cta-highlight, var(--highlight-dark)), var(--shadow-control);
+    }
+  }
+
+  .cta:focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-paper);
   }
 
   .cta:active { filter: brightness(.91); }
@@ -82,10 +94,10 @@ const {
   @media (prefers-reduced-motion: no-preference) {
     .cta { transition-property: filter, box-shadow, translate, scale; }
     .cta-icon img { transition: translate var(--motion-state) var(--ease-soft); }
-    .cta-icon { transition: scale var(--motion-panel) var(--ease-soft); }
+    .cta-icon { transition: scale var(--motion-state) var(--ease-soft); }
     .cta:focus-visible img { translate: .15rem 0; }
     .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
-    .cta:active .cta-icon { scale: .91; }
+    .cta:active .cta-icon { scale: .94; transition-duration: var(--motion-press); }
 
     @media (hover: hover) and (pointer: fine) {
       .cta:hover { translate: 0 -1px; }

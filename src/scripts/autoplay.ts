@@ -1,122 +1,112 @@
-const interval = 8500;
+export const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-export function setupAutoplay(
-  root: HTMLElement,
+function watchGalleryPlayback(
   surface: HTMLElement,
-  progress: HTMLElement | undefined,
-  advance: () => Promise<void>,
-  warmNeighbors: () => void,
-  cancelAdvance: () => void,
+  area: HTMLElement,
+  update: (playing: boolean) => void,
 ) {
-  const button = root.querySelector<HTMLButtonElement>('[data-gallery-play]');
+  const button = area.querySelector<HTMLButtonElement>('[data-gallery-playback]');
   if (!button) return;
 
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let enabled = !reduced.matches;
+  let enabled = true;
   let visible = false;
   let hovering = false;
   let pointer: number | undefined;
-  let timer: number | undefined;
-  let elapsed = 0;
-  let started = 0;
-  let advancing = false;
-  let fill: Animation | undefined;
-  let pointerToggle: boolean | undefined;
+  let playing = false;
 
-  const canRun = () => enabled && visible && !document.hidden && !hovering && pointer === undefined;
+  const sync = () => {
+    const focused = document.activeElement;
+    const usingKeyboard = focused !== button && area.contains(focused) && focused?.matches(':focus-visible');
+    const dialogOpen = area.querySelector('dialog:is(:popover-open, [open])');
+    const next = enabled && visible && !reducedMotion.matches && !document.hidden
+      && !hovering && pointer === undefined && !usingKeyboard && !dialogOpen;
+    if (next === playing) return;
+    playing = next;
+    update(playing);
+  };
 
-  function stop() {
-    if (timer !== undefined) {
-      clearTimeout(timer);
-      timer = undefined;
-      elapsed = Math.min(interval, elapsed + performance.now() - started);
-    }
-    if (advancing && !canRun()) cancelAdvance();
-    fill?.pause();
-  }
-
-  function tick() {
-    timer = undefined;
-    elapsed = 0;
-    fill?.cancel();
-    fill = undefined;
-    if (!canRun()) return;
-    advancing = true;
-    void advance().finally(() => { advancing = false; sync(); });
-  }
-
-  function sync() {
-    button!.dataset.playState = enabled ? 'playing' : 'paused';
-    button!.setAttribute('aria-label', enabled ? 'Pausar carrusel' : 'Reproducir carrusel');
-    if (!canRun()) { stop(); return; }
-    if (timer !== undefined || advancing) return;
-
-    if (progress && !reduced.matches) {
-      fill ??= progress.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: interval, fill: 'both' });
-      fill.currentTime = elapsed;
-      fill.play();
-    }
-    started = performance.now();
-    timer = window.setTimeout(tick, Math.max(0, interval - elapsed));
-  }
-
-  function restartProgress() {
-    stop();
-    elapsed = 0;
-    fill?.cancel();
-    fill = undefined;
+  const reflect = () => {
+    button.hidden = reducedMotion.matches;
+    button.setAttribute('aria-label', enabled ? 'Pausar carrusel' : 'Reproducir carrusel');
+    button.toggleAttribute('data-playback-paused', !enabled);
     sync();
-  }
+  };
 
-  button.inert = false;
-  button.addEventListener('pointerdown', () => { pointerToggle = enabled; });
-  button.addEventListener('pointercancel', () => { pointerToggle = undefined; });
-  button.addEventListener('click', (event) => {
-    enabled = !(event.detail > 0 ? pointerToggle ?? enabled : enabled);
-    pointerToggle = undefined;
-    if (enabled) restartProgress();
-    else sync();
+  button.addEventListener('click', () => {
+    enabled = !enabled;
+    reflect();
   });
-
-  root.addEventListener('pointerenter', (event) => {
-    if (event.pointerType === 'touch') return;
+  area.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || hovering) return;
     hovering = true;
     sync();
   });
-  root.addEventListener('pointerleave', (event) => {
+  area.addEventListener('pointerleave', (event) => {
     if (event.pointerType === 'touch') return;
     hovering = false;
     sync();
   });
-  root.addEventListener('pointerdown', (event) => {
+  area.addEventListener('pointerdown', (event) => {
     if (!event.isPrimary) return;
     pointer = event.pointerId;
     sync();
   });
   const release = (event: PointerEvent) => {
-    if (pointer !== event.pointerId) return;
+    if (event.pointerId !== pointer) return;
     pointer = undefined;
     sync();
   };
   window.addEventListener('pointerup', release);
   window.addEventListener('pointercancel', release);
-  window.addEventListener('blur', () => { pointer = undefined; hovering = false; sync(); });
-  root.addEventListener('focusin', (event) => {
-    if (!(event.target instanceof HTMLElement) || !event.target.matches(':focus-visible')) return;
-    enabled = false;
+  window.addEventListener('blur', () => {
+    pointer = undefined;
+    hovering = false;
     sync();
   });
+  area.addEventListener('focusin', sync);
+  area.addEventListener('focusout', () => queueMicrotask(sync));
+  for (const dialog of area.querySelectorAll('dialog')) {
+    dialog.addEventListener('toggle', sync);
+    dialog.addEventListener('close', sync);
+  }
   document.addEventListener('visibilitychange', sync);
-  reduced.addEventListener('change', () => {
-    if (reduced.matches) enabled = false;
-    restartProgress();
-  });
-
+  reducedMotion.addEventListener('change', reflect);
   new IntersectionObserver(([entry]) => {
-    visible = entry.intersectionRatio >= .3;
-    if (visible) warmNeighbors();
+    visible = entry.intersectionRatio >= .25;
     sync();
-  }, { threshold: .3, rootMargin: '-72px 0px 0px' }).observe(surface);
-  sync();
-  return { restartProgress };
+  }, { threshold: .25, rootMargin: '-72px 0px 0px' }).observe(surface);
+  reflect();
+}
+
+export function setupAutoAdvance(
+  surface: HTMLElement,
+  area: HTMLElement,
+  advance: (stillPlaying: () => boolean) => void | Promise<void>,
+  delay = 7500,
+) {
+  let playing = false;
+  let advancing = false;
+  let timer = 0;
+  let revision = 0;
+
+  const restart = () => {
+    const version = ++revision;
+    clearTimeout(timer);
+    if (!playing || advancing) return;
+    timer = window.setTimeout(async () => {
+      advancing = true;
+      try {
+        await advance(() => playing && version === revision);
+      } finally {
+        advancing = false;
+        restart();
+      }
+    }, delay);
+  };
+
+  watchGalleryPlayback(surface, area, (active) => {
+    playing = active;
+    restart();
+  });
+  return restart;
 }

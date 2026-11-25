@@ -1,7 +1,7 @@
 ---
 import { Image, Picture } from 'astro:assets';
 import Cta from '../components/Cta.astro';
-import GalleryPlay from '../components/GalleryPlay.astro';
+import GalleryPlayback from '../components/GalleryPlayback.astro';
 import { business, firstVisitUrl } from '../config/business';
 import hero from '../assets/opening/hero.png';
 import room from '../assets/opening/trust-room.png';
@@ -66,20 +66,21 @@ const credentials = [
         ))}
       </div>
       <div class="hero-media__shade" aria-hidden="true"></div>
-      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} />
-      <div class="hero-media__experience">
+      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass" />
+      <div class="hero-media__experience liquid-glass">
         <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
         <p>Acompañando a personas mayores y sus familias.</p>
       </div>
-      <fieldset class="hero-media__paging" data-gallery-pagination>
+      <fieldset class="gallery-pagination hero-media__paging" data-gallery-pagination>
         <legend class="sr-only">Fotografías de El Roble</legend>
-        <GalleryPlay controls="hero-gallery-photos" />
         {photos.map(({ alt }, index) => (
-          <label class="hero-media__dot" data-gallery-dot>
-            <input type="radio" name="opening-photo" value={index} checked={index === 0} aria-label={alt} />
+          <label data-gallery-dot>
+            <input type="radio" name="opening-photo" value={index} checked={index === 0}
+              aria-label={alt} aria-controls="hero-gallery-photos" />
             <span data-gallery-mark aria-hidden="true"></span>
           </label>
         ))}
+        <GalleryPlayback controls="hero-gallery-photos" />
       </fieldset>
     </div>
 
@@ -94,29 +95,27 @@ const credentials = [
         <strong>GRATIS</strong>
       </a>
       <span class="first-visit__leaves" aria-hidden="true">
-        <Image src={leaves} alt="" width={144} format="webp" data-ambient="leaf" />
+        <Image src={leaves} alt="" width={144} format="webp" />
       </span>
-      <button class="first-visit__dismiss" type="button" aria-label="Cerrar promoción" hidden>×</button>
+      <button class="first-visit__dismiss liquid-glass--lens" type="button" aria-label="Cerrar promoción" hidden>
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="m5 5 8 8m0-8-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
     </aside>
 
-    <div class="opening-hero__credentials">
-      <div class="opening-hero__credential-viewport">
-        <div class="opening-hero__credential-track" data-ambient="credentials">
-          {[false, true].map((copy) => (
-            <ul class:list={['opening-hero__credential-list', copy && 'opening-hero__credential-list--copy']} role="list" aria-hidden={copy ? 'true' : undefined}>
-              {credentials.map(({ label, icon, mobile, mobileOnly }) => (
-                <li class:list={[mobileOnly && 'opening-hero__credential--mobile-only']}>
-                  <picture>
-                    {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
-                    <img src={icon.src} alt="" />
-                  </picture>
-                  {label}
-                </li>
-              ))}
-            </ul>
-          ))}
-        </div>
-      </div>
+    <div class="opening-hero__credentials liquid-glass liquid-glass--light">
+      <ul class="opening-hero__credential-list" role="list">
+        {credentials.map(({ label, icon, mobile, mobileOnly }) => (
+          <li class:list={[mobileOnly && 'opening-hero__credential--mobile-only']}>
+            <picture class="liquid-glass--lens">
+              {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
+              <img src={icon.src} alt="" />
+            </picture>
+            <span>{label}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
@@ -125,7 +124,7 @@ const credentials = [
   import { setupRadioGallery } from '../scripts/gallery';
 
   const media = document.querySelector<HTMLElement>('.hero-media');
-  if (media) setupRadioGallery(media, [...media.querySelectorAll<HTMLInputElement>('input[type="radio"]')], [...media.querySelectorAll<HTMLElement>('[data-photo-scene]')], { autoplay: true });
+  if (media) setupRadioGallery(media, [...media.querySelectorAll<HTMLInputElement>('input[type="radio"]')], [...media.querySelectorAll<HTMLElement>('[data-photo-scene]')]);
 
   const promo = document.querySelector<HTMLElement>('[data-first-visit]');
   const dismiss = promo?.querySelector<HTMLButtonElement>('.first-visit__dismiss');
@@ -138,12 +137,7 @@ const credentials = [
       try { sessionStorage.setItem(storageKey, 'true'); } catch { /* Storage is optional. */ }
       if (promo.contains(document.activeElement)) document.querySelector<HTMLAnchorElement>('.opening-hero__discover')?.focus({ preventScroll: true });
       promo.inert = true;
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        promo.hidden = true;
-        return;
-      }
-      const exit = promo.animate([{ opacity: 1, scale: '1' }, { opacity: 0, scale: '.94' }], { duration: 170, easing: 'ease-in', fill: 'forwards' });
-      void exit.finished.then(() => { promo.hidden = true; }, () => { promo.hidden = true; });
+      promo.hidden = true;
     }, { once: true });
   }
 </script>
@@ -163,9 +157,9 @@ const credentials = [
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse clamp(9rem, 24vw, 30rem) clamp(8rem, 21vw, 23rem) at 5% 12%, #e8e2db85, transparent 98%),
-      radial-gradient(ellipse clamp(9rem, 23vw, 28rem) clamp(9rem, 19vw, 25rem) at 96% 30%, #a2856454, transparent 100%),
-      linear-gradient(var(--color-cream) 46%, #e8e2db 79%, var(--color-cream));
+      radial-gradient(ellipse clamp(9rem, 24vw, 30rem) clamp(8rem, 21vw, 23rem) at 5% 12%, var(--color-sand), transparent 98%),
+      radial-gradient(ellipse clamp(9rem, 23vw, 28rem) clamp(9rem, 19vw, 25rem) at 96% 30%, var(--color-sand), transparent 100%),
+      linear-gradient(var(--color-cream) 46%, var(--color-sand) 79%, var(--color-cream));
     mask-image: linear-gradient(transparent, #000 clamp(3rem, 8vw, 8rem));
   }
   .opening-hero__inner {
@@ -193,20 +187,22 @@ const credentials = [
     gap: .75rem;
     min-block-size: 3.5rem;
     max-inline-size: 100%;
-    padding: .625rem 1.5rem;
+    padding: .65rem clamp(1rem, 2vw, 1.5rem);
     border-radius: 999px;
-    background: linear-gradient(#7a4a22, #5f3715);
-    color: var(--color-cream);
-    font-size: clamp(1.0625rem, .89rem + .4vw, 1.375rem);
+    background: linear-gradient(var(--color-oak-highlight), var(--color-oak));
+    color: var(--color-paper);
+    font-size: var(--text-button);
     font-weight: 600;
-    box-shadow: 0 6px 12px #5f371526, inset 0 1px 1px #ffffff52;
+    line-height: 1.25;
+    box-shadow: var(--highlight-dark), var(--shadow-control);
   }
   .opening-hero__discover img { flex: none; }
-  .opening-hero__discover:is(:focus-visible, :active) { background: linear-gradient(#8b5526, #693b15); }
+  .opening-hero__discover:is(:focus-visible, :active) { filter: brightness(1.07); }
+  .opening-hero__discover:focus-visible { outline-color: var(--color-oak); }
   .opening-hero__discover { transition: box-shadow var(--motion-state), filter var(--motion-state); }
   .opening-hero__discover:active { filter: brightness(.92); }
   @media (hover: hover) {
-    .opening-hero__discover:hover { background: linear-gradient(#8b5526, #693b15); }
+    .opening-hero__discover:hover { filter: brightness(1.07); }
   }
   @media (prefers-reduced-motion: no-preference) {
     .opening-hero__discover img { transition: translate var(--motion-state) var(--ease-soft); }
@@ -226,7 +222,7 @@ const credentials = [
     padding: 1rem clamp(1rem, 4vw, 3.5rem) 2.75rem;
     background: var(--color-forest);
     color: var(--color-cream);
-    box-shadow: 0 16px 32px -16px #3c2d202d;
+    box-shadow: var(--shadow-raised);
   }
   .hero-media__photos, .hero-media__scene, .hero-media__shade { position: absolute; inset: 0; }
   .hero-media__photos { z-index: -2; }
@@ -234,26 +230,18 @@ const credentials = [
   .hero-media:not([data-gallery-ready]) .hero-media__scene:first-child { display: block; }
   .hero-media__scene picture, .hero-media__scene img { display: block; inline-size: 100%; block-size: 100%; }
   .hero-media__scene img { object-fit: cover; }
-  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
-    .hero-media__scene img { transition: scale var(--motion-photo) var(--ease-soft); }
-    .hero-media:hover:not([data-scene-dragging]) .hero-media__scene img { scale: 1.016; }
-  }
   .hero-media:not([data-gallery-ready]):has(input:not([value="0"]):checked) .hero-media__scene:first-child { display: none; }
   .hero-media:not([data-gallery-ready]):has(input[value="1"]:checked) .hero-media__scene:nth-child(2),
   .hero-media:not([data-gallery-ready]):has(input[value="2"]:checked) .hero-media__scene:nth-child(3),
   .hero-media:not([data-gallery-ready]):has(input[value="3"]:checked) .hero-media__scene:nth-child(4),
   .hero-media:not([data-gallery-ready]):has(input[value="4"]:checked) .hero-media__scene:nth-child(5) { display: block; }
-  .hero-media__shade { z-index: -1; pointer-events: none; background: linear-gradient(180deg, #0b0d0e00 62%, #0b0d0e3d 78%, #0b0d0e7a 87%, #0b0d0e9e); }
-  .hero-media__experience, .hero-media__paging::before {
-    background: linear-gradient(#f4f1ec55, #f4f1ec1a);
-    backdrop-filter: blur(16px);
-    box-shadow: inset 0 1px 1px #ffffff66, inset 0 -1px 1px #ffffff14, 0 8px 16px #0b0d0e38;
+  .hero-media__shade {
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(transparent 62%, var(--color-dialog-backdrop));
   }
   .hero-media :global(.hero-media__tour) {
-    --cta-background: linear-gradient(#f4f1ec55, #f4f1ec1a);
-    --cta-padding: .63rem 1.5rem;
     white-space: nowrap;
-    backdrop-filter: blur(16px);
   }
   .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
   .hero-media__experience {
@@ -264,31 +252,15 @@ const credentials = [
     font-size: 1rem;
     line-height: 1.5;
   }
-  .hero-media__year { display: grid; gap: .75rem; margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, #f4f1ec80, transparent) left bottom / 100% 1px no-repeat; }
-  .hero-media__year span { color: #f4f1ece0; }
+  .hero-media__year { display: grid; gap: .75rem; margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, var(--color-on-forest-line), transparent) left bottom / 100% 1px no-repeat; }
+  .hero-media__year span { color: var(--color-on-forest-muted); }
   .hero-media__year strong { font: 700 clamp(3rem, 2.65rem + .75vw, 4rem) / 1 var(--font-display); }
 
   .hero-media__paging {
     position: absolute;
     inset: auto auto 0 50%;
-    display: flex;
-    align-items: center;
-    min-block-size: 2.75rem;
-    padding: 0 .5rem;
     transform: translateX(-50%);
   }
-  .hero-media__paging::before { position: absolute; z-index: -1; inset: .625rem 0; border-radius: 999px; content: ''; }
-  .hero-media__dot { display: grid; position: relative; inline-size: 1.5rem; min-block-size: 2.75rem; place-items: center; cursor: pointer; }
-  .hero-media__dot input { position: absolute; opacity: 0; }
-  .hero-media__dot span { inline-size: .5rem; block-size: .5rem; border-radius: .1875rem; background: #f4f1ec80; transition: background-color var(--motion-press); }
-  .hero-media__dot:active span { background-color: var(--color-cream); }
-  @media (hover: hover) { .hero-media__dot:hover span { background-color: var(--color-cream); } }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-media__dot span { transition: inline-size var(--motion-state) var(--ease-soft), background-color var(--motion-press); }
-  }
-  .hero-media__paging:not([data-pagination-ready]) input:checked + span { inline-size: 1.5rem; background: var(--color-cream); }
-  .hero-media__dot input:focus-visible + span { outline: 2px solid white; outline-offset: 3px; }
-  .hero-media__dot:has(input:focus-visible) { outline: 2px solid white; outline-offset: -4px; border-radius: 999px; }
 
   .first-visit {
     --offer-size: 7.6rem;
@@ -301,8 +273,7 @@ const credentials = [
     margin: 1rem;
     inline-size: var(--offer-size);
     block-size: var(--offer-size);
-    color: #fcfcfc;
-    filter: drop-shadow(0 8px 8px #5f371529);
+    color: var(--color-paper);
   }
   .first-visit__link {
     display: grid;
@@ -312,18 +283,17 @@ const credentials = [
     align-content: center;
     justify-items: center;
     border-radius: 50%;
-    background: #945c23;
+    background: var(--color-oak-highlight);
+    box-shadow: var(--shadow-control);
     font-size: clamp(.875rem, .79rem + .25vw, 1rem);
     line-height: 1.35;
   }
   .first-visit__link picture { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
   .first-visit__link strong { font: 700 clamp(1.5rem, 1.3rem + .48vw, 2rem) / 1.15 var(--font-display); }
   .first-visit__link { transition: background-color var(--motion-state); }
-  .first-visit__link:active { background-color: #80501d; }
-  @media (hover: hover) { .first-visit__link:hover { background-color: #80501d; } }
+  .first-visit__link:active { background-color: var(--color-oak); }
+  @media (hover: hover) { .first-visit__link:hover { background-color: var(--color-oak); } }
   .first-visit__leaves {
-    --ambient-phase: -1s;
-    --leaf-pivot: 78% 82%;
     position: absolute;
     inline-size: 47%;
     inset: -13% auto auto -4%;
@@ -335,16 +305,24 @@ const credentials = [
     inset: -.75rem -.375rem auto auto;
     inline-size: 2.75rem;
     block-size: 2.75rem;
-    border: 1px solid #945c23;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
-    background: linear-gradient(#ffffffd1, #fffcf680);
-    color: var(--color-forest);
-    backdrop-filter: blur(6px);
+    box-shadow: var(--highlight-light), var(--shadow-control);
   }
-  .first-visit__dismiss { transition: background-color var(--motion-press); }
-  .first-visit__dismiss:active { background-color: var(--color-paper); }
-  @media (hover: hover) { .first-visit__dismiss:hover { background-color: var(--color-paper); } }
+  .first-visit__dismiss:active { background: var(--color-paper); }
+  @media (hover: hover) { .first-visit__dismiss:hover { background: var(--color-paper); } }
   .first-visit[hidden], .first-visit__dismiss[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (transition-behavior: allow-discrete) {
+      .first-visit {
+        transform-origin: top right;
+        transition: opacity var(--motion-exit) var(--ease-soft), scale var(--motion-exit) var(--ease-soft), display var(--motion-exit) allow-discrete;
+      }
+      .first-visit[hidden] { opacity: 0; scale: .96; }
+    }
+  }
 
   .opening-hero__credentials {
     --credentials-gap: clamp(.55rem, 1.4vw, 4.5rem);
@@ -355,48 +333,37 @@ const credentials = [
     align-items: center;
     min-block-size: 3.5rem;
     inline-size: 100%;
-    padding: .65rem .875rem;
-    border-radius: 999px;
-    background: linear-gradient(#f4f1ec66, #f4f1ec33);
-    box-shadow: inset 0 1px 1px #ffffff80, 0 5px 10px #25221d14;
-    color: var(--color-forest);
+    padding: .75rem .875rem;
+    border: 1px solid var(--color-surface-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--highlight-light), var(--shadow-card);
     font-size: clamp(.9375rem, .87rem + .24vw, 1.0625rem);
     font-weight: 600;
   }
-  .opening-hero__credential-viewport { inline-size: 100%; }
   .opening-hero__credential-list {
     display: flex;
+    inline-size: 100%;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: .5rem var(--credentials-gap);
   }
   .opening-hero__credentials li { display: flex; align-items: center; gap: clamp(.375rem, 1.3vw, .75rem); }
-  .opening-hero__credentials picture { display: grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; }
-  .opening-hero__credential-list--copy, .opening-hero__credentials .opening-hero__credential--mobile-only { display: none; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .opening-hero h1, .opening-hero__intro {
-      animation: opening-arrival 1.15s cubic-bezier(.22, .72, .24, 1) backwards;
-    }
-    .opening-hero h1 { --opening-distance: clamp(.625rem, 1.2vw, 1.125rem); }
-    .opening-hero__intro { animation-delay: 90ms; }
-    .hero-media__photos { animation: opening-photo 1.45s cubic-bezier(.22, .68, .23, 1); }
-
-    @keyframes opening-arrival {
-      from { opacity: .58; translate: 0 var(--opening-distance, .625rem); }
-    }
-
-    @keyframes opening-photo {
-      from { opacity: .8; scale: 1.035; }
-    }
+  .opening-hero__credentials picture {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: clamp(1.75rem, 1.55rem + .65vw, 2.5rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
   }
+  .opening-hero__credentials .opening-hero__credential--mobile-only { display: none; }
 
   @media (max-width: 40rem) {
     .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
+    .opening-hero__inner { grid-template-columns: minmax(0, 1fr); }
     .opening-hero h1 em > span { display: block; }
     .opening-hero__intro p { line-height: 1.5; }
-    .opening-hero__discover { justify-content: space-between; min-block-size: 3.25rem; inline-size: 18.375rem; font-size: 1.125rem; }
     .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }
     .hero-media :global(.hero-media__tour) { display: none; }
     .hero-media__experience { padding: 1rem; inline-size: 100%; }
@@ -405,56 +372,24 @@ const credentials = [
     .first-visit { --offer-size: 7rem; grid-area: lead; margin: 2rem .625rem 0 0; }
     .first-visit__dismiss { border-radius: .875rem; }
     .opening-hero__credentials {
-      --credentials-gap: 1.125rem;
-      border: 1px solid #a2856438;
       border-radius: 1rem;
-      background: #faf7f1;
-      box-shadow: none;
     }
-    .opening-hero__credential-list { justify-content: flex-start; }
-    .opening-hero__credentials picture { inline-size: 1.25rem; block-size: 1.25rem; }
-    .opening-hero__credentials .opening-hero__credential--mobile-only { display: flex; }
+    .opening-hero__credential-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+      gap: .55rem .75rem;
+    }
+    .opening-hero__credentials .opening-hero__credential--mobile-only { display: flex; grid-column: 1 / -1; }
   }
   @media (max-width: 22.5rem) {
     .first-visit { --offer-size: 6.675rem; grid-area: photo; margin-block-start: 1rem; margin-inline-end: 1rem; }
     .first-visit__link picture { inset: .1rem; }
-    .opening-hero__credentials { --credentials-gap: .75rem; padding-inline: .75rem; }
-  }
-  @media (max-width: 40rem) and (prefers-reduced-motion: no-preference) {
-    .opening-hero__inner { grid-template-columns: minmax(0, 1fr); }
-    .opening-hero__credentials { padding-inline: 0; }
-    .opening-hero__credential-viewport { overflow-x: auto; scrollbar-width: none; }
-    .opening-hero__credential-viewport:has([data-ambient-started]) {
-      overflow: clip;
-      mask-image: linear-gradient(to right, transparent, #000 .875rem, #000 calc(100% - .875rem), transparent);
-    }
-    .opening-hero__credential-track {
-      --ambient-animation: credentials-loop;
-      --ambient-duration: 28s;
-      --ambient-ease: linear;
-      display: flex;
-      inline-size: max-content;
-    }
-    .opening-hero__credential-list { flex-wrap: nowrap; gap: 0; }
-    .opening-hero__credential-track[data-ambient-started] .opening-hero__credential-list--copy { display: flex; }
-    .opening-hero__credentials li { position: relative; padding-inline: 1rem; white-space: nowrap; }
-    .opening-hero__credentials li::after {
-      position: absolute;
-      inset-inline-end: -1px;
-      inline-size: 3px;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: #8d795a;
-      content: '';
-    }
-    @keyframes credentials-loop { to { translate: -50% 0; } }
+    .opening-hero__credentials { padding-inline: .75rem; }
   }
   @media (min-width: 40.001rem) and (max-width: 72.999rem) {
     .opening-hero { --opening-gap: 2rem; padding-block-start: 2.25rem; }
     .opening-hero__intro { gap: 1.25rem; }
-    .opening-hero__discover { min-inline-size: 18.375rem; font-size: 1.125rem; }
     .hero-media { padding-inline: 1.5rem; }
-    .hero-media :global(.hero-media__tour) { --cta-width: 14.0625rem; --cta-font-size: 1.125rem; --cta-padding: .625rem 1.375rem; }
   }
   @media (min-width: 73rem) {
     .opening-hero__lead { grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; min-block-size: clamp(9.5rem, 11.25vw, 13.5rem); }
@@ -465,11 +400,10 @@ const credentials = [
       grid-area: photo;
       margin: clamp(1.5rem, 2vw, 2.25rem) clamp(1rem, 2vw, 2.25rem) 0 0;
     }
-    .first-visit__dismiss { inset: -1rem -.75rem auto auto; color: #945c23; }
+    .first-visit__dismiss { inset: -1rem -.75rem auto auto; }
     .hero-media { padding-block-end: 2.5rem; }
-    .hero-media :global(.hero-media__tour) { --cta-font-size: clamp(1.125rem, .8rem + .48vw, 1.375rem); }
     .hero-media__experience { inline-size: 17.5rem; }
     .hero-media__paging { inset-block-end: 1.375rem; }
-    .opening-hero__credentials { --credentials-gap: clamp(2rem, 3.75vw, 4.5rem); min-block-size: 4.5rem; inline-size: min(100%, 62.625rem); box-shadow: none; }
+    .opening-hero__credentials { --credentials-gap: clamp(2rem, 3.75vw, 4.5rem); min-block-size: 4.5rem; inline-size: min(100%, 62.625rem); }
   }
 </style>

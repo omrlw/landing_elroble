@@ -1,26 +1,23 @@
 import { createPagination } from './pagination';
-import { setupAutoplay } from './autoplay';
+import { reducedMotion, setupAutoAdvance } from './autoplay';
+import { duration, gsap } from '../motion/gsap';
 
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-
-type GalleryOptions = {
-  controlsRoot?: HTMLElement;
-  autoplay?: boolean;
-};
-
-export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputElement[], scenes: HTMLElement[], options: GalleryOptions = {}) {
+export function setupRadioGallery(
+  surface: HTMLElement,
+  controls: HTMLInputElement[],
+  scenes: HTMLElement[],
+  root = surface,
+  onSelect?: (index: number) => void,
+) {
   if (controls.length < 2 || scenes.length !== controls.length) return;
 
-  const root = options.controlsRoot ?? surface;
   const pagination = createPagination(root.querySelector<HTMLElement>('[data-gallery-pagination]'));
   let selected = Math.max(0, controls.findIndex((control) => control.checked));
   let requested = selected;
+  let nextAutomatic = selected;
   let version = 0;
-  let automaticRequest = false;
   let outgoing: HTMLElement | undefined;
-  let transition: Animation | undefined;
-  let player: ReturnType<typeof setupAutoplay> | undefined;
-  const failed = new Set<number>();
+  let transition: { timeline: gsap.core.Timeline; finished: Promise<void>; complete: () => void } | undefined;
   let gesture: { id: number; x: number; y: number; dragging: boolean } | undefined;
 
   const photos = scenes.map((scene) => scene instanceof HTMLImageElement ? [scene] : [...scene.querySelectorAll('img')]);
@@ -38,39 +35,50 @@ export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputEleme
 
   const setCurrent = (index: number) => {
     selected = index;
+    nextAutomatic = index;
     controls[index].checked = true;
     controls.forEach((control, position) => control.toggleAttribute('data-gallery-current', position === index));
     for (const [position, scene] of scenes.entries()) scene.setAttribute('aria-hidden', String(position !== index));
     scenes[index].dataset.photoState = 'active';
     root.dataset.galleryIndex = String(index);
     pagination?.select(index);
+    onSelect?.(index);
   };
 
   const clearTransition = () => {
-    transition?.cancel();
+    const current = transition;
     transition = undefined;
     if (outgoing) delete outgoing.dataset.photoState;
     outgoing = undefined;
+    current?.timeline.revert();
+    current?.complete();
   };
 
-  async function select(index: number, automatic = false) {
+  const settleTransition = (manual: boolean) => {
+    if (!transition) return;
+    const { timeline, finished } = transition;
+    if (manual) {
+      const remaining = timeline.duration() - timeline.time();
+      timeline.timeScale(Math.max(1, Math.min(1.45, remaining / duration.gallery)));
+    }
+    return finished;
+  };
+
+  async function select(index: number, stillPlaying?: () => boolean) {
     const currentRequest = ++version;
-    automaticRequest = automatic;
     requested = index;
     for (const scene of scenes) {
       if (scene.dataset.photoState === 'staged') delete scene.dataset.photoState;
     }
     if (index === selected) {
-      automaticRequest = false;
       controls[selected].checked = true;
       return;
     }
 
     const scene = scenes[index];
-    const settled = transition?.finished.catch(() => {});
     warm(index);
     if (scene === outgoing) {
-      await settled;
+      await settleTransition(!stillPlaying);
       if (currentRequest !== version) return;
     }
 
@@ -82,26 +90,20 @@ export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputEleme
     });
     if (currentRequest !== version) return;
 
-    if (!images.length || !ready) {
-      delete scene.dataset.photoState;
-      failed.add(index);
-      requested = selected;
-      controls[selected].checked = true;
-      automaticRequest = false;
-      return;
-    }
-    failed.delete(index);
-
-    // Keep the photo underneath until the current dissolve finishes.
+    // A new selection shortens the active dissolve without jumping between frames.
+    const settled = ready && images.length && stillPlaying?.() !== false ? settleTransition(!stillPlaying) : undefined;
     if (settled) await settled;
     if (currentRequest !== version) return;
-    automaticRequest = false;
+    if (!images.length || !ready || stillPlaying?.() === false) {
+      delete scene.dataset.photoState;
+      requested = selected;
+      controls[selected].checked = true;
+      return;
+    }
 
-    clearTransition();
     const previous = scenes[selected];
     previous.dataset.photoState = 'leaving';
     outgoing = previous;
-    root.setAttribute('data-gallery-changed', '');
     setCurrent(index);
     warmNeighbors();
     if (reducedMotion.matches) {
@@ -109,25 +111,38 @@ export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputEleme
       return;
     }
 
-    const revealed = scene.animate(
-      [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 1050, easing: 'cubic-bezier(.32, .16, .24, 1)' },
-    );
-    transition = revealed;
-    void revealed.finished.then(() => {
-      if (transition !== revealed) return;
-      delete previous.dataset.photoState;
-      outgoing = undefined;
-      transition = undefined;
-    }, () => {});
+    let complete!: () => void;
+    const finished = new Promise<void>((resolve) => { complete = resolve; });
+    const timeline = gsap.timeline({ onComplete: clearTransition });
+    const tiles = [...scene.querySelectorAll<HTMLElement>('[data-gallery-tile]')]
+      .filter((tile) => tile.getClientRects().length);
+    const length = stillPlaying ? duration.scene : duration.reveal;
+    const stagger = tiles.length > 1 ? .045 : 0;
+
+    timeline.fromTo(tiles.length ? tiles : scene, { opacity: 0 }, {
+      opacity: 1, duration: length, stagger, ease: 'sine.inOut',
+    }, 0);
+
+    if (tiles.length) {
+      timeline.fromTo(images, { scale: 1.045 }, {
+        scale: 1, duration: length, stagger, ease: 'power2.out',
+      }, 0);
+    }
+    transition = { timeline, finished, complete };
   }
+
+  const restart = setupAutoAdvance(surface, root, (stillPlaying) => {
+    nextAutomatic = wrap(nextAutomatic + 1);
+    return select(nextAutomatic, stillPlaying);
+  });
+  const selectManually = (index: number) => {
+    restart();
+    void select(index);
+  };
 
   controls.forEach((control, index) => {
     control.setAttribute('data-gallery-bound', '');
-    control.addEventListener('change', () => {
-      player?.restartProgress();
-      void select(index);
-    });
+    control.addEventListener('change', () => selectManually(index));
     control.addEventListener('focus', warmNeighbors);
   });
   surface.addEventListener('pointerenter', warmNeighbors);
@@ -170,10 +185,7 @@ export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputEleme
     const direction = distance < 0 ? 1 : -1;
     const advance = gesture.dragging && Math.abs(distance) >= 35;
     clearGesture();
-    if (advance) {
-      player?.restartProgress();
-      void select(wrap(requested + direction));
-    }
+    if (advance) selectManually(wrap(requested + direction));
   });
   surface.addEventListener('pointercancel', clearGesture);
   surface.addEventListener('lostpointercapture', (event) => { if (event.target === surface) clearGesture(); });
@@ -182,17 +194,6 @@ export function setupRadioGallery(surface: HTMLElement, controls: HTMLInputEleme
 
   setCurrent(selected);
   surface.setAttribute('data-gallery-ready', '');
-  if (options.autoplay) {
-    desktopMosaic.addEventListener('change', (event) => {
-      if (event.matches && surface.getBoundingClientRect().top < innerHeight) warm(selected);
-    });
-    player = setupAutoplay(root, surface, pagination?.progress, async () => {
-      for (let step = 1; step < scenes.length; step += 1) {
-        const next = wrap(selected + step);
-        if (!failed.has(next)) { await select(next, true); break; }
-      }
-    }, warmNeighbors, () => { if (automaticRequest) void select(selected); });
-  }
 }
 
 function addTrackDrag(track: HTMLElement, getStops: () => number[]) {
@@ -252,9 +253,8 @@ function addTrackDrag(track: HTMLElement, getStops: () => number[]) {
   }, true);
 }
 
-function snapPositions(track: HTMLElement, slides: readonly HTMLElement[]) {
+function snapPositions(slides: readonly HTMLElement[], end: number) {
   const start = slides[0]?.offsetLeft ?? 0;
-  const end = Math.max(0, track.scrollWidth - track.clientWidth);
   return [...new Set([0, ...slides.map((slide) => Math.max(0, Math.min(end, slide.offsetLeft - start))), end])];
 }
 
@@ -262,20 +262,28 @@ function nearestStop(stops: readonly number[], left: number) {
   return stops.reduce((closest, stop, index) => Math.abs(stop - left) < Math.abs(stops[closest] - left) ? index : closest, 0);
 }
 
-export function setupSnapTrack(track: HTMLElement, buttons: HTMLButtonElement[], pageCount?: () => number) {
+interface TrackOptions {
+  playbackArea: HTMLElement;
+  pageCount?: () => number;
+  readingTime?: number;
+}
+
+export function setupSnapTrack(track: HTMLElement, buttons: HTMLButtonElement[], { playbackArea, pageCount, readingTime }: TrackOptions) {
   const slides = [...track.children].filter((node): node is HTMLElement => node instanceof HTMLElement);
-  const pagination = createPagination(buttons[0]?.parentElement ?? null);
+  const rail = buttons[0]?.parentElement ?? null;
+  const pagination = createPagination(rail);
   let stops = [0];
   let pages = [0];
   let active = 0;
   let reflected = -1;
-  let pending: number | undefined;
+  let pending: { index: number; left: number } | undefined;
   let frame = 0;
+  let direction = 1;
 
   const reflect = () => {
     frame = 0;
     const left = track.scrollLeft;
-    if (pending !== undefined && Math.abs(pages[pending] - left) < 2) pending = undefined;
+    if (pending && Math.abs(pending.left - left) < 2) pending = undefined;
     active = nearestStop(pages, left);
     if (active === reflected) return;
     reflected = active;
@@ -289,32 +297,44 @@ export function setupSnapTrack(track: HTMLElement, buttons: HTMLButtonElement[],
   };
 
   const measure = () => {
-    stops = snapPositions(track, slides);
-    const end = stops.at(-1) ?? 0;
+    const end = Math.max(0, track.scrollWidth - track.clientWidth);
+    stops = snapPositions(slides, end);
     const count = pageCount?.() ?? buttons.length;
     pages = pageCount
-      ? Array.from({ length: count }, (_, index) => stops[nearestStop(stops, index * end / Math.max(1, count - 1))])
+      ? [...new Set(Array.from({ length: count }, (_, index) => stops[nearestStop(stops, index * end / Math.max(1, count - 1))]))]
       : stops.slice(0, count);
     pending = undefined;
     reflected = -1;
     buttons.forEach((button, index) => { button.hidden = index >= pages.length || end <= 1; });
-    if (pageCount && buttons[0]?.parentElement) buttons[0].parentElement.hidden = end <= 1;
+    if (rail) rail.hidden = end <= 1;
     reflect();
   };
 
   const goTo = (index: number) => {
-    pending = index;
-    track.scrollTo({ left: pages[index], behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    const left = pages[index];
+    pending = { index, left };
+    track.scrollTo({ left, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   };
 
-  buttons.forEach((button, index) => button.addEventListener('click', () => goTo(index)));
+  const restart = setupAutoAdvance(track, playbackArea, () => {
+    if (pages.length < 2) return;
+    if (active === 0) direction = 1;
+    if (active === pages.length - 1) direction = -1;
+    goTo(active + direction);
+  }, readingTime);
+
+  const goManually = (index: number) => {
+    restart();
+    goTo(index);
+  };
+  buttons.forEach((button, index) => button.addEventListener('click', () => goManually(index)));
   track.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(reflect); }, { passive: true });
   const interrupt = () => { pending = undefined; };
   track.addEventListener('pointerdown', interrupt);
   track.addEventListener('wheel', interrupt, { passive: true });
   track.addEventListener('keydown', (event) => {
     if (event.target !== track || pages.length < 2) return;
-    const current = pending ?? active;
+    const current = pending?.index ?? active;
     const destinations: Record<string, number> = {
       ArrowLeft: Math.max(0, current - 1),
       ArrowRight: Math.min(pages.length - 1, current + 1),
@@ -324,10 +344,11 @@ export function setupSnapTrack(track: HTMLElement, buttons: HTMLButtonElement[],
     const destination = destinations[event.key];
     if (destination === undefined) return;
     event.preventDefault();
-    goTo(destination);
+    goManually(destination);
   });
 
   addTrackDrag(track, () => stops);
   new ResizeObserver(measure).observe(track);
+  reducedMotion.addEventListener('change', measure);
   measure();
 }

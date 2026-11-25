@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../sections/Header.astro';
 import Hero from '../sections/Hero.astro';
 import Trust from '../sections/Trust.astro';
-import Story from '../sections/Story.astro';
 import Day from '../sections/Day.astro';
 import Approach from '../sections/Approach.astro';
 import Program from '../sections/Program.astro';
@@ -18,13 +17,15 @@ import Community from '../sections/Community.astro';
   <Header />
   <main id="contenido" tabindex="-1">
     <div class="opening">
-      <span class="opening-glass opening-glass--left" data-ambient="glass" aria-hidden="true"></span>
-      <span class="opening-glass opening-glass--right" data-ambient="glass" aria-hidden="true"></span>
+      <span class="opening-glass opening-glass--left" aria-hidden="true"></span>
+      <span class="opening-glass opening-glass--right" aria-hidden="true"></span>
       <Hero />
     </div>
     <Trust />
     <div class="story-and-day">
+      {/* Sección cinematográfica en proceso. Pendiente de aclarar la historia y revisar la animación antes de volver a mostrarla.
       <Story />
+      */}
       <Day />
     </div>
     <Approach />
