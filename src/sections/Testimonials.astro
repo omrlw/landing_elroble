@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
+import oakBough from '../assets/botanical/testimonials-oak-bough.webp';
 import carmen from '../assets/lower/testimonial-carmen.png';
 import jorge from '../assets/lower/testimonial-jorge.png';
 import patricia from '../assets/lower/testimonial-patricia.png';
@@ -17,10 +18,13 @@ const placements = [
 <section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
   <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
+    <Image class="review-sprig" src={oakBough} alt="" aria-hidden="true"
+      width={320} widths={[96, 144, 224, 320]}
+      sizes="(min-width: 40rem) clamp(88px, 12vw, 176px), 74px" format="webp" />
     <p>Historias de familias que encontraron en El Roble tranquilidad, compañía y un cuidado digno para quienes más quieren.</p>
   </header>
 
-  <div class="review-container" data-reveal="rail">
+  <div class="container review-container" data-reveal="rail">
     <ul class="review-track" id="review-track" tabindex="0" aria-label="Reseñas de familias" data-review-track>
       {reviews.map((review, index) => {
         const [column, start, end] = placements[index];
@@ -29,7 +33,7 @@ const placements = [
 
         return (
           <li
-            class:list={['review-card liquid-glass liquid-glass--light', { featured: review.featured }]}
+            class:list={['review-card liquid-glass liquid-glass--reading', { featured: review.featured }]}
             style={`--column:${column};--start:${start};--end:${end}`}
           >
             <div class="review-body">
@@ -39,7 +43,7 @@ const placements = [
                 <p class="tablet-quote">{review.tabletQuote}</p>
               </blockquote>
               {review.excerpt && (
-                <button type="button" class="read-review" popovertarget={popover} aria-label={`Leer reseña de ${review.name}`}>
+                <button type="button" class="read-review liquid-glass liquid-glass--clear liquid-glass--interactive" popovertarget={popover} aria-label={`Leer reseña de ${review.name}`}>
                   Leer reseña
                 </button>
               )}
@@ -49,7 +53,7 @@ const placements = [
               {avatar ? (
                 <Image class="avatar" src={avatar} alt="" widths={[40, 52, 104]} sizes="(min-width: 80rem) 52px, 40px" />
               ) : (
-                <span class="avatar avatar--initials" aria-hidden="true">{review.initials}</span>
+                <span class="avatar avatar--initials liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">{review.initials}</span>
               )}
               <div class="identity">
                 <p class="name">{review.name}</p>
@@ -73,10 +77,10 @@ const placements = [
   </div>
 
   {reviews.map((review, index) => review.excerpt && (
-    <dialog class="review-popover" id={`review-${index + 1}`} popover="auto" aria-labelledby={`review-title-${index + 1}`}>
+    <dialog class="review-popover liquid-glass liquid-glass--reading" id={`review-${index + 1}`} popover="auto" aria-labelledby={`review-title-${index + 1}`}>
       <h3 id={`review-title-${index + 1}`}>{review.name}</h3>
       <blockquote><p>“{review.quote}”</p></blockquote>
-      <button class="liquid-glass--lens" type="button" autofocus popovertarget={`review-${index + 1}`} popovertargetaction="hide">Cerrar reseña</button>
+      <button class="liquid-glass liquid-glass--clear liquid-glass--interactive" type="button" autofocus popovertarget={`review-${index + 1}`} popovertargetaction="hide">Cerrar reseña</button>
     </dialog>
   ))}
 
@@ -122,30 +126,45 @@ const placements = [
 
 <style>
   .testimonials {
-    --track-gap: 0.75rem;
+    --track-gap: var(--space-related);
     position: relative;
     isolation: isolate;
     background: var(--surface-forest);
     color: var(--color-cream);
-    padding-block: 2.25rem;
+    padding-block: var(--space-section) var(--section-gap);
     border-radius: 1.25rem;
   }
 
-  .review-opening { position: relative; margin-block-end: 1.25rem; }
+  .review-opening {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-detail);
+    align-items: center;
+    margin-block-end: var(--section-gap);
+  }
   .review-opening h2 {
     margin: 0;
-    font: 700 clamp(1.75rem, .75rem + 3.6vw, 4rem)/1.12 var(--font-display);
     color: inherit;
     min-width: 0;
     overflow-wrap: break-word;
-    text-wrap: balance;
   }
   .review-opening em { font-weight: inherit; }
   .review-opening p { display: none; }
+  .review-sprig {
+    inline-size: clamp(3.5rem, 16vw, 4.625rem);
+    block-size: auto;
+    margin-inline-end: .375rem;
+    rotate: -8deg;
+    opacity: .83;
+    pointer-events: none;
+  }
 
   .review-container { overflow: clip; }
+  @media (width < 80rem) {
+    .review-container { width: auto; }
+  }
   .review-track {
-    --review-gutter: max(var(--page-gutter), (100% - 105rem) / 2);
+    --review-gutter: var(--page-gutter);
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min(78%, 19rem);
@@ -163,46 +182,41 @@ const placements = [
   .review-track:focus-visible { outline-offset: -.25rem; }
 
   .review-card {
-    --glass-color: var(--color-ink);
-    --glass-tint: linear-gradient(148deg,
-      color-mix(in srgb, var(--color-paper) var(--review-glass-top, 86%), transparent),
-      color-mix(in srgb, var(--color-cream) 65%, transparent));
-    box-shadow: var(--highlight-light), var(--shadow-control);
     min-width: 0;
     min-height: 16.5rem;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    gap: .5rem;
-    padding: 1rem;
+    gap: var(--space-related);
+    padding: var(--space-related);
     scroll-snap-align: start;
-    border: 1px solid color-mix(in srgb, var(--color-paper) 42%, transparent);
+    border: 1px solid transparent;
     border-radius: 1.25rem;
   }
 
-  .review-card.featured { --review-glass-top: 96%; }
+  .review-card.featured { --glass-fill: linear-gradient(var(--color-paper), var(--color-cream) 150%); }
   .review-body blockquote, .review-body p, .author p { margin: 0; }
-  .review-body { font-size: clamp(1rem, .8rem + .18vw, 1.25rem); line-height: 1.55; }
   .tablet-quote { display: none; }
   .quote-mark {
     display: block;
     block-size: 1.5rem;
-    color: var(--color-forest);
-    font: 600 2.5rem/1 var(--font-display);
+    color: var(--color-oak);
+    font: 700 var(--text-subheading)/1 var(--font-display);
     opacity: .64;
   }
 
   .read-review {
-    min-height: 2.25rem;
-    margin-block-start: .25rem;
-    color: var(--color-forest);
-    font: 600 .875rem/1.3 var(--font-body);
-    text-decoration: underline;
-    text-underline-offset: .2em;
+    --glass-depth: 0 0 transparent;
+    --glass-hover-edge: var(--glass-edge-selected);
+    min-height: 2.5rem;
+    padding-inline: .875rem;
+    margin-block-start: .5rem;
+    border-radius: 999px;
+    font-size: var(--text-meta);
+    font-weight: 600;
   }
-  .read-review:is(:hover, :focus-visible, :active) { text-decoration-thickness: 2px; }
 
-  .author { display: flex; gap: .75rem; align-items: center; }
+  .author { display: flex; gap: var(--space-detail); align-items: center; }
   .avatar {
     display: grid;
     place-items: center;
@@ -211,30 +225,29 @@ const placements = [
     flex: none;
     object-fit: cover;
     border-radius: 50%;
-    font-size: .875rem;
+    font-size: var(--text-meta);
   }
-  .avatar--initials { background: color-mix(in srgb, var(--color-paper) 55%, transparent); }
-  .author .name { font-weight: 500; font-size: clamp(.875rem, .8rem + .3vw, 1.25rem); line-height: 1.25; color: var(--color-forest); }
-  .author .relationship { font-size: .875rem; line-height: 1.4; }
+  .author .name { font-weight: 600; font-size: var(--text-control); line-height: var(--leading-control); }
+  .author .relationship { color: var(--color-text); font-size: var(--text-meta); }
   .identity { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
   .rating {
-    color: var(--color-forest);
+    color: var(--color-text);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     align-self: start;
     gap: .15rem .375rem;
-    font-size: .875rem;
-    line-height: 1.4;
+    font-size: var(--text-meta);
   }
-  .stars { display: inline-flex; align-items: center; gap: .125rem; }
+  .stars { display: inline-flex; align-items: center; gap: .125rem; color: var(--color-oak); }
   .star { display: block; flex: none; fill: currentColor; }
   .star--empty { fill: none; stroke: currentColor; stroke-width: 1; stroke-linejoin: round; }
 
-  .review-controls { display: grid; justify-items: center; margin-block-start: .75rem; }
-  .review-controls p { margin: 0; font-size: .875rem; line-height: 1.5; }
+  .review-controls { display: grid; justify-items: center; margin-block-start: var(--space-detail); }
+  .review-controls p { margin: 0; font-size: var(--text-meta); }
 
   .review-popover {
+    --glass-depth: var(--shadow-raised);
     position: fixed;
     inset: 0;
     box-sizing: border-box;
@@ -242,9 +255,8 @@ const placements = [
     max-height: calc(100dvh - 2rem);
     overflow: auto;
     margin: auto;
-    border: 1px solid var(--color-surface-line);
+    border: 1px solid transparent;
     border-radius: var(--radius-card);
-    background: var(--color-paper);
     color: var(--color-ink);
     padding: clamp(1.25rem, 4vw, 2.5rem);
   }
@@ -253,13 +265,9 @@ const placements = [
   @supports not selector(:popover-open) {
     .review-popover:not([open]) { display: none; }
   }
-  .review-popover h3 { margin: 0; font: 700 2rem/1.1 var(--font-display); }
+  .review-popover h3 { margin: 0; }
   .review-popover blockquote { margin: 1rem 0; }
-  .review-popover button { border: 1px solid var(--color-surface-line); border-radius: 999px; padding: .65rem 1rem; font-weight: 600; }
-  .review-popover button:active { border-color: var(--color-surface-line-strong); }
-  @media (hover: hover) {
-    .review-popover button:hover { border-color: var(--color-surface-line-strong); }
-  }
+  .review-popover button { border: 1px solid transparent; border-radius: 999px; padding: .65rem 1rem; font-size: var(--text-control); font-weight: 600; }
 
   @media (prefers-reduced-motion: no-preference) {
     @supports (transition-behavior: allow-discrete) and selector(:popover-open) {
@@ -293,34 +301,28 @@ const placements = [
   }
 
   @media (min-width: 40rem) {
-    .testimonials { --track-gap: 1.5rem; border-radius: 0; padding-block: clamp(3.5rem, 9.375vw, 4.5rem); }
-    .review-opening { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 1rem; margin-block-end: 1.75rem; }
-    .review-opening h2 { font-size: clamp(2rem, 1.75rem + 2.08vw, 4rem); line-height: 1.08; }
-    .review-opening p { display: block; font-size: clamp(1rem, 1rem + .26vw, 1.25rem); line-height: 1.55; margin: 0; }
+    .testimonials { --track-gap: var(--space-inset); border-radius: 0; }
+    .review-opening { grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--section-gap); }
+    .review-opening p { display: block; margin: 0; }
+    .review-sprig { inline-size: clamp(5.5rem, 12vw, 11rem); margin-inline-end: 0; }
     .review-track { grid-auto-columns: clamp(13rem, 27vw, 16rem); }
     .review-card { min-height: 14rem; border-radius: 1.5rem; }
-    .review-body { font-size: 1rem; line-height: 1.5; }
     .quote, .relationship, .rating-caption { display: none; }
     .tablet-quote { display: block; }
     .avatar { width: 2.25rem; height: 2.25rem; }
   }
 
   @media (min-width: 80rem) {
-    .testimonials { padding-block: clamp(4.5rem, 5vw, 6rem); }
-    .review-opening { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
-    .review-opening h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
     .review-track {
+      --review-gutter: 0px;
       min-block-size: clamp(40rem, 39.583vw, 47.5rem);
       grid-auto-columns: max(18rem, calc((100% - var(--track-gap) * 4) / 5));
       grid-template-rows: repeat(95, minmax(0, 1fr));
       row-gap: 0;
     }
-    .review-card { grid-column: var(--column); grid-row: var(--start) / var(--end); min-height: 0; gap: .75rem; padding: clamp(1rem, 5vw - 4rem, 2rem); border-radius: 1.75rem; }
-    .review-body { font-size: clamp(1rem, 1.25vw - .25rem, 1.25rem); line-height: clamp(1.5rem, 2.5vw - 1rem, 2rem); }
-    .quote-mark { font-size: 3rem; block-size: 1.625rem; line-height: .85; margin-bottom: .25rem; }
+    .review-card { grid-column: var(--column); grid-row: var(--start) / var(--end); min-height: 0; border-radius: 1.75rem; }
     .tablet-quote { display: none; }
     .quote, .relationship, .rating-caption { display: block; }
-    .author { gap: clamp(.5rem, 2.5vw - 2rem, 1rem); }
     .avatar { width: clamp(2.5rem, 2.71vw, 3.25rem); height: clamp(2.5rem, 2.71vw, 3.25rem); }
     .review-controls p { display: none; }
 

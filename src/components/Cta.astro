@@ -5,7 +5,7 @@ interface Props {
   label?: string;
   compactLabel?: string;
   href?: string;
-  variant?: 'primary' | 'light' | 'glass' | 'compact';
+  variant?: 'primary' | 'light' | 'glass' | 'compact' | 'oak';
   icon?: string | false;
   class?: string;
 }
@@ -20,7 +20,14 @@ const {
 } = Astro.props;
 ---
 
-<a class:list={['cta', `cta--${variant}`, { 'liquid-glass': variant === 'glass' }, className]} href={href}>
+<a class:list={[
+  'cta liquid-glass liquid-glass--interactive',
+  `cta--${variant}`,
+  variant === 'light' ? 'liquid-glass--clear' : 'liquid-glass--action',
+  { 'liquid-glass--optical': variant === 'glass', 'liquid-glass--oak': variant === 'oak' },
+  className,
+]} href={href}>
+  <slot name="surface" />
   {compactLabel ? (
     <>
       <span class="cta-label cta-label--full">{label}</span>
@@ -37,19 +44,18 @@ const {
     display: inline-flex;
     width: var(--cta-width, fit-content);
     max-width: 100%;
-    min-height: var(--cta-height, 3.5rem);
+    min-height: var(--cta-height, var(--cta-min-height));
     align-items: center;
     justify-content: var(--cta-justify, space-between);
     gap: var(--cta-gap, 0.75rem);
     padding: var(--cta-padding, 0.65rem clamp(1rem, 2vw, 1.5rem));
     border: 1px solid transparent;
     border-radius: 999px;
-    font-size: var(--text-button);
-    line-height: 1.25;
+    font-size: var(--text-cta);
+    line-height: var(--leading-control);
     font-weight: 600;
     text-align: start;
     text-decoration: none;
-    transition: filter var(--motion-state) var(--ease-soft), box-shadow var(--motion-state) var(--ease-soft);
   }
 
   .cta-label--compact { display: none; }
@@ -59,25 +65,13 @@ const {
     --cta-gap: 0.5rem;
     --cta-padding: 0.375rem 0.5rem 0.375rem 1.0625rem;
     --cta-icon-size: 1.75rem;
-    font-size: 0.9375rem;
+    font-size: var(--text-meta);
     white-space: nowrap;
   }
 
   .cta--compact .cta-icon img {
     inline-size: 1.0625rem;
     block-size: 1.0625rem;
-  }
-
-  .cta:not(:global(.liquid-glass)) {
-    background: var(--cta-background, var(--surface-action));
-    color: var(--cta-color, var(--color-paper));
-    box-shadow: var(--cta-highlight, var(--highlight-dark));
-  }
-
-  .cta--light {
-    --cta-background: var(--surface-paper);
-    --cta-color: var(--color-forest);
-    --cta-highlight: var(--highlight-light);
   }
 
   .cta-icon {
@@ -87,50 +81,29 @@ const {
     inline-size: var(--cta-icon-size, 2rem);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: var(--surface-on-forest);
+    background: var(--glass-lens-forest);
     box-shadow: var(--highlight-dark);
   }
 
-  .cta--light .cta-icon { background: var(--color-forest); }
-
-  @media (hover: hover) {
-    .cta:hover {
-      filter: brightness(1.08);
-    }
-    .cta:not(:global(.liquid-glass)):hover:not(:focus-visible) {
-      box-shadow: var(--cta-highlight, var(--highlight-dark)), var(--shadow-control);
-    }
-  }
-
-  .cta:focus-visible {
-    outline: 2px solid var(--color-forest);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 2px var(--color-paper);
-  }
-
-  .cta:active { filter: brightness(.91); }
+  .cta--light .cta-icon { background: var(--surface-action); }
+  .cta--oak .cta-icon { inline-size: 1.25rem; background: none; box-shadow: none; }
 
   @media (prefers-reduced-motion: no-preference) {
     .cta {
-      transition:
-        filter var(--motion-state) var(--ease-soft),
-        box-shadow var(--motion-state) var(--ease-soft),
-        translate var(--motion-state) var(--ease-soft),
-        scale var(--motion-state) var(--ease-soft),
-        min-height var(--cta-resize, 0s),
-        font-size var(--cta-resize, 0s);
+      transition: box-shadow var(--glass-motion) var(--glass-ease), --glass-wash var(--glass-motion) var(--glass-ease),
+        translate var(--motion-state) var(--ease-soft), scale var(--motion-state) var(--ease-soft);
     }
     .cta-icon img { transition: translate var(--motion-state) var(--ease-soft); }
-    .cta-icon { transition: scale var(--motion-state) var(--ease-soft), inline-size var(--cta-resize, 0s); }
+    .cta-icon { transition: scale var(--motion-state) var(--ease-soft); }
     .cta:focus-visible img { translate: .15rem 0; }
-    .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
+    .cta:not(.cta--glass):active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
     .cta:active .cta-icon { scale: .94; transition-duration: var(--motion-press); }
 
     @media (hover: hover) and (pointer: fine) {
-      .cta:hover { translate: 0 -1px; }
+      .cta:not(.cta--glass):hover { translate: 0 -1px; }
       .cta:hover img { translate: .19rem 0; }
       .cta:hover:not(:active) .cta-icon { scale: 1.06; }
-      .cta:active { translate: 0 1px; }
+      .cta:not(.cta--glass):active { translate: 0 1px; }
     }
   }
 </style>

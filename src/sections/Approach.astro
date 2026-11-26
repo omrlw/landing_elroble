@@ -1,8 +1,9 @@
 ---
 import { getImage, Image } from 'astro:assets';
-import clay from '../assets/approach/clay.png';
+import accompaniment from '../assets/approach/acompanamiento-en-la-mesa.jpg';
 import portrait from '../assets/approach/portrait.png';
 import portraitMobile from '../assets/approach/portrait-mobile.png';
+import oliveSprig from '../assets/botanical/olive-sprig.webp';
 
 const mobilePortrait = await getImage({ src: portraitMobile, width: 768, format: 'webp' });
 const principles = [
@@ -28,6 +29,9 @@ const principles = [
 ---
 
 <section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
+  <Image class="approach-sprig" src={oliveSprig} alt="" aria-hidden="true"
+    width={320} widths={[128, 192, 256, 320]}
+    sizes="(min-width: 100rem) 144px, (min-width: 48rem) 9vw, 28px" format="webp" />
   <div class="container approach-inner">
     <header class="approach-heading" data-reveal="heading">
       <h2 id="approach-title">Cuidar también es<br /><em>reconocer quién es.</em></h2>
@@ -54,7 +58,7 @@ const principles = [
       </picture>
 
       <div class="approach-note">
-        <span class="approach-note-symbol" aria-hidden="true">
+        <span class="approach-note-symbol liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true">
           <img src="/images/approach/autonomy-note.svg" alt="" loading="lazy" />
         </span>
         <p class="approach-note-desktop">Seguir eligiendo. Seguir participando.</p>
@@ -62,10 +66,10 @@ const principles = [
       </div>
 
       {principles.map(({ id, title, description, tabletDescription }) => (
-        <article class={`approach-principle approach-principle--${id}`} data-reveal="quiet">
+        <article class={`approach-principle approach-principle--${id} liquid-glass liquid-glass--forest-panel`} data-reveal="quiet">
           <div class="approach-principle-heading">
             <h3><span>{title[0]}</span>{' '}{title[1]}</h3>
-            <span class="approach-principle-icon">
+            <span class="approach-principle-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens">
               <img src={`/images/approach/${id}.svg`} alt="" loading="lazy" />
             </span>
           </div>
@@ -74,10 +78,10 @@ const principles = [
         </article>
       ))}
 
-      <div class="approach-clay">
+      <div class="approach-detail">
         <Image
-          src={clay}
-          alt="Manos que sostienen figuras hechas con arcilla."
+          src={accompaniment}
+          alt="Una mujer mayor coloca una ficha en su cartón de bingo junto a una acompañante."
           format="webp"
           widths={[520, 780, 1040]}
           sizes="(max-width: 1920px) 28vw, 520px"
@@ -92,22 +96,37 @@ const principles = [
     position: relative;
     isolation: isolate;
     overflow: clip;
-    border-radius: 28px 28px 0 0;
+    margin-inline: var(--section-edge);
+    border-radius: 28px;
     background: var(--surface-forest);
     color: var(--color-cream);
-    font-family: var(--font-body);
   }
 
   .approach-inner {
     position: relative;
-    padding: 40px 12px;
+    width: calc(100% - max(.75rem, var(--page-gutter) - var(--section-edge)) * 2);
+    padding-block: var(--space-section) var(--section-gap);
+    padding-inline: .75rem;
+  }
+
+  .approach-sprig {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: clamp(.9rem, 2.5vw, 2.625rem);
+    inset-inline-start: clamp(.375rem, 1.65vw, 1.75rem);
+    inline-size: clamp(3rem, 9vw, 9rem);
+    block-size: auto;
+    scale: -1 1;
+    rotate: -14deg;
+    opacity: .47;
+    pointer-events: none;
   }
 
   .approach-heading {
     display: grid;
     justify-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: var(--space-related);
+    margin-block-end: var(--section-gap);
     text-align: center;
   }
 
@@ -115,29 +134,17 @@ const principles = [
   .approach-principle h3,
   .approach-note {
     color: inherit;
-    font-family: var(--font-display);
-  }
-
-  .approach-heading h2 {
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 40px;
-  }
-
-  .approach-heading p {
-    font-size: 16px;
-    line-height: 24px;
   }
 
   .approach-layout {
     display: grid;
     grid-template-areas: "portrait" "note" "listen" "autonomy" "family";
     grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
+    gap: var(--space-detail);
   }
 
   .approach-portrait,
-  .approach-clay {
+  .approach-detail {
     display: block;
     position: relative;
     overflow: hidden;
@@ -150,27 +157,22 @@ const principles = [
   }
 
   .approach-portrait img,
-  .approach-clay img {
+  .approach-detail img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .approach-clay {
+  .approach-detail {
     display: none;
   }
 
   .approach-note {
     grid-area: note;
-    margin: 2px 0 14px;
-    font-size: 32px;
-    line-height: 36px;
+    margin-block: var(--space-detail) var(--space-related);
+    font: 700 var(--text-subheading) / var(--leading-title) var(--font-display);
     text-align: center;
-  }
-
-  .approach-note em {
-    font-weight: 700;
   }
 
   .approach-note-symbol,
@@ -181,10 +183,12 @@ const principles = [
   }
 
   .approach-principle {
-    padding: 16px;
-    border: 1px solid var(--color-on-forest-line);
+    --glass-sheen: var(--glass-sheen-forest);
+    --glass-edge: var(--glass-edge-forest);
+    --glass-depth: var(--shadow-card);
+    padding: var(--space-inset);
+    border: 1px solid transparent;
     border-radius: 24px;
-    background: var(--surface-on-forest);
   }
 
   .approach-principle--listen { grid-area: listen; }
@@ -194,14 +198,12 @@ const principles = [
   .approach-principle-heading {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--space-related);
   }
 
   .approach-principle h3 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 28px;
-    letter-spacing: -0.006em;
+    font-size: var(--text-item);
+    line-height: var(--leading-item);
   }
 
   .approach-principle-icon,
@@ -210,44 +212,28 @@ const principles = [
     place-items: center;
     width: 34px;
     aspect-ratio: 1;
-    border: 1px solid var(--color-on-forest-line);
+    border: 1px solid transparent;
     border-radius: 50%;
-    background: var(--surface-on-forest);
   }
 
   .approach-principle-icon {
     display: grid;
     order: -1;
   }
+  .approach-principle-icon img, .approach-note-symbol img { filter: brightness(0) invert(.96); }
 
   @media (max-width: 40rem) {
     .approach-inner { padding-inline: 0; }
+    .approach-sprig { inset-block-start: .25rem; inset-inline-start: .625rem; inline-size: 1.75rem; }
   }
 
   @media (min-width: 768px) {
-    .approach-inner {
-      padding: 72px 0;
-    }
-
-    .approach-heading {
-      margin-bottom: 32px;
-    }
-
-    .approach-heading h2 {
-      font-size: 44px;
-      line-height: 48px;
-    }
-
-    .approach-heading p {
-      font-size: 18px;
-      line-height: 28px;
-    }
+    .approach-inner { padding-inline: 0; }
 
     .approach-layout {
       grid-template-areas: "portrait portrait portrait" "listen autonomy family" "note note note";
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      column-gap: 16px;
-      row-gap: 32px;
+      gap: var(--section-gap) var(--space-related);
     }
 
     .approach-portrait {
@@ -260,21 +246,13 @@ const principles = [
       object-position: center 58%;
     }
 
-    .approach-principle {
-      min-height: 170px;
-    }
-
     .approach-principle-heading {
       justify-content: space-between;
-      gap: 8px;
+      gap: var(--space-detail);
     }
 
     .approach-principle h3 span {
       display: block;
-    }
-
-    .approach-principle h3 {
-      letter-spacing: normal;
     }
 
     .approach-principle-icon {
@@ -283,38 +261,15 @@ const principles = [
 
     .approach-principle-tablet {
       display: block;
-      margin-top: 12px;
-      font-size: 16px;
-      line-height: 24px;
+      margin-block-start: var(--space-related);
     }
 
-    .approach-note {
-      margin: -8px 0 0;
-    }
+    .approach-note { margin-block: 0; }
   }
 
   @media (min-width: 1200px) {
-    .approach-inner {
-      padding-block: 96px;
-    }
-
-    .approach-heading {
-      min-height: 296px;
-      align-content: center;
-      gap: 24px;
-      margin-bottom: 64px;
-    }
-
-    .approach-heading h2 {
-      min-height: 144px;
-      font-size: 64px;
-      line-height: 64px;
-    }
-
     .approach-heading p {
-      max-width: 720px;
-      font-size: 20px;
-      line-height: 32px;
+      max-inline-size: 65ch;
     }
 
     .approach-intro-compact,
@@ -328,12 +283,10 @@ const principles = [
     }
 
     .approach-layout {
-      --card-height: clamp(300px, 19.17vw, 368px);
-      grid-template-areas: "listen portrait autonomy" "clay portrait family" ". portrait ." "note note note";
+      grid-template-areas: "listen portrait autonomy" "detail portrait family" ". portrait ." "note note note";
       grid-template-columns: 520fr 560fr 520fr;
       grid-template-rows: auto auto minmax(0, 1fr) auto;
-      column-gap: clamp(24px, 2.1vw, 40px);
-      row-gap: 32px;
+      gap: var(--space-inset);
       align-items: start;
     }
 
@@ -350,63 +303,36 @@ const principles = [
       object-position: center;
     }
 
-    .approach-clay {
+    .approach-detail {
       display: block;
-      grid-area: clay;
+      grid-area: detail;
       width: 100%;
       min-height: 0;
       aspect-ratio: 520 / 364;
       border-radius: 16px;
     }
 
-    .approach-clay img {
+    .approach-detail img {
       position: absolute;
       inset: 0;
-      object-position: center 93%;
     }
 
-    .approach-principle {
-      min-height: var(--card-height);
-      padding: clamp(24px, 2.1vw, 40px);
-    }
-
-    .approach-principle-heading {
-      min-height: 96px;
-      gap: 12px;
-    }
-
-    .approach-principle h3 {
-      font-size: clamp(30px, 1.875vw, 36px);
-      line-height: 1.111;
-    }
+    .approach-principle:is(.approach-principle--listen, .approach-principle--autonomy) { align-self: stretch; }
 
     .approach-principle-icon {
       width: 48px;
     }
 
     .approach-principle p {
-      margin-top: 24px;
-      font-size: clamp(16px, 1.042vw, 20px);
-      line-height: 1.6;
+      margin-block-start: var(--space-related);
     }
 
-    .approach-note {
-      margin: 16px 0 0;
-      padding-top: 16px;
-      font-size: 40px;
-      font-weight: 600;
-      line-height: 48px;
-    }
-
-    .approach-note p + p {
-      margin-top: 12px;
-    }
+    .approach-note p + p { margin-block-start: var(--space-detail); }
 
     .approach-note-symbol {
       display: grid;
       width: 44px;
-      margin: 0 auto 32px;
-      box-shadow: var(--shadow-control);
+      margin: 0 auto var(--space-related);
     }
   }
 </style>

@@ -1,15 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import oakAcorns from '../assets/botanical/oak-acorns.webp';
-import oakBranch from '../assets/botanical/oak-branch.webp';
-import oakLeaf from '../assets/botanical/oak-leaf.webp';
-import oakWood from '../assets/botanical/oak-wood.webp';
+import oakAcorns from '../assets/botanical/day-oak-acorns.webp';
+import oliveSprig from '../assets/botanical/olive-sprig.webp';
 
 const artwork = {
   acorns: oakAcorns,
-  branch: oakBranch,
-  leaf: oakLeaf,
-  wood: oakWood,
+  branch: oliveSprig,
 };
 
 interface Props {
@@ -38,13 +34,14 @@ const sizes = 'clamp(4rem, 12vw, 8rem)';
     user-select: none;
   }
 
-  .botanical--acorns { --botanical-image-width: 69%; }
-  .botanical--leaf { --botanical-image-width: 42%; }
-  .botanical--wood { --botanical-image-width: 91%; }
+  .botanical--acorns { --botanical-image-width: 76%; }
+  .botanical--branch { --botanical-image-width: 81%; }
 
   .botanical img {
     display: block;
     inline-size: var(--botanical-image-width, 100%);
     block-size: auto;
+    max-block-size: 100%;
+    object-fit: contain;
   }
 </style>

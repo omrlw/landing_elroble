@@ -1,3 +1,5 @@
+import { setupNavGlass } from './nav-glass';
+
 export function setupHeader(header: HTMLElement) {
   const menu = header.querySelector<HTMLElement>('#opening-menu');
   const trigger = header.querySelector<HTMLButtonElement>('[popovertarget]');
@@ -131,7 +133,11 @@ export function setupHeader(header: HTMLElement) {
     });
   }
 
-  // Active section scroll-spy & sticky header height measurement
+  // Collapse within the first 112px, with a gentle start and finish.
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const setGlassAnchor = setupNavGlass(menu, reducedMotion);
+  let expanded = 1;
+
   const links = Array.from(menu.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')).flatMap((link) => {
     const section = document.getElementById(link.hash.slice(1));
     return section ? [{ link, section }] : [];
@@ -143,16 +149,23 @@ export function setupHeader(header: HTMLElement) {
 
   const update = () => {
     frame = 0;
-    const scrolled = window.scrollY > 12;
+    const scrollY = window.scrollY;
+    const progress = Math.min(1, Math.max(0, (scrollY - 8) / 104));
+    const nextExpanded = reducedMotion.matches
+      ? Number(progress < 0.5)
+      : 1 - progress * progress * (3 - 2 * progress);
     const boundary = height + 14;
     const visible = links.find(({ section }) => {
       const rect = section.getBoundingClientRect();
       return rect.top <= boundary && rect.bottom > boundary;
     });
-    const atEnd = document.documentElement.scrollHeight - window.scrollY <= window.innerHeight + 3;
+    const atEnd = document.documentElement.scrollHeight - scrollY <= window.innerHeight + 3;
     const next = visible?.link ?? (atEnd ? links.at(-1)?.link : undefined);
 
-    header.toggleAttribute('data-scrolled', scrolled);
+    if (nextExpanded !== expanded) {
+      expanded = nextExpanded;
+      header.style.setProperty('--site-header-expanded', String(expanded));
+    }
     if (current !== next) {
       current?.removeAttribute('aria-current');
       currentGroup?.removeAttribute('data-current-group');
@@ -160,6 +173,7 @@ export function setupHeader(header: HTMLElement) {
       next?.setAttribute('aria-current', 'location');
       const nextGroup = next?.closest<HTMLElement>('[data-nav-group]') ?? undefined;
       nextGroup?.setAttribute('data-current-group', '');
+      setGlassAnchor(nextGroup ? groupTrigger ?? undefined : next);
 
       current = next;
       currentGroup = nextGroup;
@@ -176,6 +190,7 @@ export function setupHeader(header: HTMLElement) {
   };
 
   new ResizeObserver(measure).observe(header);
+  reducedMotion.addEventListener('change', schedule);
   window.addEventListener('scroll', schedule, { passive: true });
   measure();
 }

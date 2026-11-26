@@ -2,43 +2,58 @@
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
-import painting from '../assets/opening/trust-painting.png';
-import room from '../assets/opening/trust-room.png';
-import table from '../assets/opening/trust-table.png';
-import conversation from '../assets/opening/trust-conversation.png';
-import caregiver from '../assets/opening/day-table.png';
-import BotanicalArt from '../components/BotanicalArt.astro';
+import oakCanopy from '../assets/botanical/trust-oak-canopy.webp';
+import clay from '../assets/confianza/persona-y-arcilla.jpg';
+import gardenPortrait from '../assets/confianza/retrato-en-el-jardin.jpg';
+import activityCorner from '../assets/confianza/rincon-de-actividades.jpg';
+import supplies from '../assets/confianza/materiales-en-la-mesa.jpg';
+import workshop from '../assets/confianza/ayuda-en-el-taller.jpg';
+import game from '../assets/confianza/acompanamiento-en-el-juego.jpg';
+import sharedRoom from '../assets/confianza/salon-compartido.jpg';
+import clubTable from '../assets/confianza/mesa-del-club.jpg';
+import sharedTable from '../assets/confianza/mesa-en-compania.jpg';
+import windowRoom from '../assets/confianza/sala-con-ventanales.jpg';
+import flowers from '../assets/confianza/buganvilla-del-jardin.jpg';
+import path from '../assets/confianza/camino-a-el-roble.jpg';
 import visitArrow from '../assets/opening/tour-arrow.svg';
-
-const photos = {
-  painting: { src: painting, alt: 'Una mujer mayor participa en una actividad de pintura' },
-  room: { src: room, alt: 'Sala de actividades de El Roble' },
-  table: { src: table, alt: 'Una persona mayor realiza una actividad manual' },
-  conversation: { src: conversation, alt: 'Dos personas conversan en El Roble' },
-  caregiver: { src: caregiver, alt: 'Una persona mayor y su cuidadora juegan juntas' },
-};
 
 const reasons = [
   {
     title: 'Primero, conocer a la persona.',
     text: 'Partimos de su historia, sus intereses y sus necesidades. La evaluación previa al ingreso orienta una atención acorde con sus capacidades.',
-    photos: [photos.painting, photos.room],
+    photos: [
+      { src: clay, alt: 'Una mujer muestra dos figuras de arcilla en las palmas de sus manos' },
+      { src: gardenPortrait, alt: 'Una mujer sentada al aire libre en el jardín de El Roble' },
+      { src: supplies, alt: 'Piezas de colores y un tablero de actividades preparados sobre una mesa' },
+      { src: activityCorner, alt: 'Mesas de madera y estantes con materiales en un rincón del salón' },
+    ],
   },
   {
     title: 'Un equipo que puedes conocer.',
     text: 'En tu visita, conversa con el equipo disponible y pregunta cómo acompaña a las personas mayores en su día a día.',
-    photos: [photos.caregiver, photos.table],
+    photos: [
+      { src: workshop, alt: 'Una mujer recibe ayuda con una manualidad en el taller' },
+      { src: game, alt: 'Una acompañante mira junto a una mujer su cartón de bingo' },
+      { src: sharedRoom, alt: 'Vista de las mesas y los materiales del salón de actividades' },
+      { src: clubTable, alt: 'Mesa de trabajo junto a una ventana decorada del salón' },
+    ],
   },
   {
     title: 'La familia también forma parte.',
     text: 'Cuéntanos sus rutinas y preferencias, y comparte tus dudas. Juntos valoramos la propuesta de atención.',
-    photos: [photos.conversation, photos.painting],
+    photos: [
+      { src: sharedTable, alt: 'Varias personas comparten una actividad alrededor de una mesa' },
+      { src: path, alt: 'Sendero junto al jardín que lleva a la entrada de El Roble' },
+      { src: windowRoom, alt: 'Sala de El Roble con mesas de madera junto a los ventanales' },
+      { src: flowers, alt: 'Buganvilla fucsia en el jardín de El Roble' },
+    ],
   },
 ];
-const supportingPhotos = [
-  [photos.table, photos.conversation],
-  [photos.painting, photos.conversation],
-  [photos.table, photos.room],
+const photoSizes = [
+  '(min-width: 112rem) 330px, (min-width: 73rem) 19vw, (max-width: 40rem) calc(100vw - 24px), 52vw',
+  '(min-width: 112rem) 445px, (min-width: 73rem) 26vw, 46vw',
+  '(min-width: 112rem) 445px, 26vw',
+  '(min-width: 112rem) 330px, 19vw',
 ];
 ---
 
@@ -53,20 +68,17 @@ const supportingPhotos = [
       <div class="trust__gallery" id="trust-gallery-photos" data-swipe-gallery>
         {reasons.map(({ photos: slides }, index) => (
           <div class="trust__slides" data-scene={index} data-photo-scene>
-            <div class="trust__row">
-              {slides.map(({ src, alt }) => (
-                <div class="trust__tile" data-gallery-tile>
-                  <Image {src} {alt} widths={[360, 480, 720, 900]} sizes="(min-width: 100rem) 424px, (min-width: 73rem) 22vw, (max-width: 40rem) calc(100vw - 24px), 54vw" format="webp" />
-                </div>
-              ))}
-            </div>
-            <div class="trust__row trust__row--extra" data-gallery-extra>
-              {supportingPhotos[index].map(({ src, alt }) => (
-                <div class="trust__tile" data-gallery-tile>
-                  <Image {src} {alt} widths={[320, 480, 720]} sizes="(min-width: 100rem) 424px, 22vw" format="webp" />
-                </div>
-              ))}
-            </div>
+            {[slides.slice(0, 2), slides.slice(2)].map((row, rowIndex) => (
+              <div class:list={['trust__row', rowIndex === 1 && 'trust__row--extra']}
+                data-gallery-extra={rowIndex === 1 ? '' : undefined}>
+                {row.map(({ src, alt }, column) => (
+                  <div class="trust__tile" data-gallery-tile>
+                    <Image {src} {alt} widths={[320, 480, 720, 900].filter((width) => width <= src.width)}
+                      sizes={photoSizes[rowIndex * 2 + column]} format="webp" />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -85,12 +97,12 @@ const supportingPhotos = [
 
     <div class="trust__reasons">
       {reasons.map(({ title, text }, index) => (
-        <article class="trust__reason" data-scene={index}>
+        <article class="trust__reason liquid-glass liquid-glass--forest-panel liquid-glass--underlay" data-scene={index}>
           <h3>
             <button class="trust__reason-trigger" type="button" aria-expanded={index === 0}
               aria-controls={'trust-detail-' + index} data-trust-trigger>
               {title}
-              <span class="trust__reason-icon" aria-hidden="true"></span>
+              <span class="trust__reason-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true"></span>
             </button>
             <label class="trust__reason-fallback" for={'trust-scene-' + index}>{title}</label>
           </h3>
@@ -101,7 +113,9 @@ const supportingPhotos = [
       ))}
     </div>
 
-    <div class="trust__invitation botanical-layout">
+    <div class="trust__invitation">
+      <Image class="trust__canopy" src={oakCanopy} alt="" aria-hidden="true"
+        width={640} widths={[240, 360, 480, 640]} sizes="clamp(192px, 40vw, 576px)" format="webp" />
       <div class="trust__invitation-copy">
         <div>
           <h3>Ven a conocernos.</h3>
@@ -109,7 +123,6 @@ const supportingPhotos = [
         </div>
         <Cta class="trust__visit" icon={visitArrow.src} variant="light" />
       </div>
-      <BotanicalArt class="trust__wood" motif="wood" />
     </div>
   </div>
 </section>
@@ -142,11 +155,10 @@ const supportingPhotos = [
 
 <style>
   .trust {
-    --trust-edge: clamp(.75rem, 2vw, 2rem);
     position: relative;
     isolation: isolate;
     overflow: clip;
-    margin-inline: var(--trust-edge);
+    margin-inline: var(--section-edge);
     border-radius: clamp(1.5rem, 2.7vw, 1.75rem);
     color: var(--color-cream);
   }
@@ -161,7 +173,7 @@ const supportingPhotos = [
   .trust__inner {
     display: grid;
     position: relative;
-    width: min(105rem, calc(100% - max(.75rem, var(--page-gutter) - var(--trust-edge)) * 2));
+    width: calc(100% - max(.75rem, var(--page-gutter) - var(--section-edge)) * 2);
     grid-template-areas: "heading" "gallery" "reasons" "invitation";
     padding-block: clamp(3rem, 6.5vw, 4.75rem) clamp(2.25rem, 4vw, 3.25rem);
   }
@@ -172,17 +184,11 @@ const supportingPhotos = [
     gap: clamp(1.15rem, 1.6vw, 1.5rem);
     margin-block-end: clamp(1.75rem, 3.1vw, 3rem);
   }
-  .trust h2 {
-    color: inherit;
-    font: 700 clamp(2.25rem, 1.76rem + 2.05vw, 4rem) / 1.02 var(--font-display);
-  }
+  .trust h2 { color: inherit; }
   .trust h2 em { color: var(--color-honey); }
   .trust__message p, .trust__detail p {
     max-inline-size: 48ch;
     color: var(--color-on-forest-muted);
-    font-size: var(--text-copy);
-    line-height: 1.62;
-    text-wrap: pretty;
   }
   .trust__media {
     grid-area: gallery;
@@ -225,8 +231,10 @@ const supportingPhotos = [
     content: '';
   }
   .trust__tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .trust__slides[data-scene="0"] .trust__row:first-child .trust__tile:first-child img { object-position: 74% 31%; }
-  .trust__slides[data-scene="2"] .trust__row:first-child .trust__tile:first-child img { object-position: 79% 34%; }
+  .trust__row:first-child .trust__tile:first-child img { object-position: 50% 16%; }
+  .trust__slides[data-scene="0"] .trust__row:first-child .trust__tile:nth-child(2) img { object-position: 50% 33%; }
+  .trust__slides[data-scene="2"] .trust__row:first-child .trust__tile:nth-child(2) img { object-position: 37% center; }
+  .trust__slides[data-scene="2"] .trust__row--extra .trust__tile:nth-child(2) img { object-position: 50% 69%; }
   .trust:not([data-gallery-index]):has(#trust-scene-0:checked) .trust__slides[data-scene="0"],
   .trust:not([data-gallery-index]):has(#trust-scene-1:checked) .trust__slides[data-scene="1"],
   .trust:not([data-gallery-index]):has(#trust-scene-2:checked) .trust__slides[data-scene="2"] { display: grid; }
@@ -240,33 +248,23 @@ const supportingPhotos = [
   }
   .trust__reason {
     --reason-active: 0;
-    position: relative;
-    isolation: isolate;
+    --reason-inset: clamp(1rem, 1.5vw, 1.5rem);
+    --glass-visible: var(--reason-active);
     border-radius: .9rem;
-  }
-  .trust__reason::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--surface-on-forest);
-    box-shadow: var(--highlight-dark), var(--shadow-control);
-    opacity: var(--reason-active);
-    pointer-events: none;
-    content: '';
   }
   .trust__reason h3 {
     color: inherit;
-    font: 700 clamp(1.375rem, 1.22rem + .52vw, 1.95rem) / 1.1 var(--font-display);
+    font-size: var(--text-item);
+    line-height: var(--leading-item);
   }
   .trust__reason-trigger, .trust__reason-fallback {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: .75rem;
-    min-block-size: 3.25rem;
+    min-block-size: var(--control-row-min-height);
     inline-size: 100%;
-    padding: clamp(.75rem, 1.05vw, .95rem) clamp(1rem, 1.5vw, 1.5rem);
+    padding: clamp(.75rem, 1.05vw, .95rem) var(--reason-inset);
     border-radius: inherit;
     cursor: pointer;
     text-align: start;
@@ -281,7 +279,7 @@ const supportingPhotos = [
     position: relative;
     flex: 0 0 1.7rem;
     aspect-ratio: 1;
-    border: 1px solid var(--color-on-forest-line);
+    border: 1px solid transparent;
     border-radius: 50%;
     color: var(--color-cream);
   }
@@ -306,7 +304,7 @@ const supportingPhotos = [
     visibility: var(--reason-visibility, hidden);
   }
   .trust__detail > div { min-block-size: 0; overflow: clip; }
-  .trust__detail p { max-inline-size: 58ch; padding: .225rem clamp(1rem, 1.5vw, 1.5rem) clamp(1.2rem, 1.55vw, 1.45rem); }
+  .trust__detail p { max-inline-size: 58ch; padding: .225rem var(--reason-inset) clamp(1.2rem, 1.55vw, 1.45rem); }
   .trust:not([data-gallery-index]):has(#trust-scene-0:checked) .trust__reason[data-scene="0"],
   .trust:not([data-gallery-index]):has(#trust-scene-1:checked) .trust__reason[data-scene="1"],
   .trust:not([data-gallery-index]):has(#trust-scene-2:checked) .trust__reason[data-scene="2"],
@@ -317,7 +315,13 @@ const supportingPhotos = [
     --reason-hide-delay: 0s;
   }
   @media (hover: hover) {
-    .trust__reason-trigger[aria-expanded="false"]:hover, .trust__reason-fallback:hover { background: var(--surface-on-forest); }
+    .trust__reason:has(.trust__reason-trigger[aria-expanded="false"]:hover, .trust__reason-fallback:hover) {
+      --glass-visible: 1;
+    }
+  }
+  .trust__reason:has(.trust__reason-trigger[aria-expanded="false"]:active, .trust__reason-fallback:active) {
+    --glass-visible: 1;
+    --glass-wash: var(--glass-press);
   }
   @media (prefers-reduced-motion: no-preference) {
     .trust__reason::before { transition: opacity 420ms var(--ease-in-out); }
@@ -329,23 +333,32 @@ const supportingPhotos = [
 
   .trust__invitation {
     grid-area: invitation;
+    position: relative;
+    isolation: isolate;
     margin-block-start: clamp(1.25rem, 1.75vw, 1.75rem);
     padding-block-start: clamp(1.15rem, 1.65vw, 1.65rem);
     border-block-start: 1px solid var(--color-on-forest-line);
   }
-  .trust__invitation-copy { display: grid; align-items: center; gap: 1rem 1.5rem; }
-  .trust__invitation h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.35rem) / 1.1 var(--font-display); color: inherit; }
-  .trust__invitation p { margin-block-start: .55rem; color: var(--color-on-forest-muted); font-size: clamp(1rem, .9rem + .3vw, 1.18rem); line-height: 1.5; }
-  .trust__invitation :global(.trust__visit) {
-    --cta-height: 3.25rem;
-    --cta-gap: .5rem;
-    --cta-padding: .525rem clamp(.65rem, 3vw, 1.2rem);
-    justify-self: start;
+  .trust__canopy {
+    position: absolute;
+    z-index: -1;
+    inset: auto -1rem -1.5rem auto;
+    inline-size: clamp(12rem, 40vw, 36rem);
+    block-size: min(8rem, 100%);
+    object-fit: contain;
+    object-position: right bottom;
+    mask-image: linear-gradient(110deg, transparent 8%, #000 58%);
+    filter: blur(.85px);
+    opacity: .35;
+    pointer-events: none;
   }
+  .trust__invitation-copy { display: grid; align-items: center; gap: 1rem 1.5rem; }
+  .trust__invitation h3 { color: inherit; }
+  .trust__invitation p { margin-block-start: .55rem; color: var(--color-on-forest-muted); }
+  .trust__invitation :global(.trust__visit) { justify-self: start; }
   .trust__invitation :global(.trust__visit .cta-icon img) { inline-size: 20px; block-size: 20px; }
 
   @media (max-width: 40rem) {
-    .trust h2 { font-size: clamp(2rem, 9.25vw, 2.25rem); }
     .trust__slides { block-size: clamp(15rem, 60vw, 18rem); }
     .trust__row { grid-template-columns: minmax(0, 1fr); }
     .trust__row > .trust__tile:nth-child(2) { display: none; }

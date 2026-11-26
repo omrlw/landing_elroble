@@ -1,6 +1,10 @@
 ---
-import BotanicalArt from '../components/BotanicalArt.astro';
+import { Image } from 'astro:assets';
+import BotanicalPattern from '../components/BotanicalPattern.astro';
 import Cta from '../components/Cta.astro';
+import OpticalGlass from '../components/OpticalGlass.astro';
+import oakTwig from '../assets/botanical/faq-oak-twig.webp';
+import oliveSprig from '../assets/botanical/olive-sprig.webp';
 import { business } from '../config/business';
 
 const questions = [
@@ -43,42 +47,55 @@ const questions = [
     answer: 'La familia comparte información sobre hábitos, preferencias y necesidades. Esa mirada nos ayuda a orientar el acompañamiento y mantener una conversación cercana.',
   },
 ];
+
+const columnBreak = Math.ceil(questions.length / 2);
+const questionColumns = [questions.slice(0, columnBreak), questions.slice(columnBreak)];
 ---
 
 <section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
+  <BotanicalPattern />
   <div class="container faq-container">
     <header class="faq-heading" data-reveal="heading">
       <h2 id="faq-heading">Lo importante,<br /><em>antes de la visita.</em></h2>
+      <Image class="faq-sprig" src={oakTwig} alt="" aria-hidden="true"
+        width={280} widths={[96, 144, 192, 280]}
+        sizes="(min-width: 40rem) clamp(76px, 9vw, 144px), 66px" format="webp" />
       <p>Lo esencial para conocer cómo funciona El Roble, qué incluye cada modalidad y cómo acompañamos a tu familiar.</p>
     </header>
 
-    <div class="questions">
-      {questions.map(({ title, compact, tablet, answer }) => (
-        <details name="preguntas-el-roble">
-          <summary>
-            <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
-              <span class="full-question">{title}</span>
-              {compact && <span class="compact-question">{compact}</span>}
-              {tablet && <span class="tablet-question">{tablet}</span>}
-            </span>
-            <span class="question-icon liquid-glass--lens" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                <path d="M3 8h10" />
-                <path class="question-icon__vertical" d="M8 3v10" />
-              </svg>
-            </span>
-          </summary>
-          <p class="answer">{answer}</p>
-        </details>
+    <div class="questions" data-glass-scene>
+      {questionColumns.map((column, index) => (
+        <div class="question-column">
+          {index === questionColumns.length - 1 && (
+            <Image class="faq-branch" src={oliveSprig} alt="" aria-hidden="true" data-glass-image width={384}
+              widths={[192, 256, 384]} sizes="clamp(144px, 28vw, 368px)" format="webp" />
+          )}
+          {column.map(({ title, compact, tablet, answer }) => (
+            <details name={`preguntas-el-roble-${index + 1}`}>
+              <summary>
+                {index === questionColumns.length - 1 && <OpticalGlass class="faq-row-lens" source="branch" />}
+                <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
+                  <span class="full-question">{title}</span>
+                  {compact && <span class="compact-question">{compact}</span>}
+                  {tablet && <span class="tablet-question">{tablet}</span>}
+                </span>
+                <span class="question-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                    <path d="M3 8h10" />
+                    <path class="question-icon__vertical" d="M8 3v10" />
+                  </svg>
+                </span>
+              </summary>
+              <p class="answer">{answer}</p>
+            </details>
+          ))}
+        </div>
       ))}
     </div>
 
-    <div class="faq-close botanical-layout">
-      <div class="faq-close-copy">
-        <p>¿Tienes otra pregunta?</p>
-        <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
-      </div>
-      <BotanicalArt class="faq-leaf" motif="leaf" />
+    <div class="faq-close">
+      <h3>¿Tienes otra pregunta?</h3>
+      <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
     </div>
   </div>
 </section>
@@ -86,62 +103,167 @@ const questions = [
 <style>
   .faq {
     position: relative;
+    isolation: isolate;
     overflow: clip;
-    padding-block: 3.5rem;
-    background: var(--surface-light-wash);
+    padding-block: var(--space-section) var(--section-gap);
     color: var(--color-ink);
   }
   .faq-container { position: relative; }
-  .faq-heading { margin-block-end: 1.5rem; }
-  h2 {
-    min-width: 0;
-    margin: 0;
-    font: 700 clamp(2rem, 1.4rem + 3.5vw, 2.25rem)/1.11 var(--font-display);
-    color: var(--color-ink);
-    overflow-wrap: break-word;
-    text-wrap: balance;
-  }
-  h2 em { font-weight: inherit; color: var(--color-oak); }
-  .faq-heading p, .faq-close p { display: none; }
-  .questions { display: grid; align-items: start; gap: .5rem; }
-
-  details {
-    --question-gutter: clamp(1rem, 1.8vw, 1.5rem);
-    min-width: 0;
-    border-radius: var(--radius-card);
-    background: var(--surface-paper);
-    box-shadow: var(--shadow-card);
-  }
-  details[open] { box-shadow: var(--shadow-raised); }
-  summary {
-    min-height: 3.75rem;
+  .faq-heading {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: .75rem;
+    gap: var(--space-detail);
     align-items: center;
-    padding: .625rem var(--question-gutter);
+    margin-block-end: var(--section-gap);
+  }
+  h2 em { color: var(--color-oak); }
+  .faq-sprig {
+    inline-size: clamp(3.5rem, 17vw, 4.125rem);
+    block-size: auto;
+    margin-inline-end: .375rem;
+    rotate: -12deg;
+    opacity: .76;
+    pointer-events: none;
+  }
+  .faq-heading p, .answer { max-inline-size: 65ch; color: var(--color-text); }
+  .faq-heading p, .faq-close h3 { display: none; }
+  .questions {
+    --faq-row-gap: clamp(.75rem, .55rem + .42vw, 1rem);
+    display: grid;
+    align-items: start;
+    gap: var(--faq-row-gap) clamp(1.5rem, 4.5vw, 4rem);
+  }
+  .question-column { position: relative; display: grid; gap: var(--faq-row-gap); }
+  .faq-branch {
+    position: absolute;
+    z-index: -1;
+    inset-inline-end: calc(var(--page-gutter) * -.61);
+    inset-block-end: -2.5rem;
+    inline-size: clamp(9rem, 28vw, 23rem);
+    block-size: auto;
+    opacity: .28;
+    mask-image: linear-gradient(100deg, transparent 7%, #000 42%);
+    pointer-events: none;
+  }
+
+  details {
+    --question-gutter: clamp(.75rem, .55rem + .85vw, 1.5rem);
+    position: relative;
+    isolation: isolate;
+    min-inline-size: 0;
+    border-radius: 1rem;
+    overflow: clip;
+  }
+  details:not([open])::after {
+    position: absolute;
+    inset: auto var(--question-gutter) 0;
+    block-size: 1px;
+    background: var(--glass-divider);
+    pointer-events: none;
+    content: '';
+  }
+  details::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--color-paper) 66%, transparent),
+      color-mix(in srgb, var(--color-paper) 35%, transparent) 73%,
+      color-mix(in srgb, var(--color-paper) 13%, transparent)
+    );
+    box-shadow: var(--optical-bevel);
+    opacity: 0;
+    pointer-events: none;
+    content: '';
+  }
+  details[open]::before { opacity: 1; }
+  details:has(> summary:active) .question-icon { background-color: rgb(53 43 31 / 10%); }
+
+  summary > :global(.faq-row-lens) {
+    --optical-sample-background: var(--color-cream);
+    --optical-film: linear-gradient(155deg, rgb(255 255 255 / 31%), transparent 80%);
+    --optical-rim: inset 0 1px 1px rgb(255 255 255 / 78%), inset -1px 0 1px rgb(64 54 40 / 26%);
+    display: none;
+    z-index: -1;
+    inset-inline-start: auto;
+    inline-size: clamp(5rem, 31%, 11rem);
+    clip-path: inset(0 round 0 1rem 1rem 0);
+    mask-image: linear-gradient(to right, transparent, #000 58%);
+  }
+  details[open] :global(.faq-row-lens) { display: block; }
+
+  summary {
+    min-block-size: clamp(4.25rem, 3.55rem + 1.3vw, 5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-related);
+    align-items: center;
+    padding: clamp(.875rem, .7rem + .65vw, 1.25rem) var(--question-gutter);
     border-radius: inherit;
     cursor: pointer;
     list-style: none;
   }
   summary::-webkit-details-marker { display: none; }
   summary::marker { content: ''; }
-  summary:focus-visible { outline-offset: -3px; }
-  .question-title { font: 600 clamp(1.325rem, .95rem + 2.25vw, 1.5rem)/1.1 var(--font-display); }
+  summary:focus-visible { outline-color: var(--color-forest); outline-offset: -2px; }
+  .question-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); text-wrap: pretty; }
   .has-compact .full-question, .tablet-question { display: none; }
   .question-icon {
     display: grid;
     place-items: center;
-    inline-size: clamp(1.875rem, 1.5rem + .75vw, 2.5rem);
+    inline-size: clamp(2.25rem, 2.1rem + .45vw, 2.625rem);
     aspect-ratio: 1;
     border-radius: 50%;
+    background: radial-gradient(circle at 26% 18%, rgb(255 255 255 / 72%), transparent 64%);
+    box-shadow: var(--optical-bevel), inset 0 -3px 5px -4px rgb(77 67 48 / 24%);
+  }
+  details[open] .question-icon {
+    background-color: rgb(255 255 255 / 49%);
+    box-shadow: var(--optical-bevel), 0 4px 10px -6px rgb(39 30 21 / 44%);
   }
   .question-icon__vertical { transform-origin: center; }
   [open] .question-icon__vertical { scale: 1 0; }
-  .answer { margin: 0; padding: 0 var(--question-gutter) 1rem; font-size: clamp(1rem, .88rem + .18vw, 1.125rem); line-height: 1.55; color: var(--color-text); }
+  .answer { padding: .15rem max(var(--question-gutter), 16%) var(--space-inset) var(--question-gutter); }
+  .faq-close {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-related);
+    margin-block-start: var(--section-gap);
+  }
+
+  @media (min-width: 40rem) {
+    .faq-heading { grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--section-gap); }
+    .faq-sprig { inline-size: clamp(4.75rem, 9vw, 9rem); margin-inline-end: 0; }
+    .faq-heading p, .faq-close h3 { display: block; }
+    .questions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .has-compact .full-question, .tablet-question { display: inline; }
+    .has-tablet .full-question, .compact-question { display: none; }
+    .faq-close { justify-items: center; text-align: center; }
+  }
+
+  @media (min-width: 80rem) {
+    .has-tablet .full-question { display: inline; }
+    .tablet-question { display: none; }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    details:not([open]):has(> summary:hover)::before { opacity: .55; }
+    summary:hover .question-icon { background-color: rgb(255 255 255 / 55%); }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    details[open]::before { background: var(--glass-clear); }
+    .faq-branch, details[open] :global(.faq-row-lens) { display: none; }
+  }
+  @media (forced-colors: active) {
+    summary, .question-icon { border: 1px solid CanvasText; }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
-    details { transition: box-shadow var(--motion-state) var(--ease-soft); }
-    .question-icon__vertical { transition: scale var(--motion-state) var(--ease-soft); }
+    details::before { transition: opacity var(--glass-motion) var(--glass-ease); }
+    .question-icon { transition: background-color var(--glass-motion) var(--glass-ease), box-shadow var(--glass-motion) var(--glass-ease); }
+    .question-icon__vertical { transition: scale var(--glass-motion) var(--glass-ease); }
 
     @supports (interpolate-size: allow-keywords) and selector(::details-content) {
       details { interpolate-size: allow-keywords; }
@@ -149,55 +271,10 @@ const questions = [
         block-size: 0;
         overflow: clip;
         opacity: 0;
-        transition: block-size var(--motion-state) var(--ease-soft), opacity var(--motion-exit) var(--ease-soft), content-visibility var(--motion-state) allow-discrete;
+        transition: block-size var(--glass-motion) var(--glass-ease),
+          opacity var(--motion-state) var(--glass-ease), content-visibility var(--glass-motion) allow-discrete;
       }
       details[open]::details-content { block-size: auto; opacity: 1; }
     }
   }
-  .faq-close { margin-block-start: 1.5rem; }
-  .faq-close-copy { display: grid; justify-items: start; gap: 1rem; }
-  .faq-close :global(a) { --cta-height: 3.5rem; --cta-gap: .5rem; --cta-padding: .65rem clamp(1rem, 4vw, 1.5rem); --cta-width: min(100%, 15.75rem); }
-
-  @media (hover: hover) {
-    details:has(> summary:hover) { box-shadow: var(--shadow-raised); }
-  }
-
-  @media (min-width: 40rem) {
-    .faq { padding-block: clamp(3.5rem, 9.375vw, 4.5rem); }
-    .faq-heading { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: center; margin-block-end: 2rem; }
-    h2 { font-size: clamp(2.25rem, 1.915rem + 1.74vw, 4rem); }
-    .faq-heading p { display: block; margin: 0; font-size: clamp(1.0625rem, 1.04rem + .18vw, 1.25rem); line-height: 1.55; color: var(--color-text); }
-    .questions { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; row-gap: .75rem; }
-    summary { min-height: 6rem; }
-    .question-title { font-size: clamp(1.5rem, 1.2rem + .625vw, 2.25rem); }
-    .has-compact .full-question, .tablet-question { display: inline; }
-    .has-tablet .full-question { display: none; }
-    .compact-question { display: none; }
-    .faq-close {
-      inline-size: fit-content;
-      margin-inline: auto;
-      margin-block-start: 2.5rem;
-    }
-    .faq-close-copy { justify-items: center; text-align: center; }
-    .faq-close p { display: block; margin: 0; font: 600 clamp(2rem, 1.65rem + .65vw, 2.5rem)/1.15 var(--font-display); }
-  }
-
-  @media (min-width: 80rem) {
-    .faq { padding-block: clamp(4.5rem, 5vw, 6rem); }
-    .faq-heading { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
-    h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
-    .questions { grid-auto-flow: column; grid-template-rows: repeat(4, auto); column-gap: clamp(1.5rem, 1.667vw, 2rem); row-gap: 1rem; }
-    summary { min-height: clamp(6rem, 6.667vw, 8rem); gap: 1.25rem; }
-    .question-title { max-width: 40rem; font-size: clamp(1.5rem, 1rem + 1.05vw, 2.25rem); }
-    details:nth-child(4) .question-title { max-width: 29rem; }
-    .has-tablet .full-question { display: inline; }
-    .tablet-question { display: none; }
-    .faq-close {
-      margin-block-start: clamp(3rem, 3.333vw, 4rem);
-      min-height: 11.5rem;
-    }
-    .faq-close-copy { row-gap: 1.5rem; }
-    .faq-close :global(a) { --cta-width: fit-content; --cta-padding: .65rem 1.5rem; }
-  }
-
 </style>

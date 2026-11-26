@@ -16,6 +16,7 @@ export function playOpening(compact: boolean) {
   const finish = () => {
     hero.removeEventListener('focusin', finish);
     opening.revert();
+    photos.removeAttribute('data-photo-moving');
   };
   const opening = gsap.timeline({ defaults: { ease: ease.settle }, onComplete: finish });
   opening.addLabel('title')
@@ -23,7 +24,10 @@ export function playOpening(compact: boolean) {
     .fromTo(emphasis, { y: compact ? 6 : 10, opacity: .72 }, { y: 0, opacity: 1, duration: duration.reveal }, 'title+=0.065')
     .fromTo(intro, { y: compact ? 6 : 9, opacity: .8 }, { y: 0, opacity: 1, duration: duration.gallery }, 'title+=0.14');
 
-  if (!compact) opening.fromTo(photos, { scale: 1.035 }, { scale: 1, duration: duration.scene }, 'title+=0.06');
+  if (!compact) {
+    photos.setAttribute('data-photo-moving', '');
+    opening.fromTo(photos, { scale: 1.035 }, { scale: 1, duration: duration.scene }, 'title+=0.06');
+  }
   hero.addEventListener('focusin', finish);
   return finish;
 }
@@ -52,7 +56,7 @@ function animateReveal(element: HTMLElement, compact: boolean, timeline: gsap.co
     case 'frame': {
       const [photo] = visible('[data-reveal-image]');
       if (photo && (!(photo instanceof HTMLImageElement) || photo.naturalWidth)) mask(photo, 24, element.classList.contains('tour-photo'));
-      lift(visible(':scope > figcaption'), 5, .75, .095, duration.gallery);
+      lift(visible(':scope > figcaption:not(.liquid-glass--optical)'), 5, .75, .095, duration.gallery);
       break;
     }
     case 'program': {

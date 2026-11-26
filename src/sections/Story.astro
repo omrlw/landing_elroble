@@ -1,49 +1,48 @@
 ---
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
-import portrait from '../assets/story/taller-retrato.jpg';
-import hands from '../assets/story/taller-detalle.jpg';
-import workshop from '../assets/story/taller-duo.jpg';
-import table from '../assets/story/taller-mesa.jpg';
+import oakTwig from '../assets/botanical/story-oak-twig.webp';
+import oakWood from '../assets/botanical/story-oak-wood.webp';
+import portrait from '../assets/story/manos-creando.jpg';
+import hands from '../assets/story/detalle-cuentas.jpg';
+import garden from '../assets/story/ronda-en-el-jardin.jpg';
+import bingo from '../assets/story/bingo-en-el-roble.jpg';
 
 const scenes = [
   {
     key: 'hands',
     anchor: 'historia',
-    heading: 'Hay sitio',
-    emphasis: 'en la mesa.',
-    copy: 'Cuando los días en casa se vuelven silenciosos, una actividad con sentido despierta la mañana.',
-    next: { href: '#historia-taller', label: 'Ver el taller' },
+    heading: 'Una mañana',
+    emphasis: 'en El Roble.',
+    copy: 'En nuestro centro de día en Arequipa, hay tiempo para hacer algo con las manos, moverse y disfrutar de la compañía de otros.',
+    next: { href: '#historia-taller', label: 'Ver la ronda en el jardín' },
     image: portrait,
-    alt: 'Una mujer sonríe mientras sostiene un cuenco de cerámica con las dos manos.',
-    caption: 'Una pieza hecha a mano',
+    alt: 'Una mujer ensarta cuentas de colores en una mesa de El Roble.',
   },
   {
     key: 'workshop',
     anchor: 'historia-taller',
-    heading: 'Tiempo para crear',
+    heading: 'Cada quien',
     emphasis: 'a su propio ritmo.',
-    copy: 'Moldear, elegir colores y hacer sin prisas devuelve la alegría de expresarse con las propias manos.',
-    next: { href: '#historia-compania', label: 'Ver la mesa compartida' },
-    image: workshop,
-    alt: 'Dos mujeres pintan piezas de cerámica en una mesa de trabajo.',
-    caption: 'Un taller de cerámica',
+    copy: 'Una ronda en el jardín invita a dar unos pasos y disfrutar juntos del aire libre.',
+    next: { href: '#historia-compania', label: 'Ver la partida de bingo' },
+    image: garden,
+    alt: 'Varias personas se toman de las manos en una ronda en el jardín de El Roble.',
   },
   {
     key: 'table',
     anchor: 'historia-compania',
-    heading: 'Y alguien con quien',
-    emphasis: 'compartir el día.',
-    copy: 'Una actividad en la mesa, una charla espontánea y la tranquilidad de sentirse parte de un grupo.',
+    heading: 'La alegría',
+    emphasis: 'de estar juntos.',
     next: null,
-    image: table,
-    alt: 'Tres personas mayores decoran piezas de cerámica alrededor de una mesa de madera.',
-    caption: 'Cerámica alrededor de la mesa',
+    image: bingo,
+    alt: 'Personas mayores y acompañantes juegan bingo en el salón de El Roble.',
   },
 ];
 
-const widths = [400, 640, 800, 1024, 1320];
-const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
+const widths = [400, 640, 800, 1024, 1440];
+const portraitSizes = '(min-width: 62rem) 42vw, (min-width: 48rem) 47vw, 96vw';
+const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 ---
 
 <section class="story" id="historia" tabindex="-1" aria-labelledby="story-title" data-story>
@@ -64,17 +63,31 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
             aria-labelledby={titleId}
             tabindex={index ? -1 : undefined}
           >
+            {index === 0 && (
+              <Image class="story__twig" src={oakTwig} alt="" aria-hidden="true"
+                width={280} widths={[112, 168, 224, 280]}
+                sizes="(min-width: 48rem) clamp(96px, 10vw, 144px), 68px" format="webp" />
+            )}
             <div class="container story__composition">
               <div class="story__copy" data-story-copy>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
-                <p>{scene.copy}</p>
+                {scene.copy && <p>{scene.copy}</p>}
                 {scene.next && (
-                  <a class="story__next" href={scene.next.href} data-story-link>
-                    <span>{scene.next.label}</span>
-                    <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <a
+                    class="story__next liquid-glass liquid-glass--clear liquid-glass--interactive"
+                    href={scene.next.href}
+                    aria-label={scene.next.label}
+                    data-story-link
+                  >
+                    <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <path d="M10 4.25v11.5m-4.25-4.25L10 15.75l4.25-4.25" />
                     </svg>
                   </a>
+                )}
+                {index === 1 && (
+                  <Image class="story__wood" src={oakWood} alt="" aria-hidden="true"
+                    width={320} widths={[96, 144, 224, 320]}
+                    sizes="(min-width: 48rem) clamp(80px, 10vw, 144px), 80px" format="webp" />
                 )}
               </div>
               <figure class="story__photo">
@@ -82,23 +95,21 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
                   <Image
                     src={scene.image}
                     alt={scene.alt}
-                    widths={scene.key === 'table' ? [...widths, 1600, 1800] : widths}
-                    sizes={scene.key === 'table' ? '100vw' : portraitSizes}
+                    widths={scene.key === 'table' ? [...widths, 1800, 2048] : widths}
+                    sizes={scene.key === 'table' ? '100vw' : scene.key === 'workshop' ? gardenSizes : portraitSizes}
                     format="webp"
-                    quality={86}
+                    quality={82}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                     data-story-image
                   />
                 </div>
-                <figcaption>{scene.caption} <span>Foto referencial</span></figcaption>
-
                 {index === 0 && (
                   <div class="story__detail" aria-hidden="true" data-story-detail>
                     <Image
                       src={hands}
                       alt=""
-                      widths={[280, 440, 720]}
+                      widths={[280, 440, 760]}
                       sizes="(min-width: 62rem) 18vw, 280px"
                       format="webp"
                       quality={86}
@@ -110,7 +121,7 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
               </figure>
               {!scene.next && (
                 <div class="story__visit" id="historia-visita" data-story-visit tabindex="-1" role="group" aria-label="Visita a El Roble">
-                  <p>Conversemos sobre lo que necesita tu familia.</p>
+                  <p>Ven a conocer El Roble y conversemos sobre lo que necesita tu familia.</p>
                   <Cta label="Agendar una visita" variant="light" />
                 </div>
               )}
@@ -127,8 +138,6 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     --story-radius: clamp(.875rem, 1.2vw, 1.25rem);
     --story-panel-radius: clamp(1.25rem, 2.25vw, 2rem);
     --story-edge: clamp(.75rem, 1.6vw, 1.5rem);
-    --story-gap: clamp(2rem, 4vw, 4.5rem);
-    background: var(--color-cream);
   }
 
   .story__reel {
@@ -148,35 +157,55 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     --story-accent: var(--color-oak);
     position: relative;
     isolation: isolate;
-    padding-block: var(--story-gap);
+    padding-block: var(--section-gap);
     color: var(--color-text);
-    background: var(--color-cream);
   }
 
-  .story__scene--workshop {
-    border-radius: var(--story-panel-radius);
-    background: var(--surface-light-wash);
+  /* Split the transition between the two scenes on the continuous light surface. */
+  .story__scene--hands { padding-block-end: calc(var(--space-section) / 2); }
+  .story__scene--workshop { padding-block-start: calc(var(--space-section) / 2); }
+
+  .story__twig,
+  .story__wood {
+    position: absolute;
+    block-size: auto;
+    pointer-events: none;
+  }
+
+  .story__twig {
+    z-index: -1;
+    inset: 1rem var(--page-gutter) auto auto;
+    inline-size: clamp(3.5rem, 16vw, 4.25rem);
+    rotate: 11deg;
+    opacity: .72;
+  }
+
+  .story__wood {
+    inset: auto .375rem .25rem auto;
+    inline-size: clamp(5rem, 10vw, 9rem);
+    rotate: -8deg;
+    opacity: .76;
   }
 
   .story__scene--table {
     --story-ink: var(--color-paper);
     --story-accent: var(--color-honey);
     border-radius: var(--story-panel-radius);
-    background: var(--color-forest);
+    background: var(--surface-forest);
     color: var(--color-on-forest-muted);
   }
 
   .story__scene:is(.story__scene--workshop, .story__scene--table) {
-    margin: var(--story-edge);
+    margin-inline: var(--story-edge);
   }
 
   .story__composition {
     display: grid;
-    gap: clamp(1.25rem, 3.2vw, 3rem);
+    gap: var(--section-gap);
   }
 
   .story__scene:is(.story__scene--workshop, .story__scene--table) .story__composition {
-    width: min(105rem, calc(100% - max(.75rem, var(--page-gutter) - var(--story-edge)) * 2));
+    width: calc(100% - max(.75rem, var(--page-gutter) - var(--story-edge)) * 2);
   }
 
   .story__copy {
@@ -185,20 +214,13 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     display: grid;
     align-content: center;
     justify-items: start;
-    gap: clamp(.75rem, 1.6vw, 1.5rem);
+    gap: var(--space-related);
     min-inline-size: 0;
   }
 
   .story__copy :is(h2, h3) {
     color: var(--story-ink);
-    font-size: clamp(2.6rem, 1.55rem + 4.8vw, 5.5rem);
-    line-height: .94;
-    letter-spacing: -.035em;
-    text-wrap: balance;
-  }
-
-  .story__scene--hands h2 {
-    font-size: clamp(3.25rem, 1.7rem + 5.3vw, 6rem);
+    font-size: var(--text-section);
   }
 
   .story__copy em {
@@ -208,27 +230,25 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
   }
 
   .story__copy p {
-    max-inline-size: 39ch;
-    line-height: 1.5;
+    max-inline-size: 48ch;
   }
 
   .story__next {
-    display: inline-flex;
-    min-block-size: 2.75rem;
-    align-items: center;
-    gap: .5rem;
-    color: var(--story-accent);
-    font-size: .9375rem;
-    font-weight: 600;
-    text-underline-offset: .28em;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 3rem;
+    block-size: 3rem;
+    border-radius: 50%;
   }
 
-  .story__next:is(:hover, :focus-visible) span {
-    text-decoration: underline;
-  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .story__next svg {
+      transition: translate var(--motion-state) var(--ease-soft);
+    }
 
-  [data-story-cinema] .story__next[inert] {
-    visibility: hidden;
+    .story__next:hover svg {
+      translate: 0 .125rem;
+    }
   }
 
   .story__photo {
@@ -265,8 +285,12 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     transform-origin: 52% 45%;
   }
 
+  .story__scene--workshop .story__frame {
+    aspect-ratio: 4 / 5;
+  }
+
   .story__scene--workshop img {
-    object-position: 50% 51%;
+    object-position: 50% 74%;
   }
 
   .story__scene--table .story__frame {
@@ -275,18 +299,7 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
 
   .story__scene--table img {
     object-position: 50% 34%;
-    transform-origin: 55% 62%;
-  }
-
-  .story__photo figcaption {
-    margin-block-start: .65rem;
-    font-size: .875rem;
-    line-height: 1.4;
-  }
-
-  .story__photo figcaption span::before {
-    margin-inline: .45em;
-    content: '·';
+    transform-origin: 55% 66%;
   }
 
   .story__detail {
@@ -294,23 +307,24 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
   }
 
   .story__visit {
-    --cta-height: 3.125rem;
-    --cta-padding: .5rem clamp(1rem, 2vw, 1.375rem);
     position: relative;
     z-index: 1;
     display: grid;
     justify-items: start;
-    gap: .8rem;
-    padding-block-start: clamp(.9rem, 1.5vw, 1.25rem);
-    border-block-start: 1px solid var(--color-on-forest-line);
+    gap: var(--space-related);
   }
 
   .story__visit p {
     max-inline-size: 28ch;
-    line-height: 1.45;
   }
 
   @media (min-width: 48rem) {
+    .story__twig {
+      inset: auto auto 5% max(var(--page-gutter) + 5rem, (100% - var(--content-max-width)) / 2 + 5rem);
+      inline-size: clamp(4.5rem, 10vw, 9rem);
+      rotate: -12deg;
+    }
+
     .story__scene:is(.story__scene--hands, .story__scene--workshop) .story__composition {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: center;
@@ -326,10 +340,18 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
 
   }
 
+  @media (48rem <= width < 80rem) {
+    .story__twig {
+      inset-inline-start: 27%;
+      inline-size: clamp(4rem, 8vw, 6rem);
+    }
+  }
+
   /* The base layout remains a continuous photo essay on short screens and
      when motion is disabled. Only the enhanced reel stacks its scenes. */
   .story[data-story-cinema] {
     --story-viewport: calc(100svh - var(--header-block-size));
+    /* Scroll distance for the chapter cues and timeline. */
     --story-travel: clamp(68rem, 168svh, 98rem);
   }
 
@@ -376,15 +398,11 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     min-block-size: 0;
   }
 
-  [data-story-cinema] .story__copy :is(h2, h3) {
-    font-size: clamp(3.2rem, min(6.55vw, 11.3svh), 6rem);
-  }
-
   [data-story-cinema] .story__scene--hands .story__photo {
     align-self: stretch;
     justify-self: center;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
     inline-size: min(100%, calc(var(--story-viewport) * .71));
     min-block-size: 0;
   }
@@ -392,10 +410,6 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
   [data-story-cinema] .story__scene--hands .story__frame {
     aspect-ratio: auto;
     box-shadow: var(--shadow-raised);
-  }
-
-  [data-story-cinema] .story__scene--hands figcaption {
-    justify-self: end;
   }
 
   [data-story-cinema] .story__detail {
@@ -406,7 +420,6 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     inline-size: 44%;
     aspect-ratio: 5 / 3;
     overflow: hidden;
-    border: 1px solid var(--color-paper);
     border-radius: var(--story-radius);
     box-shadow: var(--shadow-raised);
   }
@@ -422,17 +435,14 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
 
   [data-story-cinema] .story__scene--workshop {
     --story-reveal: 100%;
+    background: var(--color-cream);
     clip-path: inset(var(--story-reveal) 0 0 round var(--story-panel-radius));
   }
 
   [data-story-cinema] .story__scene--workshop .story__frame {
-    aspect-ratio: 1.1;
+    aspect-ratio: 1;
     max-block-size: calc(var(--story-viewport) - 8rem);
     border-end-end-radius: clamp(4rem, 9vw, 9rem);
-  }
-
-  [data-story-cinema] .story__scene--workshop .story__copy h3 {
-    font-size: clamp(3rem, min(5.4vw, 10svh), 5.6rem);
   }
 
   [data-story-cinema] .story__scene--table .story__composition {
@@ -443,9 +453,10 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
   }
 
   [data-story-cinema] .story__scene--table {
-    --story-reveal-block: 44%;
+    --story-reveal-top: 58%;
+    --story-reveal-bottom: 32%;
     --story-reveal-inline: 50%;
-    clip-path: inset(var(--story-reveal-block) var(--story-reveal-inline) round var(--story-panel-radius));
+    clip-path: inset(var(--story-reveal-top) var(--story-reveal-inline) var(--story-reveal-bottom) round var(--story-panel-radius));
   }
 
   [data-story-cinema] .story__scene--table .story__photo {
@@ -465,21 +476,6 @@ const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
     background: linear-gradient(to bottom, transparent 29%, color-mix(in srgb, var(--color-forest) 66%, transparent) 69%, var(--color-forest) 100%);
     content: '';
     pointer-events: none;
-  }
-
-  [data-story-cinema] .story__scene--table figcaption {
-    position: absolute;
-    z-index: 1;
-    inset: 1rem max(1rem, var(--page-gutter) - var(--story-edge)) auto auto;
-    margin: 0;
-    padding: .3rem .65rem;
-    border-radius: var(--story-radius);
-    background: var(--glass-tint-dark);
-    color: var(--color-paper);
-  }
-
-  [data-story-cinema] .story__scene--table .story__copy h3 {
-    font-size: clamp(3rem, min(5.5vw, 9.3svh), 5rem);
   }
 
 </style>

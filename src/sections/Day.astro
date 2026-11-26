@@ -2,12 +2,15 @@
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
-import painting from '../assets/opening/day-painting.png';
-import blocks from '../assets/opening/day-blocks.png';
-import table from '../assets/opening/day-table.png';
-import garden from '../assets/opening/day-garden.png';
 import BotanicalArt from '../components/BotanicalArt.astro';
-import groupMovement from '../assets/program/group.png';
+import blocks from '../assets/centro-de-dia/juego-de-colores.jpg';
+import groupMovement from '../assets/centro-de-dia/movimiento-al-aire-libre.jpg';
+import painting from '../assets/centro-de-dia/pintura-con-las-manos.jpg';
+import workshop from '../assets/centro-de-dia/detalle-del-taller.jpg';
+import games from '../assets/centro-de-dia/materiales-para-jugar.jpg';
+import gardenPlants from '../assets/centro-de-dia/plantas-del-jardin.jpg';
+import table from '../assets/opening/day-table.png';
+import gardenFlowers from '../assets/confianza/buganvilla-del-jardin.jpg';
 import memory from '../assets/opening/day-memory.svg';
 import movement from '../assets/opening/day-move.svg';
 import creativity from '../assets/opening/day-create.svg';
@@ -23,7 +26,8 @@ const activities = [
     icon: memory,
     mobileIcon: memoryMobile,
     image: blocks,
-    alt: 'Personas mayores y una cuidadora realizan un juego con piezas de colores',
+    alt: 'Dos personas se concentran en un juego con piezas de colores',
+    preview: games,
   },
   {
     title: 'Moverse y expresarse.',
@@ -31,7 +35,8 @@ const activities = [
     icon: movement,
     mobileIcon: movementMobile,
     image: groupMovement,
-    alt: 'Personas mayores participan en una actividad grupal de movimiento',
+    alt: 'Varias personas se toman de las manos y se mueven en una ronda al aire libre',
+    preview: gardenPlants,
   },
   {
     title: 'Crear y compartir.',
@@ -40,13 +45,14 @@ const activities = [
     icon: creativity,
     mobileIcon: creativityMobile,
     image: painting,
-    alt: 'Una mujer mayor sonríe mientras pinta con las manos',
+    alt: 'Una mujer sonríe y muestra la palma pintada junto a sus huellas en el papel',
+    preview: workshop,
   },
 ];
 
 const facilities = [
-  { image: table, alt: 'Una persona mayor y una cuidadora juegan juntas en una mesa' },
-  { image: garden, alt: 'Entrada y jardín de El Roble' },
+  { image: table, alt: 'Participantes y acompañantes juegan bingo en el salón de El Roble' },
+  { image: gardenFlowers, alt: 'Buganvillas en flor en el jardín de El Roble' },
 ];
 ---
 
@@ -70,7 +76,7 @@ const facilities = [
                 sizes="(max-width: 40rem) calc(100vw - 24px), (max-width: 73rem) 58vw, 27vw" format="webp" />
             ))}
           </div>
-          <div class="gallery-pagination day__pagination" data-gallery-pagination>
+          <div class="gallery-pagination liquid-glass--clear day__pagination" data-gallery-pagination>
             {activities.map(({ title }, index) => (
               <label data-gallery-dot for={`day-activity-${index}`} title={title}>
                 <span data-gallery-mark aria-hidden="true"></span>
@@ -79,33 +85,51 @@ const facilities = [
             <GalleryPlayback controls="day-activity-photos" />
           </div>
         </div>
-        <label class="day__preview" for="day-activity-2">
-          <Image src={painting} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
-          <span class="sr-only">Ver: Crear y compartir.</span>
-        </label>
+        <div class="day__previews">
+          {activities.map((_, index) => {
+            const next = (index + 1) % activities.length;
+            const { title, preview } = activities[next];
+            return (
+              <label class="day__preview" data-preview-for={index} for={`day-activity-${next}`}>
+                <Image src={preview} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
+                <span class="sr-only">Ver {title}</span>
+              </label>
+            );
+          })}
+        </div>
       </div>
       <div class="day__panel" data-reveal="quiet">
         <h3 id="day-panel-title">Así acompañamos sus días.</h3>
-        <fieldset class="day__activity-list" aria-labelledby="day-panel-title">
-          {activities.map(({ title, mobileTitle, description, icon, mobileIcon }, index) => (
-            <div class="day__activity">
-              <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
-                aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />
-              <label class="day__activity-label" for={`day-activity-${index}`}>
-                <span class="day__index" aria-hidden="true">0{index + 1}</span>
-                <span class="day__activity-title">
-                  <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
-                  {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
-                </span>
-                <picture>
-                  <source media="(max-width: 40rem)" srcset={mobileIcon.src} />
-                  <img src={icon.src} alt="" />
-                </picture>
-                <span class="day__activity-description" id={`day-activity-description-${index}`}>{description}</span>
-              </label>
-            </div>
-          ))}
-        </fieldset>
+        {/* Stack hidden copies of each state to reserve the largest wrapped layout. */}
+        {[null, ...activities.map((_, index) => index)].map((sizingIndex) => {
+          const sizing = sizingIndex !== null;
+          const List = sizing ? 'div' : 'fieldset';
+          const Row = sizing ? 'div' : 'label';
+          return (
+            <List class:list={['day__activity-list', sizing && 'day__activity-list--sizing']}
+              aria-hidden={sizing || undefined} aria-labelledby={sizing ? undefined : 'day-panel-title'}>
+              {activities.map(({ title, mobileTitle, description, icon, mobileIcon }, index) => (
+                <div class="day__activity">
+                  {!sizing && <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
+                    aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />}
+                  <Row class="day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--interactive" for={sizing ? undefined : `day-activity-${index}`}>
+                    <span class="day__index" aria-hidden="true">0{index + 1}</span>
+                    <span class="day__activity-title">
+                      <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
+                      {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
+                    </span>
+                    <picture>
+                      <source media="(max-width: 40rem)" srcset={mobileIcon.src} />
+                      <img src={icon.src} alt="" />
+                    </picture>
+                    <span class="day__activity-description" data-sizing-open={sizingIndex === index || undefined}
+                      id={sizing ? undefined : `day-activity-description-${index}`}>{description}</span>
+                  </Row>
+                </div>
+              ))}
+            </List>
+          );
+        })}
       </div>
 
       <div class="day__facilities">
@@ -135,21 +159,20 @@ const facilities = [
 </script>
 
 <style>
-  .day { padding-block: 1rem 3.5rem; }
+  .day { padding-block: var(--space-section); }
   .day__inner { display: grid; gap: var(--section-gap); }
-  .day__heading { display: grid; gap: clamp(1rem, .5rem + 1vw, 1.5rem); }
-  .day__heading h2 { font-size: clamp(2.25rem, 1.735rem + 2.08vw, 4rem); line-height: 1.06; }
+  .day__heading { display: grid; gap: var(--space-related); }
   .day__heading em { color: var(--color-oak); }
-  .day__description { display: grid; gap: clamp(.75rem, .6rem + .23vw, 1rem); font-size: var(--text-copy); line-height: 1.6; }
+  .day__description { display: grid; gap: var(--space-detail); }
   .day__composition {
     display: grid;
     grid-template-areas: "gallery" "panel" "facilities" "invite";
     gap: var(--section-gap);
   }
-  .day__gallery { grid-area: gallery; display: grid; grid-template-columns: 1fr; gap: clamp(.75rem, 1.23vw, 1.5rem); }
+  .day__gallery { grid-area: gallery; display: grid; grid-template-columns: 1fr; gap: var(--space-related); }
   .day__media { display: grid; align-content: start; gap: .375rem; min-inline-size: 0; }
   .day__photo { position: relative; aspect-ratio: 366 / 320; overflow: hidden; border-radius: clamp(1rem, 2vw, 1.75rem); }
-  .day__photo, .day__preview, .day__facilities img { box-shadow: var(--shadow-card); }
+  .day__photo, .day__previews, .day__facilities img { box-shadow: var(--shadow-card); }
   .day__composition:has(#day-activity-0:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(1) [data-gallery-mark],
   .day__composition:has(#day-activity-1:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(2) [data-gallery-mark],
   .day__composition:has(#day-activity-2:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(3) [data-gallery-mark] { inline-size: 1rem; opacity: 1; }
@@ -159,120 +182,115 @@ const facilities = [
     block-size: 100%;
     object-fit: cover;
   }
-  .day__activity-photo { position: absolute; inset: 0; object-position: center 21%; }
-  .day__activity-photo { display: none; }
+  .day__activity-photo { position: absolute; inset: 0; display: none; object-position: center 14%; }
   .day__composition:has(#day-activity-0:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--0,
   .day__composition:has(#day-activity-1:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--1,
   .day__composition:has(#day-activity-2:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--2 { display: block; }
-  .day__activity-photo--1 { object-position: center; }
-  .day__preview { display: none; }
-  .day__panel { grid-area: panel; display: grid; align-content: center; gap: 1rem; padding: 1rem; border-radius: 1.75rem; background: var(--surface-forest); color: var(--color-cream); box-shadow: var(--shadow-card); }
-  .day__panel h3 { color: inherit; font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.1 var(--font-display); }
-  .day__activity-list { display: grid; gap: .75rem; min-inline-size: 0; }
+  .day__activity-photo--2 { object-position: 58% 14%; }
+  .day__previews { display: none; }
+  .day__preview { grid-area: 1 / 1; visibility: hidden; overflow: hidden; border-radius: inherit; cursor: pointer; }
+  :is(.day[data-gallery-index="0"], .day:not([data-gallery-index]):has(#day-activity-0:checked)) .day__preview[data-preview-for="0"],
+  :is(.day[data-gallery-index="1"], .day:not([data-gallery-index]):has(#day-activity-1:checked)) .day__preview[data-preview-for="1"],
+  :is(.day[data-gallery-index="2"], .day:not([data-gallery-index]):has(#day-activity-2:checked)) .day__preview[data-preview-for="2"] { visibility: visible; }
+  .day__panel { grid-area: panel; display: grid; grid-template-areas: "title" "activities"; align-content: center; gap: var(--space-related); padding: var(--space-inset); border-radius: clamp(1.5rem, 3vw, 1.75rem); background: var(--surface-forest); color: var(--color-cream); box-shadow: var(--shadow-card); }
+  .day__panel h3 { grid-area: title; color: inherit; }
+  .day__activity-list { grid-area: activities; display: grid; align-content: start; gap: var(--space-detail); min-inline-size: 0; }
+  .day__activity-list--sizing { visibility: hidden; }
   .day__activity { position: relative; }
   .day__radio { position: absolute; opacity: 0; }
   .day__activity-label {
-    --activity-row-gap: .4rem;
+    --activity-row-gap: calc(var(--space-detail) / 2);
+    --activity-inset: .75rem;
+    --glass-depth: 0 0 transparent;
     position: relative;
     display: grid;
-    grid-template-columns: 2.125rem minmax(0, 1fr) auto;
+    grid-template-columns: clamp(1.75rem, 1.4rem + 1vw, 2.125rem) minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--activity-row-gap) clamp(.5rem, 1vw, 1rem);
-    padding: .45rem .75rem;
-    min-block-size: 3rem;
-    border-radius: .75rem;
+    padding: var(--space-detail) var(--activity-inset);
+    min-block-size: var(--control-row-min-height);
+    border-radius: 1rem;
     cursor: pointer;
   }
   .day__activity-label::after {
     position: absolute;
-    inset: auto .75rem 0;
+    inset: auto var(--activity-inset) 0;
     block-size: 1px;
     background: var(--color-on-forest-line);
     content: '';
   }
   .day__activity:last-child .day__activity-label::after,
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label::after { display: none; }
-  .day__activity-label { transition: background-color var(--motion-state), color var(--motion-state); }
-  .day__activity-label:active { background: var(--surface-on-forest); }
-  @media (hover: hover) { .day__activity-label:hover { background: var(--surface-on-forest); } }
-  .day__activity-title { font: 700 clamp(1.5rem, 1.16rem + .82vw, 2.25rem) / 1.15 var(--font-display); }
-  .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: .875rem; border-radius: 50%; }
+  .day__activity-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); }
+  .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
   .day__activity-label picture { display: grid; place-items: center; inline-size: 1.5rem; min-block-size: 1.5rem; }
-  .day__activity-description { grid-column: 2 / -1; display: none; font-size: clamp(1rem, .91rem + .25vw, 1.25rem); }
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label { background: var(--surface-paper); color: var(--color-forest); }
-  .day__radio:focus-visible + .day__activity-label { outline: 2px solid white; outline-offset: 2px; }
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__index { background: var(--color-forest); color: var(--color-cream); }
+  .day__activity-label img { filter: brightness(0) invert(1); }
+  .day__activity-description { grid-column: 2 / -1; display: none; max-inline-size: 62ch; text-wrap: pretty; }
+  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label {
+    --glass-visible: 1;
+    --glass-color: var(--color-forest);
+    --glass-fill: var(--glass-clear-tint);
+    --glass-edge: var(--glass-edge-forest);
+    --glass-highlight: var(--highlight-light);
+    --glass-lift: var(--glass-lift-clear);
+    --glass-press: var(--glass-press-clear);
+
+    .day__index { background: var(--color-forest); color: var(--color-paper); }
+    img { filter: brightness(0); opacity: .85; }
+    &::before { transition-property: box-shadow; }
+
+    @media (prefers-reduced-transparency: reduce) {
+      --glass-fill: var(--surface-paper);
+    }
+
+    @media (forced-colors: active) {
+      .day__index { outline: 1px solid Highlight; color: Highlight; }
+    }
+  }
+  .day__radio:focus-visible + .day__activity-label { outline: 2px solid var(--glass-focus); outline-offset: 2px; }
+  .day__radio:focus:not(:focus-visible) + .day__activity-label .day__index { outline: 1px solid currentColor; outline-offset: -3px; }
+  .day__activity-description[data-sizing-open],
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { display: block; }
   @media (prefers-reduced-motion: no-preference) {
     .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { animation: day-description var(--motion-panel) var(--ease-soft) both; }
     @keyframes day-description { from { opacity: .68; translate: 0 .18rem; } }
-
-    @supports (interpolate-size: allow-keywords) {
-      .day__activity-label { row-gap: 0; }
-      .day__activity-description {
-        display: block;
-        block-size: 0;
-        margin-block-start: 0;
-        overflow: clip;
-        opacity: 0;
-        visibility: hidden;
-        interpolate-size: allow-keywords;
-        transition: block-size var(--motion-panel) var(--ease-soft),
-          margin-block-start var(--motion-panel) var(--ease-soft), opacity var(--motion-state), visibility var(--motion-panel);
-      }
-      .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description {
-        block-size: auto;
-        margin-block-start: var(--activity-row-gap);
-        opacity: 1;
-        visibility: visible;
-        animation: none;
-      }
-    }
   }
-  .day__activity:not(:last-child) .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(.4); }
-  .day__activity:last-child .day__radio:not([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(0) invert(.9); }
-  .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: clamp(.75rem, 1.3vw, 1.5rem); }
+  .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: var(--space-related); }
   .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); }
-  .day__invite { grid-area: invite; }
-  .day__invite-copy { display: grid; align-items: center; gap: .75rem 1.5rem; }
-  .day__invite h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.15 var(--font-display); color: var(--color-forest); }
-  .day__invite :global(.day__visit) {
-    --cta-width: min(100%, 15.75rem);
-    --cta-gap: .5rem;
-    --cta-padding: .625rem clamp(1rem, 4vw, 1.5rem);
-    justify-self: start;
-  }
+  .day__facilities img:last-child { object-position: 65% 58%; }
+  .day__invite { grid-area: invite; column-gap: var(--space-detail); }
+  .day__invite-copy { display: grid; align-items: center; gap: var(--space-related); }
+  .day__invite h3 { color: var(--color-forest); }
+  .day__invite :global(.day__visit) { justify-self: start; }
   .day__mobile-title { display: none; }
+
+  @media (max-width: 22.5rem) {
+    .day__invite { grid-template-columns: minmax(0, 1fr) 3rem; }
+    .day__invite > :global(.day__acorns) { justify-self: end; }
+  }
 
   @media (max-width: 40rem) {
     .day__description p:nth-child(2) { display: none; }
-    .day__composition { row-gap: 1rem; }
-    .day__panel { margin-block-start: -.25rem; }
-    .day__activity-label { --activity-row-gap: .25rem; column-gap: .625rem; }
-    .day__activity-label picture { margin-inline-end: 1.25rem; }
-    .day__activity:last-child .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; white-space: nowrap; }
-    .day__facilities { margin-block-start: .5rem; max-inline-size: 94%; }
+    .day__composition { row-gap: var(--space-related); }
+    .day__facilities { margin-block-start: var(--space-detail); max-inline-size: 94%; }
     .day__desktop-title { display: none; }
     .day__mobile-title { display: block; }
   }
   @media (min-width: 40.001rem) {
-    .day { padding-block: clamp(3rem, 9.37vw, 4.5rem); }
-    .day__inner { gap: 2.5rem; }
     .day__composition {
       grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
       grid-template-areas: "gallery gallery" "panel facilities" "invite invite";
-      column-gap: 1.5rem;
-      row-gap: clamp(2rem, 4.25vw, 2.5rem);
+      column-gap: var(--space-inset);
     }
     .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
     .day__photo { aspect-ratio: 440 / 360; }
-    .day__preview { display: block; align-self: start; overflow: hidden; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; cursor: pointer; }
-    .day__preview { transition: box-shadow var(--motion-state); }
-    .day__preview:active { box-shadow: var(--shadow-control); }
-    @media (hover: hover) { .day__preview:hover { box-shadow: var(--shadow-raised); } }
-    .day__panel { padding: 1.5rem; }
-    .day__activity-list { gap: 1rem; }
-    .day__activity-label { border-radius: 1.5rem; padding: .75rem; }
+    .day__activity-list { gap: .75rem; }
+    .day__activity-label { padding-block: .75rem; border-radius: var(--radius-card); }
+    .day__activity-title { font-size: clamp(var(--text-item), 1.16rem + .82vw, 2.25rem); }
+    .day__activity-description { font-size: clamp(var(--text-copy), .91rem + .25vw, 1.25rem); }
+    .day__previews { display: grid; align-self: start; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; transition: box-shadow var(--motion-state); }
+    .day__previews:active { box-shadow: var(--shadow-control); }
+    @media (hover: hover) { .day__previews:hover { box-shadow: var(--shadow-raised); } }
     .day__facilities { grid-template-columns: 1fr; }
     .day__facilities img { aspect-ratio: 240 / 184; }
     .day__facilities img:first-child { inline-size: 86.3%; }
@@ -282,26 +300,19 @@ const facilities = [
     .day__invite-copy { grid-template-columns: minmax(0, 1fr) auto; }
   }
   @media (min-width: 73rem) {
-    .day { padding-block: clamp(2rem, 2.5vw, 3rem) clamp(4rem, 5vw, 6rem); }
-    .day__inner { gap: var(--section-gap); }
     .day__heading { grid-template-columns: minmax(0, 1fr) minmax(0, 43.8%); align-items: center; }
     .day__composition {
       grid-template-columns: minmax(0, 1fr) minmax(0, 43.8%);
       grid-template-areas: "gallery panel" "invite facilities";
-      column-gap: clamp(3rem, 3.75vw, 4.5rem);
-      row-gap: clamp(2.5rem, 4.6vw, 5.5rem);
+      column-gap: var(--section-gap);
     }
     .day__gallery { grid-template-columns: 520fr 324fr; }
     .day__photo { aspect-ratio: 520 / 592; }
-    .day__activity-photo { object-position: center; }
-    .day__preview { margin-block-start: clamp(2.75rem, 3.75vw, 4.5rem); aspect-ratio: 324 / 448; }
-    .day__panel { min-block-size: 93%; align-self: center; padding: clamp(1.5rem, 2.08vw, 2.5rem); }
-    .day__activity-list { gap: .75rem; }
+    .day__previews { margin-block-start: clamp(2.75rem, 3.75vw, 4.5rem); aspect-ratio: 324 / 448; }
+    .day__panel { min-block-size: 83%; align-self: center; padding: clamp(1.5rem, 2.08vw, 2.5rem); }
     .day__facilities { grid-template-columns: 456fr 216fr; max-inline-size: 94.5%; margin-inline-start: clamp(-2.5rem, -2vw, -1.5rem); }
     .day__facilities img, .day__facilities img:first-child { inline-size: 100%; }
     .day__facilities img { aspect-ratio: 216 / 224; }
     .day__facilities img:first-child { aspect-ratio: 456 / 224; }
-    .day__invite-copy { row-gap: 1.5rem; }
-    .day__invite :global(.day__visit) { --cta-width: fit-content; }
   }
 </style>
