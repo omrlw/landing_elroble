@@ -13,9 +13,7 @@ const stopStory = story ? createStory(story) : undefined;
 if (import.meta.hot) import.meta.hot.dispose(() => stopStory?.());
 
 const motion = matchMedia('(prefers-reduced-motion: no-preference)');
-const wide = matchMedia('(min-width: 75rem)');
 const compact = matchMedia('(max-width: 40rem)');
-const fine = matchMedia('(hover: hover) and (pointer: fine)');
 let active: gsap.Context | undefined;
 let frame = 0;
 
@@ -27,14 +25,6 @@ function syncMotion(firstVisit = false) {
     active = gsap.context(() => {
       const stopOpening = firstVisit ? playOpening(compact.matches) : undefined;
       const stopReveals = revealSections(compact.matches);
-      const oak = document.querySelector('.approach-decoration .oak-desktop');
-      if (wide.matches && fine.matches && oak) {
-        gsap.fromTo(oak, { y: -12 }, {
-          y: 18,
-          ease: 'none',
-          scrollTrigger: { trigger: '#enfoque', start: 'top bottom', end: 'center center', scrub: .3 },
-        });
-      }
       return () => {
         stopOpening?.();
         stopReveals();
@@ -43,7 +33,7 @@ function syncMotion(firstVisit = false) {
   }
 }
 
-for (const query of [motion, wide, compact, fine]) {
+for (const query of [motion, compact]) {
   query.addEventListener('change', () => {
     if (!frame) frame = requestAnimationFrame(() => syncMotion());
   });

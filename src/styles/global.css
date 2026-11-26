@@ -112,7 +112,9 @@
   --motion-gallery: 450ms;
   --motion-reveal: 640ms;
   --motion-scene: 800ms;
-  --header-block-size: 5rem;
+  /* Anchor targets and the sticky story stage align to the compact bar. */
+  --header-compact-height: 4.375rem;
+  --header-block-size: calc(var(--header-compact-height) + 1px);
 }
 
 @media (max-width: 40rem) {
@@ -165,8 +167,8 @@
   }
 }
 
-@media (min-width: 42rem) { :root { --header-block-size: 6rem; } }
-@media (min-width: 73rem) { :root { --header-block-size: 7rem; } }
+@media (min-width: 42rem) { :root { --header-compact-height: 4.5rem; } }
+@media (min-width: 73rem) { :root { --header-compact-height: 4.75rem; } }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
@@ -334,6 +336,13 @@
   width: min(105rem, 100% - var(--page-gutter) * 2);
   max-width: 105rem;
   margin-inline: auto;
+}
+
+.botanical-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 2rem);
 }
 
 .opening {

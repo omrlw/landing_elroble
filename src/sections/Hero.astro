@@ -1,5 +1,5 @@
 ---
-import { Image, Picture } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
 import { business, firstVisitUrl } from '../config/business';
@@ -17,7 +17,6 @@ import clockMobile from '../assets/opening/clock-mobile.svg';
 import heart from '../assets/opening/heart.svg';
 import sunrise from '../assets/opening/sunrise.svg';
 import activities from '../assets/opening/day-create-mobile.svg';
-import leaves from '../assets/opening/promo-leaves.png';
 import ring from '../assets/opening/promo-ring.svg';
 import ringTablet from '../assets/opening/promo-ring-tablet.svg';
 import ringMobile from '../assets/opening/promo-ring-mobile.svg';
@@ -94,9 +93,6 @@ const credentials = [
         <span>Primera visita</span>
         <strong>GRATIS</strong>
       </a>
-      <span class="first-visit__leaves" aria-hidden="true">
-        <Image src={leaves} alt="" width={144} format="webp" />
-      </span>
       <button class="first-visit__dismiss liquid-glass--lens" type="button" aria-label="Cerrar promoción" hidden>
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none">
           <path d="m5 5 8 8m0-8-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
@@ -293,13 +289,6 @@ const credentials = [
   .first-visit__link { transition: background-color var(--motion-state); }
   .first-visit__link:active { background-color: var(--color-oak); }
   @media (hover: hover) { .first-visit__link:hover { background-color: var(--color-oak); } }
-  .first-visit__leaves {
-    position: absolute;
-    inline-size: 47%;
-    inset: -13% auto auto -4%;
-    pointer-events: none;
-  }
-  .first-visit__leaves img { display: block; width: 100%; height: auto; }
   .first-visit__dismiss {
     position: absolute;
     inset: -.75rem -.375rem auto auto;

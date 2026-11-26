@@ -1,8 +1,6 @@
 ---
 import { getImage, Image } from 'astro:assets';
 import clay from '../assets/approach/clay.png';
-import oakDesktop from '../assets/approach/oak-desktop.png';
-import oakTablet from '../assets/approach/oak-tablet.png';
 import portrait from '../assets/approach/portrait.png';
 import portraitMobile from '../assets/approach/portrait-mobile.png';
 
@@ -30,12 +28,6 @@ const principles = [
 ---
 
 <section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
-  <div class="approach-decoration" aria-hidden="true">
-    <Image class="oak-desktop" src={oakDesktop} alt="" format="webp" width={644} />
-    <Image class="oak-tablet" src={oakTablet} alt="" format="webp" width={488} />
-    <span class="approach-sphere"></span>
-  </div>
-
   <div class="container approach-inner">
     <header class="approach-heading" data-reveal="heading">
       <h2 id="approach-title">Cuidar también es<br /><em>reconocer quién es.</em></h2>
@@ -109,31 +101,6 @@ const principles = [
   .approach-inner {
     position: relative;
     padding: 40px 12px;
-  }
-
-  .approach-decoration {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .approach-decoration img {
-    display: none;
-    position: absolute;
-    height: auto;
-  }
-
-  .approach-sphere {
-    position: absolute;
-    top: -96px;
-    right: -94px;
-    width: 236px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    opacity: 0.42;
-    background: var(--glass-ornament);
-    box-shadow: var(--highlight-dark);
   }
 
   .approach-heading {
@@ -262,20 +229,6 @@ const principles = [
       padding: 72px 0;
     }
 
-    .approach-decoration .oak-tablet {
-      display: block;
-      top: 335px;
-      left: -66px;
-      width: 244px;
-      opacity: 0.48;
-      transform: rotate(-3.26deg);
-    }
-
-    .approach-sphere {
-      top: -48px;
-      right: -86px;
-    }
-
     .approach-heading {
       margin-bottom: 32px;
     }
@@ -343,26 +296,6 @@ const principles = [
   @media (min-width: 1200px) {
     .approach-inner {
       padding-block: 96px;
-    }
-
-    .approach-decoration .oak-tablet {
-      display: none;
-    }
-
-    .approach-decoration .oak-desktop {
-      display: block;
-      top: 95px;
-      left: -36px;
-      width: 322px;
-      opacity: 0.38;
-    }
-
-    .approach-sphere {
-      top: auto;
-      right: -164px;
-      bottom: -4px;
-      width: 356px;
-      opacity: 0.3;
     }
 
     .approach-heading {

@@ -18,6 +18,13 @@ Los valores y combinaciones compartidas viven en [global.css](src/styles/global.
 
 Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--color-on-forest-muted` para texto secundario. Los paneles dentro de una sección verde pueden usar `--surface-on-forest`.
 
+## Ilustraciones botánicas
+
+- La rama, la hoja, las bellotas y la madera comparten acabado mate, nervaduras y vetas finas y tonos de oliva, salvia y madera.
+- [BotanicalArt.astro](src/components/BotanicalArt.astro) usa un mismo espacio de 4 a 8 rem de ancho y una opacidad común. Ajusta cada silueta dentro de ese espacio para equilibrar su peso. La rama completa de Recorrido ocupa todo el ancho y Preguntas frecuentes reserva el detalle de hoja suelta.
+- Los motivos se sitúan a la derecha de su grupo de contenido, con la misma separación. Confianza, Centro de día y Preguntas frecuentes agrupan el texto y la llamada a la acción. Recorrido combina la rama con su encabezado.
+- [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de crecimiento en la esquina inferior de Programa en todos los tamaños. Las secciones de descanso visual dejan el protagonismo a la fotografía y al contenido.
+
 ## Glass
 
 - Usa `.liquid-glass` para controles y texto superpuestos a fotografías, con tinte verde y texto papel. El tinte mantiene la legibilidad al cambiar de foto.
@@ -35,3 +42,10 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 - `--highlight-light` y `--highlight-dark` para el reflejo interior de cada material.
 
 Las llamadas a la acción se construyen con [Cta.astro](src/components/Cta.astro). Usa la variante `primary` para superficies claras, `light` para secciones verdes y `glass` sobre fotografías. El foco del componente combina un contorno bosque con un borde papel para que se vea sobre superficies claras y oscuras.
+
+## Movimiento
+
+- Usa Historia como referencia. El movimiento guía la mirada entre escenas. Primero destaca un detalle, después abre el encuadre para mostrar su contexto y deja una pausa para leer antes de la siguiente transición.
+- Mantén las esquinas redondeadas durante toda la apertura de una escena y deja margen entre el marco y la pantalla. Retira el texto saliente antes de que la siguiente imagen lo cubra.
+- Para el texto, usa desplazamientos cortos y la curva `--ease-soft`. Para los cambios de plano ligados al scroll, usa una curva de entrada y salida suave. Reserva las secuencias fijadas para momentos narrativos en pantallas con espacio suficiente.
+- En pantallas pequeñas, conserva el orden de lectura y vincula el movimiento a cada imagen. Con movimiento reducido, presenta el relato completo en el flujo normal con sus enlaces y acciones.

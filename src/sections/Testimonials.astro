@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
-import oak from '../assets/lower/testimonials-oak.png';
 import carmen from '../assets/lower/testimonial-carmen.png';
 import jorge from '../assets/lower/testimonial-jorge.png';
 import patricia from '../assets/lower/testimonial-patricia.png';
@@ -18,9 +17,6 @@ const placements = [
 <section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
   <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
-    <span class="oak" aria-hidden="true">
-      <Image src={oak} alt="" widths={[112, 224]} sizes="112px" />
-    </span>
     <p>Historias de familias que encontraron en El Roble tranquilidad, compañía y un cuidado digno para quienes más quieren.</p>
   </header>
 
@@ -145,9 +141,7 @@ const placements = [
     text-wrap: balance;
   }
   .review-opening em { font-weight: inherit; }
-  .review-opening p, .oak { display: none; }
-  .oak { pointer-events: none; }
-  .oak img { display: block; width: 100%; height: auto; }
+  .review-opening p { display: none; }
 
   .review-container { overflow: clip; }
   .review-track {
@@ -315,7 +309,6 @@ const placements = [
     .testimonials { padding-block: clamp(4.5rem, 5vw, 6rem); }
     .review-opening { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 6rem; margin-block-end: clamp(2.5rem, 3.333vw, 4rem); }
     .review-opening h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
-    .oak { display: block; position: absolute; width: clamp(4rem, 5.83vw, 7rem); left: 40.6%; top: 65%; }
     .review-track {
       min-block-size: clamp(40rem, 39.583vw, 47.5rem);
       grid-auto-columns: max(18rem, calc((100% - var(--track-gap) * 4) / 5));

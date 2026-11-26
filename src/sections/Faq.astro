@@ -1,10 +1,7 @@
 ---
-import { Image } from 'astro:assets';
+import BotanicalArt from '../components/BotanicalArt.astro';
 import Cta from '../components/Cta.astro';
 import { business } from '../config/business';
-import branch from '../assets/lower/faq-branch.png';
-import acorn from '../assets/lower/faq-acorn.png';
-import rings from '../assets/lower/faq-rings.png';
 
 const questions = [
   {
@@ -49,8 +46,6 @@ const questions = [
 ---
 
 <section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
-  <Image class="ornament branch" src={branch} alt="" widths={[112, 192, 384]} sizes="(min-width: 80rem) 176px, (min-width: 40rem) 96px, 57px" />
-  <Image class="ornament rings" src={rings} alt="" widths={[120, 180, 360, 720]} sizes="(min-width: 80rem) 357px, (min-width: 40rem) 144px, 109px" />
   <div class="container faq-container">
     <header class="faq-heading" data-reveal="heading">
       <h2 id="faq-heading">Lo importante,<br /><em>antes de la visita.</em></h2>
@@ -78,10 +73,12 @@ const questions = [
       ))}
     </div>
 
-    <div class="faq-close">
-      <p>¿Tienes otra pregunta?</p>
-      <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
-      <Image class="ornament acorn" src={acorn} alt="" widths={[64, 112, 192]} sizes="(min-width: 80rem) 96px, 56px" />
+    <div class="faq-close botanical-layout">
+      <div class="faq-close-copy">
+        <p>¿Tienes otra pregunta?</p>
+        <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
+      </div>
+      <BotanicalArt class="faq-leaf" motif="leaf" />
     </div>
   </div>
 </section>
@@ -105,7 +102,7 @@ const questions = [
     text-wrap: balance;
   }
   h2 em { font-weight: inherit; color: var(--color-oak); }
-  .faq-heading p, .faq-close p, .acorn { display: none; }
+  .faq-heading p, .faq-close p { display: none; }
   .questions { display: grid; align-items: start; gap: .5rem; }
 
   details {
@@ -157,11 +154,9 @@ const questions = [
       details[open]::details-content { block-size: auto; opacity: 1; }
     }
   }
-  .faq-close { position: relative; margin-block-start: 1.5rem; }
-  .faq-close :global(a) { --cta-height: 3.5rem; --cta-padding: .65rem 1.45rem; --cta-width: 15.75rem; white-space: nowrap; }
-  .ornament { position: absolute; height: auto; pointer-events: none; }
-  .branch { width: 3.56rem; opacity: .55; top: 3.3rem; right: 1rem; }
-  .rings { width: 6.81rem; bottom: 0; right: 0; opacity: .3; }
+  .faq-close { margin-block-start: 1.5rem; }
+  .faq-close-copy { display: grid; justify-items: start; gap: 1rem; }
+  .faq-close :global(a) { --cta-height: 3.5rem; --cta-gap: .5rem; --cta-padding: .65rem clamp(1rem, 4vw, 1.5rem); --cta-width: min(100%, 15.75rem); }
 
   @media (hover: hover) {
     details:has(> summary:hover) { box-shadow: var(--shadow-raised); }
@@ -178,11 +173,13 @@ const questions = [
     .has-compact .full-question, .tablet-question { display: inline; }
     .has-tablet .full-question { display: none; }
     .compact-question { display: none; }
-    .faq-close { margin-block-start: 2.5rem; text-align: center; }
-    .faq-close p { display: block; margin: 0 0 1rem; font: 600 clamp(2rem, 1.65rem + .65vw, 2.5rem)/1.15 var(--font-display); }
-    .acorn { display: block; width: 3.5rem; left: 74%; top: 3rem; }
-    .branch { top: auto; right: auto; bottom: -1.7rem; left: .45rem; width: 6.05rem; }
-    .rings { width: 9rem; bottom: -.75rem; }
+    .faq-close {
+      inline-size: fit-content;
+      margin-inline: auto;
+      margin-block-start: 2.5rem;
+    }
+    .faq-close-copy { justify-items: center; text-align: center; }
+    .faq-close p { display: block; margin: 0; font: 600 clamp(2rem, 1.65rem + .65vw, 2.5rem)/1.15 var(--font-display); }
   }
 
   @media (min-width: 80rem) {
@@ -195,12 +192,12 @@ const questions = [
     details:nth-child(4) .question-title { max-width: 29rem; }
     .has-tablet .full-question { display: inline; }
     .tablet-question { display: none; }
-    .faq-close { margin-block-start: clamp(3rem, 3.333vw, 4rem); min-height: 11.5rem; display: grid; align-content: center; justify-items: center; }
-    .faq-close p { margin-block-end: 1.5rem; }
+    .faq-close {
+      margin-block-start: clamp(3rem, 3.333vw, 4rem);
+      min-height: 11.5rem;
+    }
+    .faq-close-copy { row-gap: 1.5rem; }
     .faq-close :global(a) { --cta-width: fit-content; --cta-padding: .65rem 1.5rem; }
-    .branch { width: clamp(8rem, 9.17vw, 11rem); bottom: -3.5rem; left: .75rem; }
-    .rings { width: clamp(15rem, 18.6vw, 22.31rem); bottom: -3rem; }
-    .acorn { width: clamp(4rem, 5vw, 6rem); left: 72%; top: 5rem; }
   }
 
 </style>

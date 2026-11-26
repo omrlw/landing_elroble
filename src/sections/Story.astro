@@ -1,94 +1,485 @@
 ---
 import { Image } from 'astro:assets';
-import workshop from '../assets/opening/day-painting.png';
+import Cta from '../components/Cta.astro';
+import portrait from '../assets/story/taller-retrato.jpg';
+import hands from '../assets/story/taller-detalle.jpg';
+import workshop from '../assets/story/taller-duo.jpg';
+import table from '../assets/story/taller-mesa.jpg';
+
+const scenes = [
+  {
+    key: 'hands',
+    anchor: 'historia',
+    heading: 'Hay sitio',
+    emphasis: 'en la mesa.',
+    copy: 'Cuando los días en casa se vuelven silenciosos, una actividad con sentido despierta la mañana.',
+    next: { href: '#historia-taller', label: 'Ver el taller' },
+    image: portrait,
+    alt: 'Una mujer sonríe mientras sostiene un cuenco de cerámica con las dos manos.',
+    caption: 'Una pieza hecha a mano',
+  },
+  {
+    key: 'workshop',
+    anchor: 'historia-taller',
+    heading: 'Tiempo para crear',
+    emphasis: 'a su propio ritmo.',
+    copy: 'Moldear, elegir colores y hacer sin prisas devuelve la alegría de expresarse con las propias manos.',
+    next: { href: '#historia-compania', label: 'Ver la mesa compartida' },
+    image: workshop,
+    alt: 'Dos mujeres pintan piezas de cerámica en una mesa de trabajo.',
+    caption: 'Un taller de cerámica',
+  },
+  {
+    key: 'table',
+    anchor: 'historia-compania',
+    heading: 'Y alguien con quien',
+    emphasis: 'compartir el día.',
+    copy: 'Una actividad en la mesa, una charla espontánea y la tranquilidad de sentirse parte de un grupo.',
+    next: null,
+    image: table,
+    alt: 'Tres personas mayores decoran piezas de cerámica alrededor de una mesa de madera.',
+    caption: 'Cerámica alrededor de la mesa',
+  },
+];
+
+const widths = [400, 640, 800, 1024, 1320];
+const portraitSizes = '(min-width: 62rem) 42vw, 96vw';
 ---
 
-<section class="story" id="historia" aria-labelledby="story-title" data-story>
-  <div class="container story__scene" data-story-scene>
-    <div class="story__intro">
-      <h2 id="story-title">Detrás de <em>la huella.</em></h2>
-      <p>Una mañana en el taller de pintura de El Roble.</p>
-    </div>
+<section class="story" id="historia" tabindex="-1" aria-labelledby="story-title" data-story>
+  <div class="story__reel" data-story-reel>
+    <span class="story__cue" data-story-cue="historia-taller" aria-hidden="true"></span>
+    <span class="story__cue" data-story-cue="historia-compania" aria-hidden="true"></span>
+    <span class="story__cue" data-story-cue="historia-visita" aria-hidden="true"></span>
 
-    <figure class="story__portrait" data-story-aperture>
-      <Image
-        src={workshop}
-        alt="Una participante sonríe y muestra la palma pintada junto a las huellas que dejó en el papel."
-        widths={[320, 480, 640]}
-        sizes="(min-width: 72rem) 640px, (min-width: 48rem) 56vw, calc(100vw - 1.5rem)"
-        format="webp"
-        loading="lazy"
-        data-story-camera
-      />
-    </figure>
+    <div class="story__stage" data-story-stage>
+      {scenes.map((scene, index) => {
+        const Title = index === 0 ? 'h2' : 'h3';
+        const titleId = index === 0 ? 'story-title' : `${scene.anchor}-titulo`;
+        return (
+          <article
+            class:list={['story__scene', `story__scene--${scene.key}`]}
+            id={index ? scene.anchor : undefined}
+            data-story-scene
+            aria-labelledby={titleId}
+            tabindex={index ? -1 : undefined}
+          >
+            <div class="container story__composition">
+              <div class="story__copy" data-story-copy>
+                <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
+                <p>{scene.copy}</p>
+                {scene.next && (
+                  <a class="story__next" href={scene.next.href} data-story-link>
+                    <span>{scene.next.label}</span>
+                    <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M10 4.25v11.5m-4.25-4.25L10 15.75l4.25-4.25" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+              <figure class="story__photo">
+                <div class="story__frame" data-story-frame>
+                  <Image
+                    src={scene.image}
+                    alt={scene.alt}
+                    widths={scene.key === 'table' ? [...widths, 1600, 1800] : widths}
+                    sizes={scene.key === 'table' ? '100vw' : portraitSizes}
+                    format="webp"
+                    quality={86}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    data-story-image
+                  />
+                </div>
+                <figcaption>{scene.caption} <span>Foto referencial</span></figcaption>
+
+                {index === 0 && (
+                  <div class="story__detail" aria-hidden="true" data-story-detail>
+                    <Image
+                      src={hands}
+                      alt=""
+                      widths={[280, 440, 720]}
+                      sizes="(min-width: 62rem) 18vw, 280px"
+                      format="webp"
+                      quality={86}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                )}
+              </figure>
+              {!scene.next && (
+                <div class="story__visit" id="historia-visita" data-story-visit tabindex="-1" role="group" aria-label="Visita a El Roble">
+                  <p>Conversemos sobre lo que necesita tu familia.</p>
+                  <Cta label="Agendar una visita" variant="light" />
+                </div>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
   </div>
 </section>
 
 <style>
   .story {
+    --story-radius: clamp(.875rem, 1.2vw, 1.25rem);
+    --story-panel-radius: clamp(1.25rem, 2.25vw, 2rem);
+    --story-edge: clamp(.75rem, 1.6vw, 1.5rem);
+    --story-gap: clamp(2rem, 4vw, 4.5rem);
     background: var(--color-cream);
-    padding-block: clamp(2.5rem, 4.5vw, 4rem) clamp(2rem, 3.7vw, 3.25rem);
+  }
+
+  .story__reel {
+    position: relative;
+  }
+
+  :is(.story, .story__scene, .story__visit):focus {
+    outline: none;
+  }
+
+  .story__cue {
+    display: none;
   }
 
   .story__scene {
-    display: grid;
-    align-items: center;
-    gap: var(--section-gap);
-  }
-
-  .story__intro h2 {
-    font-size: clamp(2.875rem, 5.7vw, 5.5rem);
-    letter-spacing: -.028em;
-    line-height: .98;
-  }
-
-  .story__intro em {
-    display: block;
-    color: var(--color-oak);
-  }
-
-  .story__intro p {
-    max-inline-size: 25ch;
-    margin-block-start: clamp(.75rem, 1.25vw, 1.125rem);
-  }
-
-  .story__portrait {
-    --story-radius: clamp(1rem, 2vw, 1.75rem);
+    --story-ink: var(--color-ink);
+    --story-accent: var(--color-oak);
     position: relative;
+    isolation: isolate;
+    padding-block: var(--story-gap);
+    color: var(--color-text);
+    background: var(--color-cream);
+  }
+
+  .story__scene--workshop {
+    border-radius: var(--story-panel-radius);
+    background: var(--surface-light-wash);
+  }
+
+  .story__scene--table {
+    --story-ink: var(--color-paper);
+    --story-accent: var(--color-honey);
+    border-radius: var(--story-panel-radius);
+    background: var(--color-forest);
+    color: var(--color-on-forest-muted);
+  }
+
+  .story__scene:is(.story__scene--workshop, .story__scene--table) {
+    margin: var(--story-edge);
+  }
+
+  .story__composition {
+    display: grid;
+    gap: clamp(1.25rem, 3.2vw, 3rem);
+  }
+
+  .story__scene:is(.story__scene--workshop, .story__scene--table) .story__composition {
+    width: min(105rem, calc(100% - max(.75rem, var(--page-gutter) - var(--story-edge)) * 2));
+  }
+
+  .story__copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: clamp(.75rem, 1.6vw, 1.5rem);
+    min-inline-size: 0;
+  }
+
+  .story__copy :is(h2, h3) {
+    color: var(--story-ink);
+    font-size: clamp(2.6rem, 1.55rem + 4.8vw, 5.5rem);
+    line-height: .94;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+
+  .story__scene--hands h2 {
+    font-size: clamp(3.25rem, 1.7rem + 5.3vw, 6rem);
+  }
+
+  .story__copy em {
+    display: block;
+    padding-block-end: .06em;
+    color: var(--story-accent);
+  }
+
+  .story__copy p {
+    max-inline-size: 39ch;
+    line-height: 1.5;
+  }
+
+  .story__next {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+    gap: .5rem;
+    color: var(--story-accent);
+    font-size: .9375rem;
+    font-weight: 600;
+    text-underline-offset: .28em;
+  }
+
+  .story__next:is(:hover, :focus-visible) span {
+    text-decoration: underline;
+  }
+
+  [data-story-cinema] .story__next[inert] {
+    visibility: hidden;
+  }
+
+  .story__photo {
+    position: relative;
+    min-inline-size: 0;
+  }
+
+  .story__frame {
+    aspect-ratio: 5 / 4;
     overflow: hidden;
-    aspect-ratio: 1 / 1.12;
     border-radius: var(--story-radius);
     background: var(--color-sand);
   }
 
-  .story__portrait img {
-    /* The painted palm is at (236, 529) in the 640 × 853 source. */
-    position: absolute;
-    inset: -11% 0 auto;
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-    transform-origin: 36.875% 62%;
+  .story__scene--table .story__frame {
+    background: var(--color-section-forest);
   }
 
-  @media (min-width: 40rem) {
-    .story__portrait { aspect-ratio: 1.02; }
-    .story__portrait img { inset-block-start: -12%; }
+  .story__frame img,
+  .story__detail img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .story__scene--hands .story__frame {
+    aspect-ratio: 7 / 8;
+    border-start-start-radius: clamp(3.5rem, 9vw, 9rem);
+  }
+
+  .story__scene--hands .story__frame img {
+    object-position: 50% 40%;
+    transform-origin: 52% 45%;
+  }
+
+  .story__scene--workshop img {
+    object-position: 50% 51%;
+  }
+
+  .story__scene--table .story__frame {
+    aspect-ratio: 5 / 3;
+  }
+
+  .story__scene--table img {
+    object-position: 50% 34%;
+    transform-origin: 55% 62%;
+  }
+
+  .story__photo figcaption {
+    margin-block-start: .65rem;
+    font-size: .875rem;
+    line-height: 1.4;
+  }
+
+  .story__photo figcaption span::before {
+    margin-inline: .45em;
+    content: '·';
+  }
+
+  .story__detail {
+    display: none;
+  }
+
+  .story__visit {
+    --cta-height: 3.125rem;
+    --cta-padding: .5rem clamp(1rem, 2vw, 1.375rem);
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: start;
+    gap: .8rem;
+    padding-block-start: clamp(.9rem, 1.5vw, 1.25rem);
+    border-block-start: 1px solid var(--color-on-forest-line);
+  }
+
+  .story__visit p {
+    max-inline-size: 28ch;
+    line-height: 1.45;
   }
 
   @media (min-width: 48rem) {
-    .story__scene {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.68fr);
+    .story__scene:is(.story__scene--hands, .story__scene--workshop) .story__composition {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
     }
 
-    .story__intro {
-      align-self: start;
-      margin-block-start: clamp(2.5rem, 11vw, 10.5rem);
+    .story__scene--workshop .story__photo {
+      grid-area: 1 / 1;
     }
 
-    .story__portrait {
-      justify-self: end;
-      inline-size: min(100%, 43rem, max(30rem, (100svh - var(--header-block-size) - 4rem) * 1.02));
+    .story__scene--table .story__frame {
+      aspect-ratio: 2.2;
     }
+
   }
+
+  /* The base layout remains a continuous photo essay on short screens and
+     when motion is disabled. Only the enhanced reel stacks its scenes. */
+  .story[data-story-cinema] {
+    --story-viewport: calc(100svh - var(--header-block-size));
+    --story-travel: clamp(68rem, 168svh, 98rem);
+  }
+
+  [data-story-cinema] .story__reel {
+    block-size: calc(var(--story-viewport) + var(--story-travel));
+    isolation: isolate;
+  }
+
+  [data-story-cinema] .story__stage {
+    position: sticky;
+    inset-block-start: var(--header-block-size);
+    block-size: var(--story-viewport);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  [data-story-cinema] .story__cue {
+    display: block;
+    position: absolute;
+    inset-block-start: calc(var(--story-travel) * var(--cue-progress));
+    inset-inline-start: 0;
+    pointer-events: none;
+  }
+
+  [data-story-cinema] .story__scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    padding-block: clamp(1.5rem, 4.8svh, 3.65rem);
+  }
+
+  [data-story-cinema] .story__scene:is(.story__scene--workshop, .story__scene--table) {
+    inset: var(--story-edge);
+    margin: 0;
+    overflow: clip;
+  }
+
+  [data-story-cinema] .story__composition {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    align-items: center;
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  [data-story-cinema] .story__copy :is(h2, h3) {
+    font-size: clamp(3.2rem, min(6.55vw, 11.3svh), 6rem);
+  }
+
+  [data-story-cinema] .story__scene--hands .story__photo {
+    align-self: stretch;
+    justify-self: center;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    inline-size: min(100%, calc(var(--story-viewport) * .71));
+    min-block-size: 0;
+  }
+
+  [data-story-cinema] .story__scene--hands .story__frame {
+    aspect-ratio: auto;
+    box-shadow: var(--shadow-raised);
+  }
+
+  [data-story-cinema] .story__scene--hands figcaption {
+    justify-self: end;
+  }
+
+  [data-story-cinema] .story__detail {
+    position: absolute;
+    z-index: 1;
+    inset: auto auto 8% -16%;
+    display: block;
+    inline-size: 44%;
+    aspect-ratio: 5 / 3;
+    overflow: hidden;
+    border: 1px solid var(--color-paper);
+    border-radius: var(--story-radius);
+    box-shadow: var(--shadow-raised);
+  }
+
+  [data-story-cinema] .story__detail img {
+    object-position: 50% 49%;
+  }
+
+  [data-story-cinema] .story__scene--workshop .story__composition {
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr);
+    column-gap: clamp(2rem, 5vw, 5.5rem);
+  }
+
+  [data-story-cinema] .story__scene--workshop {
+    --story-reveal: 100%;
+    clip-path: inset(var(--story-reveal) 0 0 round var(--story-panel-radius));
+  }
+
+  [data-story-cinema] .story__scene--workshop .story__frame {
+    aspect-ratio: 1.1;
+    max-block-size: calc(var(--story-viewport) - 8rem);
+    border-end-end-radius: clamp(4rem, 9vw, 9rem);
+  }
+
+  [data-story-cinema] .story__scene--workshop .story__copy h3 {
+    font-size: clamp(3rem, min(5.4vw, 10svh), 5.6rem);
+  }
+
+  [data-story-cinema] .story__scene--table .story__composition {
+    grid-template-columns: minmax(0, 1.75fr) minmax(0, .8fr);
+    align-content: end;
+    align-items: end;
+    column-gap: clamp(2rem, 4.2vw, 4.5rem);
+  }
+
+  [data-story-cinema] .story__scene--table {
+    --story-reveal-block: 44%;
+    --story-reveal-inline: 50%;
+    clip-path: inset(var(--story-reveal-block) var(--story-reveal-inline) round var(--story-panel-radius));
+  }
+
+  [data-story-cinema] .story__scene--table .story__photo {
+    position: absolute;
+    inset: 0;
+  }
+
+  [data-story-cinema] .story__scene--table .story__frame {
+    block-size: 100%;
+    aspect-ratio: auto;
+    border-radius: inherit;
+  }
+
+  [data-story-cinema] .story__scene--table .story__photo::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 29%, color-mix(in srgb, var(--color-forest) 66%, transparent) 69%, var(--color-forest) 100%);
+    content: '';
+    pointer-events: none;
+  }
+
+  [data-story-cinema] .story__scene--table figcaption {
+    position: absolute;
+    z-index: 1;
+    inset: 1rem max(1rem, var(--page-gutter) - var(--story-edge)) auto auto;
+    margin: 0;
+    padding: .3rem .65rem;
+    border-radius: var(--story-radius);
+    background: var(--glass-tint-dark);
+    color: var(--color-paper);
+  }
+
+  [data-story-cinema] .story__scene--table .story__copy h3 {
+    font-size: clamp(3rem, min(5.5vw, 9.3svh), 5rem);
+  }
+
 </style>

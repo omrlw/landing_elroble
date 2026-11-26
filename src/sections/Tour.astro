@@ -5,8 +5,7 @@ import Cta from '../components/Cta.astro';
 import activities from '../assets/tour/activities.png';
 import details from '../assets/tour/details.png';
 import entrance from '../assets/tour/entrance.png';
-import leavesBottom from '../assets/tour/leaves-bottom.png';
-import leavesTop from '../assets/tour/leaves-top.png';
+import BotanicalArt from '../components/BotanicalArt.astro';
 import ramp from '../assets/tour/ramp.png';
 
 const entrancePhotos = [
@@ -48,12 +47,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 
 <section class="tour" id="recorrido" tabindex="-1" aria-labelledby="tour-title">
   <div class="tour-decoration" aria-hidden="true">
-    <span class="tour-leaves-top">
-      <Image src={leavesTop} alt="" format="webp" width={394} />
-    </span>
-    <span class="tour-leaves-bottom">
-      <Image src={leavesBottom} alt="" format="webp" width={496} />
-    </span>
     <picture class="tour-glass">
       <source media="(min-width: 1200px)" srcset="/images/tour/glass-desktop.svg" />
       <source media="(min-width: 768px)" srcset="/images/tour/glass-tablet.svg" />
@@ -62,14 +55,17 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   </div>
 
   <div class="container tour-inner">
-    <header class="tour-heading" data-reveal="heading">
-      <h2 id="tour-title">El Roble,<br /><em>por dentro.</em></h2>
-      <div class="tour-wide">
-        <h3>Conocer el lugar también forma parte de elegir.</h3>
-        <p>Acércate a El Roble, recorre sus ambientes y conoce dónde transcurren las actividades y los encuentros de cada día.</p>
+    <header class="tour-heading botanical-layout" data-reveal="heading">
+      <div class="tour-heading-copy">
+        <h2 id="tour-title">El Roble,<br /><em>por dentro.</em></h2>
+        <div class="tour-wide">
+          <h3>Conocer el lugar también forma parte de elegir.</h3>
+          <p>Acércate a El Roble, recorre sus ambientes y conoce dónde transcurren las actividades y los encuentros de cada día.</p>
+        </div>
+        <p class="tour-tablet">Conoce la entrada, el jardín y los salones donde se realizan las actividades.</p>
+        <p class="tour-mobile">Un lugar para compartir y sentirse bien.</p>
       </div>
-      <p class="tour-tablet">Conoce la entrada, el jardín y los salones donde se realizan las actividades.</p>
-      <p class="tour-mobile">Un lugar para compartir y sentirse bien.</p>
+      <BotanicalArt class="tour-branch" motif="branch" />
     </header>
 
     <div class="tour-layout">
@@ -152,7 +148,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       </div>
 
       <div class="tour-invitation" data-reveal="heading">
-        <img src="/images/tour/visit-icon.svg" alt="" loading="lazy" />
         <h3>Ven a recorrerlo.<br /><em>Conversemos sin prisa.</em></h3>
         <p class="tour-mobile">Conoce el centro y conversemos<br /> sobre tu familiar.</p>
         <p class="tour-expanded">Te invitamos a conocer el centro y<br /> conversar sobre tu familiar.</p>
@@ -190,34 +185,20 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     height: auto;
   }
 
-  .tour-leaves-top,
-  .tour-leaves-bottom,
   .tour-glass {
     position: absolute;
-  }
-
-  .tour-leaves-top {
-    top: 56px;
-    right: 24px;
-    width: 75px;
-    opacity: 0.66;
-  }
-
-  .tour-leaves-bottom { display: none; }
-  .tour-decoration :is(.tour-leaves-top, .tour-leaves-bottom) img { display: block; width: 100%; }
-
-  .tour-glass {
     top: 420px;
     left: -64px;
   }
 
   .tour-inner { padding-block: 56px; }
 
-  .tour-heading {
+  .tour-heading { margin-bottom: 20px; }
+
+  .tour-heading-copy {
     display: grid;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: .75rem clamp(1.5rem, 4vw, 4rem);
   }
 
   .tour-heading h2 {
@@ -347,31 +328,13 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   @media (min-width: 768px) {
     .tour-inner { padding-block: 72px; }
 
-    .tour-leaves-top {
-      top: -32px;
-      right: -37px;
-      width: 117px;
-      opacity: 0.52;
-    }
-
-    .tour-leaves-bottom {
-      display: block;
-      bottom: 9px;
-      left: -50px;
-      width: 136px;
-      opacity: 0.4;
-    }
-
     .tour-glass {
       top: 431px;
       left: -99px;
     }
 
-    .tour-heading {
-      grid-template-columns: minmax(0, 320fr) minmax(0, 360fr);
-      gap: 24px;
-      margin-bottom: 28px;
-    }
+    .tour-heading { margin-bottom: 28px; }
+    .tour-heading-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
 
     .tour-heading h2 {
       font-size: 44px;
@@ -443,30 +406,12 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
   @media (min-width: 1200px) {
     .tour-inner { padding-block: 96px; }
 
-    .tour-leaves-top {
-      top: 88px;
-      left: 34.48%;
-      right: auto;
-      width: 197px;
-      transform: rotate(-4.79deg);
-    }
-
-    .tour-leaves-bottom {
-      bottom: 40px;
-      left: -90px;
-      width: 248px;
-    }
-
     .tour-glass {
       top: 672px;
       left: -180px;
     }
 
-    .tour-heading {
-      grid-template-columns: minmax(0, 920fr) minmax(0, 760fr);
-      gap: 0;
-      margin-bottom: 64px;
-    }
+    .tour-heading { margin-bottom: 48px; }
 
     .tour-heading h2 {
       font-size: 64px;

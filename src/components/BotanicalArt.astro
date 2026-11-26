@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import oakAcorns from '../assets/botanical/oak-acorns.webp';
+import oakBranch from '../assets/botanical/oak-branch.webp';
+import oakLeaf from '../assets/botanical/oak-leaf.webp';
+import oakWood from '../assets/botanical/oak-wood.webp';
+
+const artwork = {
+  acorns: oakAcorns,
+  branch: oakBranch,
+  leaf: oakLeaf,
+  wood: oakWood,
+};
+
+interface Props {
+  motif: keyof typeof artwork;
+  class?: string;
+}
+
+const { motif, class: className, ...attrs } = Astro.props;
+const source = artwork[motif];
+const widths = [48, 64, 96, 128, 192, 256, 384].filter((width) => width < source.width);
+const sizes = 'clamp(4rem, 12vw, 8rem)';
+---
+
+<span {...attrs} class:list={['botanical', `botanical--${motif}`, className]} aria-hidden="true">
+  <Image src={source} alt="" width={Math.min(256, source.width)} widths={widths}
+    {sizes} format="webp" loading="lazy" decoding="async" />
+</span>
+
+<style>
+  .botanical {
+    display: grid;
+    place-items: center;
+    inline-size: clamp(4rem, 12vw, 8rem);
+    aspect-ratio: 5 / 4;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .botanical--acorns { --botanical-image-width: 69%; }
+  .botanical--leaf { --botanical-image-width: 42%; }
+  .botanical--wood { --botanical-image-width: 91%; }
+
+  .botanical img {
+    display: block;
+    inline-size: var(--botanical-image-width, 100%);
+    block-size: auto;
+  }
+</style>

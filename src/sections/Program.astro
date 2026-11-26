@@ -5,8 +5,7 @@ import health from '../assets/approach/portrait.png';
 import cognitive from '../assets/program/cognitive.png';
 import group from '../assets/program/group.png';
 import integral from '../assets/program/integral.png';
-import leavesLeft from '../assets/program/leaves-left.png';
-import leavesRight from '../assets/program/leaves-right.png';
+import BotanicalPattern from '../components/BotanicalPattern.astro';
 import reminiscence from '../assets/program/reminiscence.png';
 
 const activities = [
@@ -74,15 +73,7 @@ const activities = [
 ---
 
 <section class="program" id="programa" tabindex="-1" aria-labelledby="program-title">
-  <div class="program-decoration" aria-hidden="true">
-    <picture class="program-glass">
-      <source media="(min-width: 1200px)" srcset="/images/program/glass-desktop.svg" />
-      <source media="(min-width: 768px)" srcset="/images/program/glass-tablet.svg" />
-      <img src="/images/program/glass-mobile.svg" alt="" loading="lazy" />
-    </picture>
-    <Image class="program-leaves-left" src={leavesLeft} alt="" format="webp" width={480} />
-    <Image class="program-leaves-right" src={leavesRight} alt="" format="webp" width={480} />
-  </div>
+  <BotanicalPattern />
 
   <div class="container program-inner">
     <header class="program-heading" data-reveal="heading">
@@ -157,6 +148,8 @@ const activities = [
 
 <style>
   .program {
+    --program-padding: 3.5rem;
+    --program-pattern-depth: calc(var(--program-padding) - .5rem);
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -164,40 +157,7 @@ const activities = [
   }
 
   .program-inner {
-    padding-block: 56px;
-  }
-
-  .program-decoration {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .program-decoration :is(img, picture) {
-    height: auto;
-  }
-
-  .program-glass,
-  .program-leaves-left,
-  .program-leaves-right {
-    position: absolute;
-  }
-
-  .program-glass {
-    top: 624px;
-    left: -69px;
-  }
-
-  .program-leaves-left {
-    right: 32px;
-    bottom: 22px;
-    width: 78px;
-    opacity: 0.7;
-  }
-
-  .program-leaves-right {
-    display: none;
+    padding-block: var(--program-padding);
   }
 
   .program-heading {
@@ -361,27 +321,7 @@ const activities = [
   }
 
   @media (min-width: 768px) {
-    .program-inner {
-      padding-block: 72px;
-    }
-
-    .program-glass {
-      top: 547px;
-      left: -129px;
-    }
-
-    .program-leaves-left {
-      inset: 1087px auto auto -41px;
-      width: 132px;
-    }
-
-    .program-leaves-right {
-      display: block;
-      top: 1462px;
-      right: -57px;
-      width: 141px;
-      opacity: 0.44;
-    }
+    .program { --program-padding: 4.5rem; }
 
     .program-heading {
       grid-template-columns: minmax(0, 364fr) minmax(0, 316fr);
@@ -467,28 +407,7 @@ const activities = [
   }
 
   @media (min-width: 1200px) {
-    .program {
-    }
-
-    .program-inner {
-      padding-block: 96px;
-    }
-
-    .program-glass {
-      top: 320px;
-      left: -205px;
-    }
-
-    .program-leaves-left {
-      inset: 816px auto auto -84px;
-      width: 240px;
-    }
-
-    .program-leaves-right {
-      top: 1150px;
-      right: -56px;
-      width: 240px;
-    }
+    .program { --program-padding: 6rem; }
 
     .program-heading {
       grid-template-columns: 960fr 624fr;

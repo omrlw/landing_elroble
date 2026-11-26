@@ -3,14 +3,16 @@ import { whatsappUrl } from '../config/business';
 
 interface Props {
   label?: string;
+  compactLabel?: string;
   href?: string;
-  variant?: 'primary' | 'light' | 'glass';
+  variant?: 'primary' | 'light' | 'glass' | 'compact';
   icon?: string | false;
   class?: string;
 }
 
 const {
   label = 'Agendar una visita',
+  compactLabel,
   href = whatsappUrl,
   variant = 'primary',
   icon = '/icons/cta-arrow.svg',
@@ -19,7 +21,14 @@ const {
 ---
 
 <a class:list={['cta', `cta--${variant}`, { 'liquid-glass': variant === 'glass' }, className]} href={href}>
-  <span>{label}</span>
+  {compactLabel ? (
+    <>
+      <span class="cta-label cta-label--full">{label}</span>
+      <span class="cta-label cta-label--compact">{compactLabel}</span>
+    </>
+  ) : (
+    <span>{label}</span>
+  )}
   {icon && <span class="cta-icon" aria-hidden="true"><img src={icon} width="22" height="22" alt="" /></span>}
 </a>
 
@@ -41,6 +50,22 @@ const {
     text-align: start;
     text-decoration: none;
     transition: filter var(--motion-state) var(--ease-soft), box-shadow var(--motion-state) var(--ease-soft);
+  }
+
+  .cta-label--compact { display: none; }
+
+  .cta--compact {
+    --cta-height: 2.75rem;
+    --cta-gap: 0.5rem;
+    --cta-padding: 0.375rem 0.5rem 0.375rem 1.0625rem;
+    --cta-icon-size: 1.75rem;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+
+  .cta--compact .cta-icon img {
+    inline-size: 1.0625rem;
+    block-size: 1.0625rem;
   }
 
   .cta:not(:global(.liquid-glass)) {
@@ -86,9 +111,17 @@ const {
   .cta:active { filter: brightness(.91); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .cta { transition-property: filter, box-shadow, translate, scale; }
+    .cta {
+      transition:
+        filter var(--motion-state) var(--ease-soft),
+        box-shadow var(--motion-state) var(--ease-soft),
+        translate var(--motion-state) var(--ease-soft),
+        scale var(--motion-state) var(--ease-soft),
+        min-height var(--cta-resize, 0s),
+        font-size var(--cta-resize, 0s);
+    }
     .cta-icon img { transition: translate var(--motion-state) var(--ease-soft); }
-    .cta-icon { transition: scale var(--motion-state) var(--ease-soft); }
+    .cta-icon { transition: scale var(--motion-state) var(--ease-soft), inline-size var(--cta-resize, 0s); }
     .cta:focus-visible img { translate: .15rem 0; }
     .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
     .cta:active .cta-icon { scale: .94; transition-duration: var(--motion-press); }

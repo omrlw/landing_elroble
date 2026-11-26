@@ -7,7 +7,7 @@ import room from '../assets/opening/trust-room.png';
 import table from '../assets/opening/trust-table.png';
 import conversation from '../assets/opening/trust-conversation.png';
 import caregiver from '../assets/opening/day-table.png';
-import leaf from '../assets/opening/trust-leaf.png';
+import BotanicalArt from '../components/BotanicalArt.astro';
 import visitArrow from '../assets/opening/tour-arrow.svg';
 
 const photos = {
@@ -43,10 +43,6 @@ const supportingPhotos = [
 ---
 
 <section class="trust" aria-labelledby="trust-title" data-trust>
-  <span class="trust__leaf" aria-hidden="true">
-    <Image src={leaf} alt="" width={320} format="webp" />
-  </span>
-
   <div class="container trust__inner">
     <div class="trust__message" data-reveal="heading">
       <h2 id="trust-title">La confianza empieza<br /><em>por conocernos.</em></h2>
@@ -105,12 +101,15 @@ const supportingPhotos = [
       ))}
     </div>
 
-    <div class="trust__invitation">
-      <div>
-        <h3>Ven a conocernos.</h3>
-        <p>Conoce el espacio, conversa con nuestro equipo y decide con tranquilidad.</p>
+    <div class="trust__invitation botanical-layout">
+      <div class="trust__invitation-copy">
+        <div>
+          <h3>Ven a conocernos.</h3>
+          <p>Conoce el espacio, conversa con nuestro equipo y decide con tranquilidad.</p>
+        </div>
+        <Cta class="trust__visit" icon={visitArrow.src} variant="light" />
       </div>
-      <Cta class="trust__visit" icon={visitArrow.src} variant="light" />
+      <BotanicalArt class="trust__wood" motif="wood" />
     </div>
   </div>
 </section>
@@ -143,9 +142,11 @@ const supportingPhotos = [
 
 <style>
   .trust {
+    --trust-edge: clamp(.75rem, 2vw, 2rem);
     position: relative;
     isolation: isolate;
     overflow: clip;
+    margin-inline: var(--trust-edge);
     border-radius: clamp(1.5rem, 2.7vw, 1.75rem);
     color: var(--color-cream);
   }
@@ -160,6 +161,7 @@ const supportingPhotos = [
   .trust__inner {
     display: grid;
     position: relative;
+    width: min(105rem, calc(100% - max(.75rem, var(--page-gutter) - var(--trust-edge)) * 2));
     grid-template-areas: "heading" "gallery" "reasons" "invitation";
     padding-block: clamp(3rem, 6.5vw, 4.75rem) clamp(2.25rem, 4vw, 3.25rem);
   }
@@ -182,17 +184,6 @@ const supportingPhotos = [
     line-height: 1.62;
     text-wrap: pretty;
   }
-  .trust__leaf {
-    position: absolute;
-    z-index: -1;
-    inset: auto -1rem .5rem auto;
-    inline-size: clamp(6.5rem, 11vw, 11.5rem);
-    opacity: .2;
-    transform: rotate(-23deg);
-    pointer-events: none;
-  }
-  .trust__leaf img { display: block; width: 100%; height: auto; }
-
   .trust__media {
     grid-area: gallery;
     display: grid;
@@ -338,32 +329,30 @@ const supportingPhotos = [
 
   .trust__invitation {
     grid-area: invitation;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem 2rem;
     margin-block-start: clamp(1.25rem, 1.75vw, 1.75rem);
     padding-block-start: clamp(1.15rem, 1.65vw, 1.65rem);
     border-block-start: 1px solid var(--color-on-forest-line);
   }
+  .trust__invitation-copy { display: grid; align-items: center; gap: 1rem 1.5rem; }
   .trust__invitation h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.35rem) / 1.1 var(--font-display); color: inherit; }
   .trust__invitation p { margin-block-start: .55rem; color: var(--color-on-forest-muted); font-size: clamp(1rem, .9rem + .3vw, 1.18rem); line-height: 1.5; }
   .trust__invitation :global(.trust__visit) {
     --cta-height: 3.25rem;
-    --cta-gap: .75rem;
-    --cta-padding: .525rem 1.2rem;
-    flex: 0 0 auto;
+    --cta-gap: .5rem;
+    --cta-padding: .525rem clamp(.65rem, 3vw, 1.2rem);
+    justify-self: start;
   }
   .trust__invitation :global(.trust__visit .cta-icon img) { inline-size: 20px; block-size: 20px; }
 
   @media (max-width: 40rem) {
-    .trust { border-radius: 0; }
     .trust h2 { font-size: clamp(2rem, 9.25vw, 2.25rem); }
-    .trust__leaf { opacity: .15; }
     .trust__slides { block-size: clamp(15rem, 60vw, 18rem); }
     .trust__row { grid-template-columns: minmax(0, 1fr); }
     .trust__row > .trust__tile:nth-child(2) { display: none; }
-    .trust__invitation { align-items: start; flex-direction: column; }
+  }
+
+  @media (min-width: 48rem) {
+    .trust__invitation-copy { grid-template-columns: minmax(0, 1fr) auto; }
   }
 
   @media (min-width: 73rem) {

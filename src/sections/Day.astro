@@ -6,7 +6,7 @@ import painting from '../assets/opening/day-painting.png';
 import blocks from '../assets/opening/day-blocks.png';
 import table from '../assets/opening/day-table.png';
 import garden from '../assets/opening/day-garden.png';
-import leaves from '../assets/opening/day-leaves.png';
+import BotanicalArt from '../components/BotanicalArt.astro';
 import groupMovement from '../assets/program/group.png';
 import memory from '../assets/opening/day-memory.svg';
 import movement from '../assets/opening/day-move.svg';
@@ -115,14 +115,13 @@ const facilities = [
         ))}
       </div>
 
-      <div class="day__invite">
-        <div>
+      <div class="day__invite botanical-layout">
+        <div class="day__invite-copy">
           <h3 class="day__desktop-title">Conoce el espacio donde puede <br />compartir sus días.</h3>
           <h3 class="day__mobile-title">Conoce El Roble.</h3>
-          <Cta class="day__visit--desktop" />
+          <Cta class="day__visit" />
         </div>
-        <Image class="day__leaves" src={leaves} alt="" width={148} format="webp" />
-        <Cta class="day__visit--compact" />
+        <BotanicalArt class="day__acorns" motif="acorns" />
       </div>
     </div>
   </div>
@@ -234,10 +233,16 @@ const facilities = [
   .day__activity:last-child .day__radio:not([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label img { filter: brightness(0) invert(.9); }
   .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: clamp(.75rem, 1.3vw, 1.5rem); }
   .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); }
-  .day__invite { grid-area: invite; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .day__invite { grid-area: invite; }
+  .day__invite-copy { display: grid; align-items: center; gap: .75rem 1.5rem; }
   .day__invite h3 { font: 700 clamp(1.75rem, 1.54rem + .6vw, 2.5rem) / 1.15 var(--font-display); color: var(--color-forest); }
-  .day__invite :global(.day__visit--compact) { --cta-width: 15.75rem; --cta-gap: .5rem; --cta-padding: .625rem 1.5rem; flex: 0 0 auto; white-space: nowrap; }
-  .day__invite :global(.day__visit--desktop), .day__leaves, .day__mobile-title { display: none; }
+  .day__invite :global(.day__visit) {
+    --cta-width: min(100%, 15.75rem);
+    --cta-gap: .5rem;
+    --cta-padding: .625rem clamp(1rem, 4vw, 1.5rem);
+    justify-self: start;
+  }
+  .day__mobile-title { display: none; }
 
   @media (max-width: 40rem) {
     .day__description p:nth-child(2) { display: none; }
@@ -247,7 +252,6 @@ const facilities = [
     .day__activity-label picture { margin-inline-end: 1.25rem; }
     .day__activity:last-child .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; white-space: nowrap; }
     .day__facilities { margin-block-start: .5rem; max-inline-size: 94%; }
-    .day__invite { flex-direction: column; align-items: start; gap: .75rem; }
     .day__desktop-title { display: none; }
     .day__mobile-title { display: block; }
   }
@@ -272,7 +276,10 @@ const facilities = [
     .day__facilities { grid-template-columns: 1fr; }
     .day__facilities img { aspect-ratio: 240 / 184; }
     .day__facilities img:first-child { inline-size: 86.3%; }
-    .day__invite br { display: none; }
+  }
+  @media (max-width: 72.999rem) { .day__invite br { display: none; } }
+  @media (min-width: 48rem) and (max-width: 72.999rem) {
+    .day__invite-copy { grid-template-columns: minmax(0, 1fr) auto; }
   }
   @media (min-width: 73rem) {
     .day { padding-block: clamp(2rem, 2.5vw, 3rem) clamp(4rem, 5vw, 6rem); }
@@ -294,9 +301,7 @@ const facilities = [
     .day__facilities img, .day__facilities img:first-child { inline-size: 100%; }
     .day__facilities img { aspect-ratio: 216 / 224; }
     .day__facilities img:first-child { aspect-ratio: 456 / 224; }
-    .day__invite br { display: initial; }
-    .day__invite :global(.day__visit--desktop) { display: inline-flex; margin-block-start: 1.5rem; }
-    .day__invite :global(.day__visit--compact) { display: none; }
-    .day__leaves { display: block; inline-size: clamp(5rem, 7.7vw, 9.25rem); block-size: auto; pointer-events: none; }
+    .day__invite-copy { row-gap: 1.5rem; }
+    .day__invite :global(.day__visit) { --cta-width: fit-content; }
   }
 </style>

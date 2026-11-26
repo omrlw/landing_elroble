@@ -1,8 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import { business, phoneUrl } from '../config/business';
-import leaves from '../assets/lower/community-leaves.png';
-import leaf from '../assets/lower/community-leaf.png';
 import salon from '../assets/lower/community-salon.png';
 import activity from '../assets/lower/community-activity.png';
 import clay from '../assets/lower/community-clay.png';
@@ -21,8 +19,6 @@ const posters = [
 ---
 
 <div class="closing">
-  <Image class="ornament beginning" src={leaves} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, (min-width: 40rem) 143px, 92px" />
-  <Image class="ornament accent" src={leaf} alt="" widths={[144, 260, 520]} sizes="(min-width: 80rem) 260px, 143px" />
   <div class="container closing-container">
     <section class="community" id="comunidad" aria-labelledby="community-heading">
       <header data-reveal="heading">
@@ -144,11 +140,8 @@ const posters = [
     padding-block: 3.5rem 2rem;
   }
   .closing-container { position: relative; }
-  .ornament { position: absolute; height: auto; pointer-events: none; }
-  .beginning { width: 5.75rem; right: -.75rem; bottom: 24.3rem; opacity: .34; }
-  .accent { display: none; opacity: .25; }
-
   .community {
+    --community-content-width: 54rem;
     position: relative;
     display: grid;
     gap: 1rem;
@@ -158,7 +151,11 @@ const posters = [
     color: var(--color-ink);
     box-shadow: var(--shadow-raised);
   }
-  .community header { display: grid; gap: .75rem; }
+  .community header {
+    display: grid;
+    gap: .75rem;
+    inline-size: min(100%, var(--community-content-width));
+  }
   .community h2 {
     margin: 0;
     font: 700 clamp(2rem, 1.75rem + 2vw, 4rem)/1.05 var(--font-display);
@@ -250,15 +247,13 @@ const posters = [
 
   @media (min-width: 40rem) {
     .closing { padding-block: clamp(3.5rem, 9.375vw, 4.5rem) 2.5rem; }
-    .beginning { width: 8.94rem; top: -1.5rem; left: -1.5rem; bottom: auto; right: auto; }
-    .accent { display: block; width: 8.94rem; right: 3rem; bottom: 17.5rem; }
     .community { justify-items: center; gap: 1rem; padding: 2rem 1.5rem; border-radius: 2.5rem; }
-    .community header { gap: 1rem; margin-block-end: .75rem; text-align: center; }
+    .community header { gap: .65rem; margin-block-end: .75rem; }
     .community h2 { font-size: clamp(2.25rem, 1.78rem + 2vw, 4rem); }
     .community h2 em { display: inline; }
     .community-description { display: block; }
     .community-compact-description { display: none; }
-    .posters { width: min(100%, 54rem); grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 1rem; padding-block-end: .625rem; }
+    .posters { width: min(100%, var(--community-content-width)); grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 1rem; padding-block-end: .625rem; }
     .posters > li:nth-child(-n+3) { display: block; }
     .posters > li:nth-child(2) { translate: 0 -.625rem; }
     .poster { aspect-ratio: auto; height: clamp(14rem, 38.54vw, 21rem); border-radius: 1.25rem; }
@@ -290,13 +285,15 @@ const posters = [
 
   @media (min-width: 80rem) {
     .closing { padding-block: clamp(4.5rem, 5vw, 6rem) 2rem; }
-    .beginning { width: clamp(9rem, 13.54vw, 16.25rem); top: -1rem; left: -2.75rem; }
-    .accent { width: clamp(9rem, 13.54vw, 16.25rem); right: -8rem; top: 42%; bottom: auto; }
-    .community { gap: 1.75rem; padding: clamp(2rem, 2.5vw, 3rem) clamp(1.5rem, 2.08vw, 2.5rem); }
+    .community {
+      --community-content-width: 90.5rem;
+      gap: 1.75rem;
+      padding: clamp(2rem, 2.5vw, 3rem) clamp(1.5rem, 2.08vw, 2.5rem);
+    }
     .community header { margin-block-end: 0; }
     .community h2 { font-size: clamp(2.75rem, 1.25rem + 2.3vw, 4rem); line-height: 1; }
     .community h2 em { display: block; }
-    .posters { grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 90.5rem); align-items: start; gap: 1.5rem; padding-block-end: 0; }
+    .posters { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; gap: 1.5rem; padding-block-end: 0; }
     .posters > li:last-child { display: block; }
     .posters > li:nth-child(even) { translate: none; margin-block-start: 1.5rem; }
     .poster { height: auto; aspect-ratio: 43 / 77; border-radius: 1.5rem; }
