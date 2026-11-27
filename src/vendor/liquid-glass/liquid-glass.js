@@ -100,7 +100,8 @@ export function renderLensMap(options = {}, scale = 1) {
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
-  const ctx = canvas.getContext('2d');
+  // Each map is written once, then read back as a PNG. Keep the bitmap in CPU memory.
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   const image = ctx.createImageData(w, h);
   const px = image.data;
 
@@ -417,7 +418,7 @@ export function createGlass(target, options = {}) {
     graph.image.setAttribute('href', entry.url);
     graph.image.setAttributeNS(XLINK, 'xlink:href', entry.url);
     shown = { key: entry.key, seq };
-    settle();
+    if (engine === 'webkit') settle();
     return true;
   }
 

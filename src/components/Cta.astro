@@ -101,8 +101,8 @@ const {
 
     @media (hover: hover) and (pointer: fine) {
       .cta:not(.cta--glass):hover { translate: 0 -1px; }
-      .cta:hover img { translate: .19rem 0; }
-      .cta:hover:not(:active) .cta-icon { scale: 1.06; }
+      .cta:not(.cta--glass):hover img { translate: .19rem 0; }
+      .cta:not(.cta--glass):hover:not(:active) .cta-icon { scale: 1.06; }
       .cta:not(.cta--glass):active { translate: 0 1px; }
     }
   }

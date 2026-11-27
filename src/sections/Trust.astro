@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
-import oakCanopy from '../assets/botanical/trust-oak-canopy.webp';
 import clay from '../assets/confianza/persona-y-arcilla.jpg';
 import gardenPortrait from '../assets/confianza/retrato-en-el-jardin.jpg';
 import activityCorner from '../assets/confianza/rincon-de-actividades.jpg';
@@ -114,8 +113,6 @@ const photoSizes = [
     </div>
 
     <div class="trust__invitation">
-      <Image class="trust__canopy" src={oakCanopy} alt="" aria-hidden="true"
-        width={640} widths={[240, 360, 480, 640]} sizes="clamp(192px, 40vw, 576px)" format="webp" />
       <div class="trust__invitation-copy">
         <div>
           <h3>Ven a conocernos.</h3>
@@ -333,24 +330,9 @@ const photoSizes = [
 
   .trust__invitation {
     grid-area: invitation;
-    position: relative;
-    isolation: isolate;
     margin-block-start: clamp(1.25rem, 1.75vw, 1.75rem);
     padding-block-start: clamp(1.15rem, 1.65vw, 1.65rem);
     border-block-start: 1px solid var(--color-on-forest-line);
-  }
-  .trust__canopy {
-    position: absolute;
-    z-index: -1;
-    inset: auto -1rem -1.5rem auto;
-    inline-size: clamp(12rem, 40vw, 36rem);
-    block-size: min(8rem, 100%);
-    object-fit: contain;
-    object-position: right bottom;
-    mask-image: linear-gradient(110deg, transparent 8%, #000 58%);
-    filter: blur(.85px);
-    opacity: .35;
-    pointer-events: none;
   }
   .trust__invitation-copy { display: grid; align-items: center; gap: 1rem 1.5rem; }
   .trust__invitation h3 { color: inherit; }

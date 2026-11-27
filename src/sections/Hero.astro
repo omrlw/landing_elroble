@@ -140,11 +140,6 @@ const credentials = [
 </script>
 
 <style>
-  @property --hero-glass-opacity {
-    syntax: '<percentage>';
-    inherits: true;
-    initial-value: 78%;
-  }
   .opening-hero {
     --opening-gap: clamp(1.5rem, 1rem + 2vw, 3rem);
     position: relative;
@@ -196,19 +191,12 @@ const credentials = [
   }
   .hero-media :global(.hero-media__tour) {
     --optical-film: linear-gradient(165deg,
-      color-mix(in srgb, var(--color-action) var(--hero-glass-opacity), transparent),
-      color-mix(in srgb, var(--color-forest) calc(var(--hero-glass-opacity) + 12%), transparent));
+      color-mix(in srgb, var(--color-action) 78%, transparent),
+      color-mix(in srgb, var(--color-forest) 90%, transparent));
     --optical-rim: var(--glass-bevel-dark);
+    --glass-hover-edge: transparent;
+    --glass-lift: color-mix(in srgb, var(--glass-clear) 6%, transparent);
     white-space: nowrap;
-  }
-  @media (hover: hover) {
-    .hero-media :global(.hero-media__tour:hover) { --hero-glass-opacity: 74%; }
-  }
-  .hero-media :global(.hero-media__tour:active) { --hero-glass-opacity: 86%; }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-media :global(.hero-media__tour) {
-      transition: --hero-glass-opacity var(--glass-motion) var(--glass-ease), box-shadow var(--glass-motion) var(--glass-ease);
-    }
   }
   .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
   .hero-media__experience {
@@ -304,10 +292,10 @@ const credentials = [
     justify-self: center;
     z-index: 1;
     inline-size: min(100%, 25rem);
-    margin-block-start: calc(var(--space-related) - var(--opening-gap));
+    margin-block-start: calc(max(1rem, var(--space-related)) - var(--opening-gap));
     padding: .45rem;
     border-radius: 1.125rem;
-    font-size: var(--text-meta);
+    font-size: clamp(.9375rem, .87rem + .24vw, var(--text-control));
     font-weight: 600;
     line-height: 1.3;
   }
@@ -319,8 +307,6 @@ const credentials = [
     min-block-size: 2.875rem;
     padding: .5rem clamp(.5rem, 1.1vw, .875rem);
   }
-  .opening-hero__credentials li:nth-child(even) { border-inline-start: 1px solid var(--glass-divider); }
-  .opening-hero__credentials li:nth-child(n+3) { border-block-start: 1px solid var(--glass-divider); }
   .opening-hero__credentials picture {
     display: grid;
     place-items: center;
@@ -360,11 +346,9 @@ const credentials = [
     .hero-media { padding-inline: 1.5rem; }
   }
   @media (min-width: 54rem) {
-    .opening-hero__credentials { inline-size: min(100%, 57rem); font-size: clamp(var(--text-meta), 1.7vw, var(--text-control)); }
+    .opening-hero__credentials { inline-size: min(100%, 57rem); }
     .opening-hero__credentials ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .opening-hero__credentials li { justify-content: center; }
-    .opening-hero__credentials li:nth-child(n+3) { border-block-start: 0; }
-    .opening-hero__credentials li + li { border-inline-start: 1px solid var(--glass-divider); }
   }
   @media (min-width: 73rem) {
     .opening-hero__lead {
@@ -388,7 +372,6 @@ const credentials = [
         var(--color-cream) .875rem,
         color-mix(in srgb, var(--color-cream) 77%, transparent)
       );
-      margin-block-start: calc(-1 * var(--opening-gap) - .625rem);
     }
   }
 </style>

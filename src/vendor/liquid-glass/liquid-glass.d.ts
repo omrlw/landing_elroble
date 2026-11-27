@@ -17,6 +17,8 @@ interface GlassOptions {
   lightAngle?: number;
 }
 
+export const engine: 'blink' | 'gecko' | 'webkit' | 'unknown';
+
 export function createGlass(target: HTMLElement, options?: GlassOptions): {
   update(options: GlassOptions): void;
   destroy(): void;

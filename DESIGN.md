@@ -52,7 +52,7 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 ## Ilustraciones botánicas
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
-- La hoja del hero nace junto al final del título. En Confianza, una rama de hojas pequeñas aparece suavizada detrás de la invitación. Historia abre con un brote y retoma el corte de madera en la escena del jardín.
+- La hoja del hero nace junto al final del título. Historia abre con un brote y retoma el corte de madera en la escena del jardín.
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
 
@@ -62,7 +62,7 @@ El vidrio óptico tiene un centro casi transparente y concentra la refracción e
 
 | Aplicación | Clases y uso |
 | --- | --- |
-| Lente óptica | [OpticalGlass.astro](src/components/OpticalGlass.astro) refracta el borde en la cabecera, el hero, el FAQ, los rótulos de Recorrido y la reproducción de Comunidad. El anfitrión usa `.liquid-glass--optical` cuando el control necesita una superficie propia. |
+| Lente óptica | [OpticalGlass.astro](src/components/OpticalGlass.astro) refracta el borde en la cabecera, el hero, los rótulos de Recorrido y la reproducción de Comunidad. El anfitrión usa `.liquid-glass--optical` cuando el control necesita una superficie propia. |
 | Vidrio claro | `.liquid-glass--clear` comparte `--glass-clear-tint` entre botones secundarios y paginadores. `.liquid-glass--lens` da un reflejo radial a los controles pequeños. Sobre fotografía, el mismo crema admite más transparencia para que se vea la refracción. |
 | Superficie de lectura | `.liquid-glass--reading` usa `--surface-paper` para las tarjetas claras de Programa, las tarjetas de Testimonios y las reseñas abiertas. El papel opaco mantiene el tono crema sobre el bosque. |
 | Identidad de marca | `.liquid-glass--action` usa el degradado bosque con un reflejo fino. `.liquid-glass--oak` conserva el roble en «Descubre nuestro centro». `.liquid-glass--forest-panel` mantiene el acabado editorial de Enfoque y Confianza. |
@@ -75,14 +75,31 @@ La navegación de escritorio tiene una sola cápsula, alineada con el elemento q
 
 En el hero, «Ver el recorrido» conserva su verde sobre la refracción y «Desde 2009» permanece en la tarjeta sobre la foto. La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
 
-En el FAQ las filas cerradas tienen divisores finos y un medallón `+`. Al abrir una pregunta aparece una superficie translúcida y el medallón cambia a `−`. En la columna con follaje, solo el extremo de la fila abierta puede refractar la rama. Cada columna conserva su grupo de `details` y el cuerpo de la respuesta mantiene un fondo estable.
+En el FAQ las filas cerradas tienen divisores finos y un medallón `+`. Al abrir una pregunta aparece una superficie translúcida y el medallón cambia a `−`. Cada columna conserva su grupo de `details` y el cuerpo de la respuesta mantiene un fondo estable.
 
 ### Implementación y respaldo
 
-- [glass.ts](src/scripts/glass.ts) conecta el componente con el motor SVG. Un contenedor con `data-glass-scene` alinea una copia decorativa de la foto activa o del elemento `data-glass-image`. Durante el fundido o el zoom inicial del hero se ve la foto en vivo debajo de la película. El filtro se libera al salir la escena de pantalla.
-- La cabecera usa `backdrop-filter` con un mapa de desplazamiento en Chromium. Firefox y WebKit reciben desenfoque para esta superficie sobre contenido variable. El hero, el FAQ, Recorrido y Comunidad filtran imágenes alineadas mediante SVG en los tres motores.
-- [nav-glass.ts](src/scripts/nav-glass.ts) anima la cápsula con el GSAP existente. Con movimiento reducido la cápsula se coloca de inmediato. Con transparencia reducida, las superficies priorizan un fondo opaco. Los controles siguen siendo enlaces, botones y `summary` nativos.
-- Se incluye solo el motor de [Liquid Glass for the Web](https://github.com/gentpan/liquidglass/tree/d5db099ef00828496aa2733e4f35542c05a0b1f8), fijado al commit `d5db099` con su [licencia MIT](src/vendor/liquid-glass/LICENSE). Los ajustes de óptica se mantienen en el adaptador y los de contraste y acabado en CSS.
+- Las clases de superficie y los tokens de película, bisel y desenfoque viven en [global.css](src/styles/global.css). Usa `OpticalGlass` para los controles que necesiten curvar el fondo. Para las demás superficies, usa los acabados CSS de la tabla.
+- En el hero, Recorrido y Comunidad, `OpticalGlass` filtra una copia decorativa alineada con la foto activa de `data-glass-scene` o con la imagen fija `data-glass-image`. CSS aporta el tinte y los reflejos. SVG desplaza los píxeles del borde con `feDisplacementMap`. Durante el fundido o el zoom inicial del hero se ve la foto en vivo bajo la película. [Especificación de filtros SVG](https://drafts.csswg.org/filter-effects-1/#feDisplacementMapElement).
+- Para fondos variables, la cabecera y las credenciales usan el desenfoque CSS de `--optical-backdrop-blur`. En Chromium se mejora con un filtro SVG de fondo. El soporte de estos filtros varía según el motor. [Seguimiento en Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=1961378) y [seguimiento en WebKit](https://bugs.webkit.org/show_bug.cgi?id=245510).
+- [glass.ts](src/scripts/glass.ts) comparte los observadores de las escenas y agrupa los cambios antes de dibujar. Prepara las lentes hasta 120 px fuera del área visible. Al salir de ese margen, libera la copia y el filtro. La caché del motor conserva el mapa para reutilizarlo al volver. Los ajustes de refracción y escarcha están en el adaptador.
+- [nav-glass.ts](src/scripts/nav-glass.ts) anima la cápsula con el GSAP existente. Con movimiento reducido la cápsula se coloca de inmediato. Con transparencia reducida o colores forzados, el adaptador libera filtros y copias y el CSS conserva la legibilidad. Los controles siguen siendo enlaces, botones y `summary` nativos.
+- [Liquid Glass for the Web](https://github.com/gentpan/liquidglass/tree/d5db099ef00828496aa2733e4f35542c05a0b1f8) se incluye localmente desde el commit `d5db099` con su [licencia MIT](src/vendor/liquid-glass/LICENSE). El motor usa el contexto Canvas 2D optimizado para lectura al codificar los mapas PNG. WebKit conserva los dos refrescos de compatibilidad tras cargar el mapa.
+
+### Verificación del vidrio
+
+Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
+
+En Chrome 158 sin interfaz, sobre la compilación estática local en Windows, se midió la suma de las dos llamadas iniciales a `canvas.toDataURL()`. Cada cifra es la mediana de tres arranques con un perfil nuevo.
+
+| Medición al entrar al hero | Antes | Después |
+| --- | ---: | ---: |
+| Codificación PNG, 1440 × 900, DPR 1 | 278,8 ms | 0,8 ms |
+| Codificación PNG, 390 × 844, DPR 2 | 323,4 ms | 2,0 ms |
+| Copias decorativas en el DOM | 14 | 1 |
+| JavaScript base comprimido con gzip | 25 271 B | 25 578 B |
+
+Las zonas con vidrio coincidieron píxel por píxel en Chrome, Firefox y WebKit en las capturas de escritorio y móvil. En Chrome móvil, las capturas completas de Recorrido mostraron diferencias de rasterización en texto fuera de la foto.
 
 El sello de primera visita mantiene el roble sólido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 

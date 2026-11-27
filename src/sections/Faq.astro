@@ -2,9 +2,7 @@
 import { Image } from 'astro:assets';
 import BotanicalPattern from '../components/BotanicalPattern.astro';
 import Cta from '../components/Cta.astro';
-import OpticalGlass from '../components/OpticalGlass.astro';
 import oakTwig from '../assets/botanical/faq-oak-twig.webp';
-import oliveSprig from '../assets/botanical/olive-sprig.webp';
 import { business } from '../config/business';
 
 const questions = [
@@ -63,17 +61,12 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
       <p>Lo esencial para conocer cómo funciona El Roble, qué incluye cada modalidad y cómo acompañamos a tu familiar.</p>
     </header>
 
-    <div class="questions" data-glass-scene>
+    <div class="questions">
       {questionColumns.map((column, index) => (
         <div class="question-column">
-          {index === questionColumns.length - 1 && (
-            <Image class="faq-branch" src={oliveSprig} alt="" aria-hidden="true" data-glass-image width={384}
-              widths={[192, 256, 384]} sizes="clamp(144px, 28vw, 368px)" format="webp" />
-          )}
           {column.map(({ title, compact, tablet, answer }) => (
             <details name={`preguntas-el-roble-${index + 1}`}>
               <summary>
-                {index === questionColumns.length - 1 && <OpticalGlass class="faq-row-lens" source="branch" />}
                 <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
                   <span class="full-question">{title}</span>
                   {compact && <span class="compact-question">{compact}</span>}
@@ -133,18 +126,7 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     align-items: start;
     gap: var(--faq-row-gap) clamp(1.5rem, 4.5vw, 4rem);
   }
-  .question-column { position: relative; display: grid; gap: var(--faq-row-gap); }
-  .faq-branch {
-    position: absolute;
-    z-index: -1;
-    inset-inline-end: calc(var(--page-gutter) * -.61);
-    inset-block-end: -2.5rem;
-    inline-size: clamp(9rem, 28vw, 23rem);
-    block-size: auto;
-    opacity: .28;
-    mask-image: linear-gradient(100deg, transparent 7%, #000 42%);
-    pointer-events: none;
-  }
+  .question-column { display: grid; gap: var(--faq-row-gap); }
 
   details {
     --question-gutter: clamp(.75rem, .55rem + .85vw, 1.5rem);
@@ -179,19 +161,6 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   }
   details[open]::before { opacity: 1; }
   details:has(> summary:active) .question-icon { background-color: rgb(53 43 31 / 10%); }
-
-  summary > :global(.faq-row-lens) {
-    --optical-sample-background: var(--color-cream);
-    --optical-film: linear-gradient(155deg, rgb(255 255 255 / 31%), transparent 80%);
-    --optical-rim: inset 0 1px 1px rgb(255 255 255 / 78%), inset -1px 0 1px rgb(64 54 40 / 26%);
-    display: none;
-    z-index: -1;
-    inset-inline-start: auto;
-    inline-size: clamp(5rem, 31%, 11rem);
-    clip-path: inset(0 round 0 1rem 1rem 0);
-    mask-image: linear-gradient(to right, transparent, #000 58%);
-  }
-  details[open] :global(.faq-row-lens) { display: block; }
 
   summary {
     min-block-size: clamp(4.25rem, 3.55rem + 1.3vw, 5rem);
@@ -254,7 +223,6 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 
   @media (prefers-reduced-transparency: reduce) {
     details[open]::before { background: var(--glass-clear); }
-    .faq-branch, details[open] :global(.faq-row-lens) { display: none; }
   }
   @media (forced-colors: active) {
     summary, .question-icon { border: 1px solid CanvasText; }

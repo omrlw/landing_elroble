@@ -116,6 +116,7 @@
     color-mix(in srgb, var(--glass-clear) 13%, transparent), transparent 70%);
   --glass-lens-clear: radial-gradient(circle at 29% 18%, var(--color-paper), var(--color-cream) 52%, color-mix(in srgb, var(--color-cream) 72%, var(--color-sand)));
   --glass-sheen-clear: radial-gradient(ellipse at 24% 0%, rgb(255 255 255 / 54%), transparent 70%);
+  --optical-backdrop-blur: blur(5px);
   --optical-bevel: inset 0 1px 1px rgb(255 255 255 / 77%),
     inset 0 -1px 1px rgb(44 38 28 / 17%), inset 0 0 0 1px rgb(80 71 54 / 16%);
   --glass-bevel-dark: inset 0 0 0 1px rgb(255 255 255 / 30%),
@@ -419,6 +420,10 @@
   pointer-events: none;
 }
 .optical-glass[hidden] { display: none; }
+.optical-glass:where(:not([data-optical-source])) {
+  -webkit-backdrop-filter: var(--optical-backdrop-blur);
+  backdrop-filter: var(--optical-backdrop-blur);
+}
 .optical-glass__sample {
   position: absolute;
   inset: -.75rem;
@@ -444,7 +449,7 @@
 }
 @media (prefers-reduced-transparency: reduce) {
   .liquid-glass--clear { --glass-fill: var(--surface-paper); --glass-backdrop: var(--surface-paper); }
-  .optical-glass { backdrop-filter: none; }
+  .optical-glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .optical-glass__sample { display: none; }
 }
 @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
