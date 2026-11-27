@@ -29,7 +29,9 @@ const credentials = [
 ---
 
 <section class="opening-hero" aria-labelledby="opening-title">
-  <span class="opening-hero__waves" aria-hidden="true"></span>
+  <span class="opening-hero__waves" aria-hidden="true">
+    <canvas class="opening-hero__light"></canvas>
+  </span>
   <div class="container opening-hero__inner">
     <div class="opening-hero__lead">
       <h1 id="opening-title">
@@ -112,10 +114,16 @@ const credentials = [
 
 <script>
   import { setupRadioGallery } from '../scripts/gallery';
+  import { setupHeroLight } from '../scripts/hero-light';
   import { reducedMotion } from '../scripts/media';
 
   const media = document.querySelector<HTMLElement>('.hero-media');
   if (media) setupRadioGallery(media);
+
+  const light = document.querySelector<HTMLCanvasElement>('.opening-hero__light');
+  const lightLayer = light?.parentElement;
+  const heroSection = lightLayer?.parentElement;
+  if (light && lightLayer && heroSection) setupHeroLight(light, lightLayer, heroSection);
 
   const credentials = document.querySelector<HTMLElement>('#hero-credentials');
   if (credentials) {
@@ -226,6 +234,16 @@ const credentials = [
     inset: 0;
     pointer-events: none;
   }
+  .opening-hero__light {
+    position: absolute;
+    inset: 0 0 auto;
+    inline-size: 100%;
+    block-size: min(27rem, 100%);
+    visibility: hidden;
+  }
+  .opening-hero__waves[data-wave-rendered] .opening-hero__light { visibility: visible; }
+  .opening-hero__waves[data-wave-rendered]::before,
+  .opening-hero__waves[data-wave-rendered]::after { visibility: hidden; }
   .opening-hero__waves::before,
   .opening-hero__waves::after {
     position: absolute;
@@ -433,15 +451,17 @@ const credentials = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .opening-hero__waves::before {
-      --hero-light-offset: -1.375rem;
+    .opening-hero__waves[data-wave-fallback]::before {
+      --hero-light-offset: -1.5rem;
       --hero-light-rise: .875rem;
-      animation: hero-light-drift 8.5s ease-in-out infinite alternate;
+      --hero-light-scale: 1.085, .93;
+      animation: hero-light-drift 4.8s ease-in-out infinite alternate;
     }
-    .opening-hero__waves::after {
-      --hero-light-offset: .875rem;
+    .opening-hero__waves[data-wave-fallback]::after {
+      --hero-light-offset: 1.15rem;
       --hero-light-rise: -.625rem;
-      animation: hero-light-drift 11s ease-in-out infinite alternate;
+      --hero-light-scale: 1.07, 1.045;
+      animation: hero-light-drift 6.5s ease-in-out infinite alternate;
     }
     .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::before,
     .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::after {
@@ -449,7 +469,7 @@ const credentials = [
     }
     @keyframes hero-light-drift {
       from { transform: none; opacity: 1; }
-      to { transform: translate(var(--hero-light-offset), var(--hero-light-rise)); opacity: .84; }
+      to { transform: translate(var(--hero-light-offset), var(--hero-light-rise)) scale(var(--hero-light-scale)); opacity: .82; }
     }
     .first-visit__leaf {
       animation: first-visit-breeze 12s 4s ease-in-out infinite;
