@@ -15,7 +15,7 @@ const placements = [
 ];
 ---
 
-<section class="testimonials atmosphere atmosphere--forest" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
+<section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
   <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
     <Image class="review-sprig" src={oakBough} alt="" aria-hidden="true"
@@ -127,10 +127,9 @@ const placements = [
 <style>
   .testimonials {
     --track-gap: var(--space-related);
-    --atmosphere-light-field: ellipse 73% 56% at 66% 0%;
-    --atmosphere-depth-field: ellipse 66% 64% at 4% 79%;
     position: relative;
     isolation: isolate;
+    background: var(--surface-forest);
     color: var(--color-cream);
     padding-block: var(--space-section) var(--section-gap);
     border-radius: 1.25rem;

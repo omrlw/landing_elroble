@@ -24,15 +24,6 @@
     color-mix(in srgb, var(--color-cream) 5%, transparent)
   );
 
-  /* Ambient light and pigments, mixed from the brand palette. */
-  --atmosphere-paper-light: color-mix(in srgb, var(--color-paper) 94%, transparent);
-  --atmosphere-paper-pigment: color-mix(in srgb, var(--color-honey) 47%, transparent);
-  --atmosphere-paper-depth: color-mix(in srgb, var(--color-action) 8%, transparent);
-  --atmosphere-forest-light: color-mix(in srgb, var(--color-honey) 15%, transparent);
-  --atmosphere-forest-pigment: color-mix(in srgb, var(--color-action) 26%, transparent);
-  --atmosphere-forest-depth: color-mix(in srgb, var(--color-ink) 40%, transparent);
-  --atmosphere-canopy-opacity: .12;
-
   /* Typography */
   --font-display: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
   --font-body: 'Google Sans Flex', system-ui, sans-serif;

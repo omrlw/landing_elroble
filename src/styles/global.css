@@ -1,7 +1,6 @@
 @layer reset, base;
 
 @import './tokens.css';
-@import './atmosphere.css';
 @import './glass.css';
 @import './gallery.css';
 

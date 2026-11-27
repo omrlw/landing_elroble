@@ -92,16 +92,9 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
 
-## Atmósfera
+## Luz del hero
 
-[atmosphere.css](src/styles/atmosphere.css) superpone un grano de papel y tres campos de luz, pigmento y profundidad sobre las superficies de la página. Las intensidades y los tintes parten de la paleta de [tokens.css](src/styles/tokens.css). Cada sección sitúa los campos con sus variables `--atmosphere-*-field` en función de sus fotografías y sus márgenes de lectura.
-
-- `.atmosphere` usa crema como base en Centro de día, Programa y Recorrido, y Preguntas frecuentes. Programa y Recorrido comparten una superficie continua.
-- `.atmosphere--forest` toma `--surface-forest` como base en Confianza, Enfoque, Testimonios y el fondo de cierre.
-- `.atmosphere--canopy` proyecta el roble detrás de Centro de día. La máscara SVG tiene dos grados de difusión y una opacidad menor en móvil. Los colores forzados retiran la proyección y las capas de fondo.
-- El fondo del hero tiene dos reflejos radiales que se desplazan lentamente. El control de reproducción del carrusel pausa también los reflejos. La preferencia de movimiento reducido presenta los reflejos fijos.
-
-La [bitácora de dirección atmosférica](docs/atmosfera.md) reúne las referencias y las tres pruebas visuales.
+[hero-light.ts](src/scripts/hero-light.ts) dibuja en WebGL los dos reflejos radiales del hero. Los reflejos cambian de forma y responden al cursor en escritorio. El control de reproducción del carrusel también pausa la luz. Con movimiento reducido se usan los reflejos fijos de CSS.
 
 ## Fotografías de Historia
 

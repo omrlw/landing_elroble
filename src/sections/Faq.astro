@@ -48,7 +48,7 @@ const columnBreak = Math.ceil(questions.length / 2);
 const questionColumns = [questions.slice(0, columnBreak), questions.slice(columnBreak)];
 ---
 
-<section class="faq atmosphere atmosphere--seamless" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
+<section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
   <BotanicalPattern />
   <div class="container faq-container">
     <header class="faq-heading" data-reveal="heading">
@@ -89,9 +89,6 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 
 <style>
   .faq {
-    --atmosphere-light-field: ellipse 64% 48% at 29% 24%;
-    --atmosphere-pigment-field: ellipse 67% 69% at 95% 91%;
-    --atmosphere-depth-field: ellipse 64% 46% at 0% 62%;
     position: relative;
     isolation: isolate;
     overflow: clip;
