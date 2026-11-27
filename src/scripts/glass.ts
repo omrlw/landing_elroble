@@ -1,20 +1,19 @@
-import { createGlass, engine } from '../vendor/liquid-glass/liquid-glass.js';
+import { mountOpticalFilter, supportsBackdropRefraction } from './optical-filter';
 
 const reduceTransparency = matchMedia('(prefers-reduced-transparency: reduce), (forced-colors: active)');
-const optics = { chroma: 0, bezel: .4, specular: .45, specularWidth: 1.5, lightAngle: -125 };
-type Glass = ReturnType<typeof createGlass>;
+type OpticalFilter = ReturnType<typeof mountOpticalFilter>;
 
 interface ImageLens {
   element: HTMLElement;
   sample: HTMLElement;
   copy?: HTMLImageElement;
-  glass?: Glass;
+  filter?: OpticalFilter;
 }
 
 function hideSample(lens: ImageLens) {
   lens.sample.removeAttribute('data-optical-ready');
-  lens.glass?.destroy();
-  lens.glass = undefined;
+  lens.filter?.destroy();
+  lens.filter = undefined;
 }
 
 function drawImageLens(lens: ImageLens, image: HTMLImageElement, rect: DOMRect, style: CSSStyleDeclaration, onLoad: () => void) {
@@ -27,12 +26,14 @@ function drawImageLens(lens: ImageLens, image: HTMLImageElement, rect: DOMRect, 
   }
 
   const sampleBox = sample.getBoundingClientRect();
-  if (!sampleBox.width || !sampleBox.height) {
+  const sampleWidth = sample.offsetWidth;
+  const sampleHeight = sample.offsetHeight;
+  if (!sampleBox.width || !sampleBox.height || !sampleWidth || !sampleHeight) {
     hideSample(lens);
     return;
   }
-  const scaleX = sampleBox.width / sample.offsetWidth;
-  const scaleY = sampleBox.height / sample.offsetHeight;
+  const scaleX = sampleBox.width / sampleWidth;
+  const scaleY = sampleBox.height / sampleHeight;
   const shape = {
     x: (box.left - sampleBox.left) / scaleX,
     y: (box.top - sampleBox.top) / scaleY,
@@ -58,8 +59,8 @@ function drawImageLens(lens: ImageLens, image: HTMLImageElement, rect: DOMRect, 
   copy.style.objectPosition = style.objectPosition;
   copy.style.opacity = style.opacity;
 
-  if (lens.glass) lens.glass.update(shape);
-  else lens.glass = createGlass(sample, { ...optics, ...shape, refraction: 11, blur: 1 });
+  lens.filter ??= mountOpticalFilter(sample, 'photo');
+  lens.filter.update(shape, sampleWidth, sampleHeight, 1);
   sample.toggleAttribute('data-optical-ready', copy.complete && copy.naturalWidth > 0 && copy.currentSrc === image.currentSrc);
 }
 
@@ -113,31 +114,30 @@ function setupGlass() {
   window.addEventListener('resize', onResize, { passive: true });
 
   // Other engines get the native CSS blur without setting up backdrop lenses.
-  if (engine === 'blink') {
+  if (supportsBackdropRefraction) {
     for (const lens of document.querySelectorAll<HTMLElement>('[data-optical-glass]:not([data-optical-source])')) {
       watchVisibility(lens, () => {
-        let glass: Glass | undefined;
+        let filter: OpticalFilter | undefined;
         const draw = () => {
-          if (!lens.offsetWidth || !lens.offsetHeight) {
-            glass?.destroy();
-            glass = undefined;
+          const width = lens.offsetWidth;
+          const height = lens.offsetHeight;
+          if (!width || !height) {
+            filter?.destroy();
+            filter = undefined;
             return;
           }
           const style = getComputedStyle(lens);
-          const shape = {
-            radius: parseFloat(style.borderTopLeftRadius),
-            blur: parseFloat(style.getPropertyValue('--optical-frost')) || .7,
-            refraction: 8,
-          };
-          if (glass) glass.update(shape);
-          else glass = createGlass(lens, { ...optics, ...shape, mode: 'backdrop', fit: true });
+          const radius = parseFloat(style.borderTopLeftRadius);
+          const frost = parseFloat(style.getPropertyValue('--optical-frost')) || .7;
+          filter ??= mountOpticalFilter(lens, 'backdrop');
+          filter.update({ x: 0, y: 0, width, height, radius }, width, height, frost);
         };
         const stopSize = watchSize(lens, () => schedule(draw));
         schedule(draw);
         return () => {
           stopSize();
           pending.delete(draw);
-          glass?.destroy();
+          filter?.destroy();
         };
       });
     }
@@ -164,7 +164,7 @@ function setupGlass() {
         for (const lens of lenses) drawImageLens(lens, source, rect, style, refresh);
       };
       const refresh = () => schedule(draw);
-      const stopSize = [stage, ...lenses.map(({ element }) => element), ...(staticImage ? [staticImage] : [])]
+      const stopSize = [stage, ...lenses.flatMap(({ element, sample }) => [element, sample]), ...(staticImage ? [staticImage] : [])]
         .map((element) => watchSize(element, refresh));
       const state = staticImage ? undefined : new MutationObserver(refresh);
       state?.observe(stage, { subtree: true, attributes: true, attributeFilter: ['data-photo-state', 'data-photo-moving'] });

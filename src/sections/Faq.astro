@@ -65,14 +65,14 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
       {questionColumns.map((column, index) => (
         <div class="question-column">
           {column.map(({ title, compact, tablet, answer }) => (
-            <details name={`preguntas-el-roble-${index + 1}`}>
-              <summary>
+            <details class="liquid-glass liquid-glass--clear liquid-glass--underlay liquid-glass--row" name={`preguntas-el-roble-${index + 1}`}>
+              <summary class="liquid-glass__trigger">
                 <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
                   <span class="full-question">{title}</span>
                   {compact && <span class="compact-question">{compact}</span>}
                   {tablet && <span class="tablet-question">{tablet}</span>}
                 </span>
-                <span class="question-icon" aria-hidden="true">
+                <span class="question-icon liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
                     <path d="M3 8h10" />
                     <path class="question-icon__vertical" d="M8 3v10" />
@@ -130,37 +130,13 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 
   details {
     --question-gutter: clamp(.75rem, .55rem + .85vw, 1.5rem);
-    position: relative;
-    isolation: isolate;
+    --glass-rest-visibility: .8;
     min-inline-size: 0;
-    border-radius: 1rem;
-    overflow: clip;
   }
-  details:not([open])::after {
-    position: absolute;
-    inset: auto var(--question-gutter) 0;
-    block-size: 1px;
-    background: var(--glass-divider);
-    pointer-events: none;
-    content: '';
+  details[open] {
+    --glass-rest-visibility: 1;
+    --glass-edge: var(--glass-edge-selected);
   }
-  details::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(90deg,
-      color-mix(in srgb, var(--color-paper) 66%, transparent),
-      color-mix(in srgb, var(--color-paper) 35%, transparent) 73%,
-      color-mix(in srgb, var(--color-paper) 13%, transparent)
-    );
-    box-shadow: var(--optical-bevel);
-    opacity: 0;
-    pointer-events: none;
-    content: '';
-  }
-  details[open]::before { opacity: 1; }
-  details:has(> summary:active) .question-icon { background-color: rgb(53 43 31 / 10%); }
 
   summary {
     min-block-size: clamp(4.25rem, 3.55rem + 1.3vw, 5rem);
@@ -175,7 +151,7 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   }
   summary::-webkit-details-marker { display: none; }
   summary::marker { content: ''; }
-  summary:focus-visible { outline-color: var(--color-forest); outline-offset: -2px; }
+  summary:focus-visible { outline-color: var(--glass-focus); outline-offset: -2px; }
   .question-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); text-wrap: pretty; }
   .has-compact .full-question, .tablet-question { display: none; }
   .question-icon {
@@ -184,12 +160,6 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     inline-size: clamp(2.25rem, 2.1rem + .45vw, 2.625rem);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(circle at 26% 18%, rgb(255 255 255 / 72%), transparent 64%);
-    box-shadow: var(--optical-bevel), inset 0 -3px 5px -4px rgb(77 67 48 / 24%);
-  }
-  details[open] .question-icon {
-    background-color: rgb(255 255 255 / 49%);
-    box-shadow: var(--optical-bevel), 0 4px 10px -6px rgb(39 30 21 / 44%);
   }
   .question-icon__vertical { transform-origin: center; }
   [open] .question-icon__vertical { scale: 1 0; }
@@ -216,21 +186,15 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     .tablet-question { display: none; }
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    details:not([open]):has(> summary:hover)::before { opacity: .55; }
-    summary:hover .question-icon { background-color: rgb(255 255 255 / 55%); }
-  }
-
   @media (prefers-reduced-transparency: reduce) {
-    details[open]::before { background: var(--glass-clear); }
+    details { --glass-rest-visibility: 1; }
   }
   @media (forced-colors: active) {
-    summary, .question-icon { border: 1px solid CanvasText; }
+    details, .question-icon { border: 1px solid CanvasText; }
+    details[open] { border-color: Highlight; }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    details::before { transition: opacity var(--glass-motion) var(--glass-ease); }
-    .question-icon { transition: background-color var(--glass-motion) var(--glass-ease), box-shadow var(--glass-motion) var(--glass-ease); }
     .question-icon__vertical { transition: scale var(--glass-motion) var(--glass-ease); }
 
     @supports (interpolate-size: allow-keywords) and selector(::details-content) {

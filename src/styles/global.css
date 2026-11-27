@@ -112,6 +112,7 @@
   --glass-shadow-reading: 0 12px 28px -22px rgb(47 38 26 / 30%);
   --glass-ease: cubic-bezier(.22, .66, .2, 1);
   --glass-motion: 320ms;
+  --glass-row-motion: 420ms;
   --glass-sheen-forest: radial-gradient(ellipse at 18% 0%,
     color-mix(in srgb, var(--glass-clear) 13%, transparent), transparent 70%);
   --glass-lens-clear: radial-gradient(circle at 29% 18%, var(--color-paper), var(--color-cream) 52%, color-mix(in srgb, var(--color-cream) 72%, var(--color-sand)));
@@ -293,6 +294,20 @@
   opacity: var(--glass-visible, 0);
   pointer-events: none;
   content: '';
+}
+
+.liquid-glass--row { border-radius: .9rem; }
+.liquid-glass--row:where(.liquid-glass__trigger:active, :has(.liquid-glass__trigger:not([aria-disabled='true']):active)) {
+  --glass-visible: 1;
+  --glass-wash: var(--glass-press);
+}
+@media (hover: hover) {
+  .liquid-glass--row:where(.liquid-glass__trigger:hover, :has(.liquid-glass__trigger:not([aria-disabled='true']):hover)) {
+    --glass-visible: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .liquid-glass--row::before { transition: opacity var(--glass-row-motion) var(--ease-in-out); }
 }
 
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {

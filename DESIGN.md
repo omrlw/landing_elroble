@@ -56,7 +56,7 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
 
-## Liquid Glass
+## Vidrio y refracción
 
 El vidrio óptico tiene un centro casi transparente y concentra la refracción en el borde. El reflejo fino define la forma sobre fondos lisos. Sobre fotos o follaje, el borde curva la imagen y el centro conserva el detalle. El texto y los iconos se componen por encima del efecto.
 
@@ -64,42 +64,35 @@ El vidrio óptico tiene un centro casi transparente y concentra la refracción e
 | --- | --- |
 | Lente óptica | [OpticalGlass.astro](src/components/OpticalGlass.astro) refracta el borde en la cabecera, el hero, los rótulos de Recorrido y la reproducción de Comunidad. El anfitrión usa `.liquid-glass--optical` cuando el control necesita una superficie propia. |
 | Vidrio claro | `.liquid-glass--clear` comparte `--glass-clear-tint` entre botones secundarios y paginadores. `.liquid-glass--lens` da un reflejo radial a los controles pequeños. Sobre fotografía, el mismo crema admite más transparencia para que se vea la refracción. |
+| Filas que se abren o seleccionan | `.liquid-glass--row` con `.liquid-glass--underlay` comparte el radio de Confianza y el fundido de opacidad gobernado por `--glass-row-motion`. Coloca `.liquid-glass__trigger` en el `summary`, botón o `label`. Usa `--glass-rest-visibility` para definir la opacidad en reposo o con la fila abierta o seleccionada. |
 | Superficie de lectura | `.liquid-glass--reading` usa `--surface-paper` para las tarjetas claras de Programa, las tarjetas de Testimonios y las reseñas abiertas. El papel opaco mantiene el tono crema sobre el bosque. |
 | Identidad de marca | `.liquid-glass--action` usa el degradado bosque con un reflejo fino. `.liquid-glass--oak` conserva el roble en «Descubre nuestro centro». `.liquid-glass--forest-panel` mantiene el acabado editorial de Enfoque y Confianza. |
 
 `--surface-forest` sigue siendo el fondo de las secciones y paneles de marca. Los paginadores del hero y Testimonios usan papel sobre un fondo oscuro. Los de Centro de día y Recorrido usan iconos oscuros sobre vidrio claro.
 
-El panel de actividades de Centro de día muestra las filas en papel sobre el degradado bosque, con divisores finos. La fila seleccionada usa `--glass-clear-tint`, texto oscuro y un medallón bosque para el número.
+Confianza y Centro de día muestran al pasar el puntero el mismo vidrio bosque con un reflejo fino. En Centro de día, los divisores se disuelven cuando aparece el vidrio y la selección se mantiene en crema con texto oscuro y un medallón bosque para el número.
 
 La navegación de escritorio tiene una sola cápsula, alineada con el elemento que corresponde a `aria-current`. GSAP anima su posición y escala sin recalcular el mapa a cada cuadro. El hover de otro enlace muestra un contorno leve y el foco visible conserva su propio anillo. El desplegable tiene un centro más difuso para leer los enlaces sobre texto o fotos. El menú móvil indica la sección activa con un borde neutro.
 
-En el hero, «Ver el recorrido» conserva su verde sobre la refracción y «Desde 2009» permanece en la tarjeta sobre la foto. La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
+En el hero, «Ver el recorrido» conserva su verde sobre la refracción en reposo. Al pasar el puntero, comparte el tinte bosque, el desenfoque y el bisel de «Desde 2009». La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
 
-En el FAQ las filas cerradas tienen divisores finos y un medallón `+`. Al abrir una pregunta aparece una superficie translúcida y el medallón cambia a `−`. Cada columna conserva su grupo de `details` y el cuerpo de la respuesta mantiene un fondo estable.
+En el FAQ, cada pregunta tiene una tarjeta de vidrio claro con contorno completo y un medallón `+`. Al pasar el puntero, el reflejo y el contorno se refuerzan con el fundido de Confianza. Al abrir una pregunta, el borde gana contraste, el medallón cambia a `−` y la superficie acompaña toda la respuesta. Cada columna conserva su grupo de `details`.
 
 ### Implementación y respaldo
 
 - Las clases de superficie y los tokens de película, bisel y desenfoque viven en [global.css](src/styles/global.css). Usa `OpticalGlass` para los controles que necesiten curvar el fondo. Para las demás superficies, usa los acabados CSS de la tabla.
 - En el hero, Recorrido y Comunidad, `OpticalGlass` filtra una copia decorativa alineada con la foto activa de `data-glass-scene` o con la imagen fija `data-glass-image`. CSS aporta el tinte y los reflejos. SVG desplaza los píxeles del borde con `feDisplacementMap`. Durante el fundido o el zoom inicial del hero se ve la foto en vivo bajo la película. [Especificación de filtros SVG](https://drafts.csswg.org/filter-effects-1/#feDisplacementMapElement).
 - Para fondos variables, la cabecera y las credenciales usan el desenfoque CSS de `--optical-backdrop-blur`. En Chromium se mejora con un filtro SVG de fondo. El soporte de estos filtros varía según el motor. [Seguimiento en Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=1961378) y [seguimiento en WebKit](https://bugs.webkit.org/show_bug.cgi?id=245510).
-- [glass.ts](src/scripts/glass.ts) comparte los observadores de las escenas y agrupa los cambios antes de dibujar. Prepara las lentes hasta 120 px fuera del área visible. Al salir de ese margen, libera la copia y el filtro. La caché del motor conserva el mapa para reutilizarlo al volver. Los ajustes de refracción y escarcha están en el adaptador.
+- [glass.ts](src/scripts/glass.ts) comparte los observadores de las escenas y agrupa los cambios antes de dibujar. Prepara las lentes hasta 120 px fuera del área visible. Al salir de ese margen, libera la copia y el filtro.
+- [OpticalFilterDefinitions.astro](src/components/OpticalFilterDefinitions.astro) declara el filtro SVG una vez por página. [optical-filter.ts](src/scripts/optical-filter.ts) lo ajusta al tamaño de la lente y del área muestreada. Ahí se define la intensidad de refracción. La escarcha se mide en píxeles CSS. Las fotos toman su valor de `glass.ts` y la cabecera puede ajustarla con `--optical-frost`.
+- [optical-map.ts](src/scripts/optical-map.ts) calcula la curva del borde y su reflejo con Canvas 2D. Genera el PNG en memoria cuando entra una geometría nueva y conserva hasta 48 mapas por tamaño, radio y densidad de píxel. La resolución del mapa llega hasta 2 píxeles por píxel CSS. WebKit vuelve a aplicar el filtro tras cargar el mapa para que repinte la imagen.
 - [nav-glass.ts](src/scripts/nav-glass.ts) anima la cápsula con el GSAP existente. Con movimiento reducido la cápsula se coloca de inmediato. Con transparencia reducida o colores forzados, el adaptador libera filtros y copias y el CSS conserva la legibilidad. Los controles siguen siendo enlaces, botones y `summary` nativos.
-- [Liquid Glass for the Web](https://github.com/gentpan/liquidglass/tree/d5db099ef00828496aa2733e4f35542c05a0b1f8) se incluye localmente desde el commit `d5db099` con su [licencia MIT](src/vendor/liquid-glass/LICENSE). El motor usa el contexto Canvas 2D optimizado para lectura al codificar los mapas PNG. WebKit conserva los dos refrescos de compatibilidad tras cargar el mapa.
 
 ### Verificación del vidrio
 
 Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
 
-En Chrome 158 sin interfaz, sobre la compilación estática local en Windows, se midió la suma de las dos llamadas iniciales a `canvas.toDataURL()`. Cada cifra es la mediana de tres arranques con un perfil nuevo.
-
-| Medición al entrar al hero | Antes | Después |
-| --- | ---: | ---: |
-| Codificación PNG, 1440 × 900, DPR 1 | 278,8 ms | 0,8 ms |
-| Codificación PNG, 390 × 844, DPR 2 | 323,4 ms | 2,0 ms |
-| Copias decorativas en el DOM | 14 | 1 |
-| JavaScript base comprimido con gzip | 25 271 B | 25 578 B |
-
-Las zonas con vidrio coincidieron píxel por píxel en Chrome, Firefox y WebKit en las capturas de escritorio y móvil. En Chrome móvil, las capturas completas de Recorrido mostraron diferencias de rasterización en texto fuera de la foto.
+Se verificaron capturas a 320, 390, 768 y 1440 px en Chromium, y a 390 y 1440 px en Firefox y WebKit. Se probó también el fundido del hero, el cambio de ancho con la página abierta y la restauración de las lentes al volver de colores forzados.
 
 El sello de primera visita mantiene el roble sólido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 

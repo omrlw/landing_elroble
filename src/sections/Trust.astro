@@ -96,14 +96,14 @@ const photoSizes = [
 
     <div class="trust__reasons">
       {reasons.map(({ title, text }, index) => (
-        <article class="trust__reason liquid-glass liquid-glass--forest-panel liquid-glass--underlay" data-scene={index}>
+        <article class="trust__reason liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row" data-scene={index}>
           <h3>
-            <button class="trust__reason-trigger" type="button" aria-expanded={index === 0}
+            <button class="trust__reason-trigger liquid-glass__trigger" type="button" aria-expanded={index === 0}
               aria-controls={'trust-detail-' + index} data-trust-trigger>
               {title}
               <span class="trust__reason-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true"></span>
             </button>
-            <label class="trust__reason-fallback" for={'trust-scene-' + index}>{title}</label>
+            <label class="trust__reason-fallback liquid-glass__trigger" for={'trust-scene-' + index}>{title}</label>
           </h3>
           <div class="trust__detail" id={'trust-detail-' + index} data-trust-detail>
             <div><p>{text}</p></div>
@@ -246,8 +246,7 @@ const photoSizes = [
   .trust__reason {
     --reason-active: 0;
     --reason-inset: clamp(1rem, 1.5vw, 1.5rem);
-    --glass-visible: var(--reason-active);
-    border-radius: .9rem;
+    --glass-rest-visibility: var(--reason-active);
   }
   .trust__reason h3 {
     color: inherit;
@@ -311,20 +310,11 @@ const photoSizes = [
     --reason-visibility: visible;
     --reason-hide-delay: 0s;
   }
-  @media (hover: hover) {
-    .trust__reason:has(.trust__reason-trigger[aria-expanded="false"]:hover, .trust__reason-fallback:hover) {
-      --glass-visible: 1;
-    }
-  }
-  .trust__reason:has(.trust__reason-trigger[aria-expanded="false"]:active, .trust__reason-fallback:active) {
-    --glass-visible: 1;
-    --glass-wash: var(--glass-press);
-  }
   @media (prefers-reduced-motion: no-preference) {
-    .trust__reason::before { transition: opacity 420ms var(--ease-in-out); }
     .trust__reason-icon::after { transition: transform 360ms var(--ease-soft); }
     .trust__detail {
-      transition: grid-template-rows 420ms var(--ease-soft), opacity 310ms ease, visibility 0s var(--reason-hide-delay, 420ms);
+      transition: grid-template-rows var(--glass-row-motion) var(--ease-soft), opacity 310ms ease,
+        visibility 0s var(--reason-hide-delay, var(--glass-row-motion));
     }
   }
 

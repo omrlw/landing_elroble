@@ -112,7 +112,8 @@ const facilities = [
                 <div class="day__activity">
                   {!sizing && <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
                     aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />}
-                  <Row class="day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--interactive" for={sizing ? undefined : `day-activity-${index}`}>
+                  <Row class:list={['day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row',
+                    !sizing && 'liquid-glass__trigger']} for={sizing ? undefined : `day-activity-${index}`}>
                     <span class="day__index" aria-hidden="true">0{index + 1}</span>
                     <span class="day__activity-title">
                       <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
@@ -201,15 +202,12 @@ const facilities = [
   .day__activity-label {
     --activity-row-gap: calc(var(--space-detail) / 2);
     --activity-inset: .75rem;
-    --glass-depth: 0 0 transparent;
-    position: relative;
     display: grid;
     grid-template-columns: clamp(1.75rem, 1.4rem + 1vw, 2.125rem) minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--activity-row-gap) clamp(.5rem, 1vw, 1rem);
     padding: var(--space-detail) var(--activity-inset);
     min-block-size: var(--control-row-min-height);
-    border-radius: 1rem;
     cursor: pointer;
   }
   .day__activity-label::after {
@@ -217,27 +215,28 @@ const facilities = [
     inset: auto var(--activity-inset) 0;
     block-size: 1px;
     background: var(--color-on-forest-line);
+    opacity: calc(1 - var(--glass-visible));
+    pointer-events: none;
     content: '';
   }
-  .day__activity:last-child .day__activity-label::after,
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label::after { display: none; }
+  .day__activity:last-child .day__activity-label::after { display: none; }
   .day__activity-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); }
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
   .day__activity-label picture { display: grid; place-items: center; inline-size: 1.5rem; min-block-size: 1.5rem; }
   .day__activity-label img { filter: brightness(0) invert(1); }
   .day__activity-description { grid-column: 2 / -1; display: none; max-inline-size: 62ch; text-wrap: pretty; }
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label {
-    --glass-visible: 1;
+    --glass-rest-visibility: 1;
     --glass-color: var(--color-forest);
     --glass-fill: var(--glass-clear-tint);
     --glass-edge: var(--glass-edge-forest);
     --glass-highlight: var(--highlight-light);
-    --glass-lift: var(--glass-lift-clear);
+    --glass-depth: 0 0 transparent;
     --glass-press: var(--glass-press-clear);
 
     .day__index { background: var(--color-forest); color: var(--color-paper); }
     img { filter: brightness(0); opacity: .85; }
-    &::before { transition-property: box-shadow; }
+    &::before { transition: none; }
 
     @media (prefers-reduced-transparency: reduce) {
       --glass-fill: var(--surface-paper);
@@ -252,6 +251,7 @@ const facilities = [
   .day__activity-description[data-sizing-open],
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { display: block; }
   @media (prefers-reduced-motion: no-preference) {
+    .day__activity-label::after { transition: opacity var(--glass-row-motion) var(--ease-in-out); }
     .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { animation: day-description var(--motion-panel) var(--ease-soft) both; }
     @keyframes day-description { from { opacity: .68; translate: 0 .18rem; } }
   }
@@ -285,7 +285,7 @@ const facilities = [
     .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
     .day__photo { aspect-ratio: 440 / 360; }
     .day__activity-list { gap: .75rem; }
-    .day__activity-label { padding-block: .75rem; border-radius: var(--radius-card); }
+    .day__activity-label { padding-block: .75rem; }
     .day__previews { display: grid; align-self: start; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; transition: box-shadow var(--motion-state); }
     .day__previews:active { box-shadow: var(--shadow-control); }
     @media (hover: hover) { .day__previews:hover { box-shadow: var(--shadow-raised); } }

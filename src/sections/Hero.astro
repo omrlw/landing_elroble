@@ -62,7 +62,7 @@ const credentials = [
         ))}
       </div>
       <div class="hero-media__shade" aria-hidden="true"></div>
-      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass">
+      <Cta class="hero-media__tour liquid-glass--blur" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass">
         <OpticalGlass slot="surface" source="photo" />
       </Cta>
       <div class="hero-media__experience liquid-glass liquid-glass--blur">
@@ -194,11 +194,29 @@ const credentials = [
       color-mix(in srgb, var(--color-action) 78%, transparent),
       color-mix(in srgb, var(--color-forest) 90%, transparent));
     --optical-rim: var(--glass-bevel-dark);
+    --glass-filter: none;
     --glass-hover-edge: transparent;
-    --glass-lift: color-mix(in srgb, var(--glass-clear) 6%, transparent);
+    --glass-lift: transparent;
     white-space: nowrap;
   }
   .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
+  @media (hover: hover) {
+    .hero-media :global(.hero-media__tour:hover) {
+      --glass-fill: var(--glass-optical-solid);
+      --glass-backdrop: var(--glass-forest-tint);
+      --glass-filter: var(--glass-blur);
+      --glass-highlight: var(--highlight-dark);
+    }
+    .hero-media :global(.hero-media__tour:hover > .optical-glass) { visibility: hidden; }
+
+    @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+      .hero-media :global(.hero-media__tour:hover) {
+        --glass-backdrop: var(--glass-optical-solid);
+        --glass-filter: none;
+      }
+    }
+  }
+
   .hero-media__experience {
     position: relative;
     inline-size: clamp(15.5rem, 13.9rem + 2.4vw, 17.5rem);
@@ -293,19 +311,23 @@ const credentials = [
     z-index: 1;
     inline-size: min(100%, 25rem);
     margin-block-start: calc(max(1rem, var(--space-related)) - var(--opening-gap));
-    padding: .45rem;
-    border-radius: 1.125rem;
+    padding: .45rem 1.25rem;
+    border-radius: 999px;
     font-size: clamp(.9375rem, .87rem + .24vw, var(--text-control));
     font-weight: 600;
     line-height: 1.3;
   }
-  .opening-hero__credentials ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .opening-hero__credentials ul {
+    display: grid;
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
+    column-gap: .375rem;
+  }
   .opening-hero__credentials li {
     display: flex;
     align-items: center;
     gap: clamp(.4375rem, 1vw, .75rem);
     min-block-size: 2.875rem;
-    padding: .5rem clamp(.5rem, 1.1vw, .875rem);
+    padding-block: .5rem;
   }
   .opening-hero__credentials picture {
     display: grid;

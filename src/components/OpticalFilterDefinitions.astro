@@ -1,0 +1,21 @@
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
+  <defs data-optical-defs></defs>
+</svg>
+
+<template data-optical-filter>
+  <svg>
+    <filter x="0" y="0" width="1" height="1" filterUnits="objectBoundingBox" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+      <feFlood data-lens-rect flood-color="rgb(128,128,128)" result="neutral" />
+      <feImage data-lens-rect preserveAspectRatio="none" result="coverage" />
+      <feComposite data-lens-rect in="coverage" in2="neutral" operator="over" result="field" />
+      <feColorMatrix data-lens-rect data-axis-correction in="field" type="matrix" result="corrected" />
+      <feGaussianBlur in="SourceGraphic" result="frosted" />
+      <feDisplacementMap data-lens-rect in="frosted" in2="corrected" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+      <feColorMatrix data-lens-rect in="field" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 2 0 -1.003921568627451" result="highlight" />
+      <feComposite data-lens-rect in="highlight" in2="refracted" operator="arithmetic" k2="1" k3="1" result="lit" />
+      <feComposite data-lens-rect in="lit" in2="coverage" operator="in" result="lens" />
+      <feComposite in="SourceGraphic" in2="coverage" operator="out" result="outside" />
+      <feComposite in="lens" in2="outside" operator="over" />
+    </filter>
+  </svg>
+</template>

@@ -321,6 +321,15 @@ const activities = [
 
   .program-card--art h3 { color: inherit; }
 
+  .program-card--physio {
+    --program-physio-accent: #d3bd99;
+    --glass-fill: linear-gradient(145deg,
+      color-mix(in srgb, var(--color-paper) 68%, var(--program-physio-accent)),
+      var(--color-honey) 48%,
+      var(--program-physio-accent));
+    --glass-sheen: var(--glass-sheen-clear);
+  }
+
   .program-card:is(.program-card--art, .program-card--physio) {
     padding: 0;
   }
