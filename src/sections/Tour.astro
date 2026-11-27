@@ -3,6 +3,7 @@ import GalleryPlayback from '../components/GalleryPlayback.astro';
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import OpticalGlass from '../components/OpticalGlass.astro';
+import Pictogram from '../components/Pictogram.astro';
 import activities from '../assets/tour/activities.png';
 import details from '../assets/tour/details.png';
 import entrance from '../assets/tour/entrance.png';
@@ -11,14 +12,14 @@ import ramp from '../assets/tour/ramp.png';
 
 const entrancePhotos = [
   {
-    id: 'entrance',
+    id: 'entrance' as const,
     photo: entrance,
     label: 'Entrada y jardín',
     desktopLabel: 'Una primera mirada.',
     alt: 'Jardín y camino hacia la entrada del centro.',
   },
   {
-    id: 'ramp',
+    id: 'ramp' as const,
     photo: ramp,
     label: 'Rampa de acceso',
     desktopLabel: 'Un poco más cerca.',
@@ -28,14 +29,14 @@ const entrancePhotos = [
 
 const interiorPhotos = [
   {
-    id: 'activities',
+    id: 'activities' as const,
     photo: activities,
     label: 'Salón de actividades',
     desktopLabel: 'La vida que compartimos.',
     alt: 'Salón con mesas y materiales de actividades.',
   },
   {
-    id: 'details',
+    id: 'details' as const,
     photo: details,
     label: 'Detalles del salón',
     desktopLabel: 'También en los detalles.',
@@ -78,11 +79,8 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
             />
             <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
               <OpticalGlass source="image" />
-              <span class="tour-tag-symbol liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
-                <picture>
-                  <source media="(min-width: 1200px)" srcset={`/images/tour/${id}-icon.svg`} />
-                  <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
-                </picture>
+              <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+                <Pictogram name={id} />
               </span>
               <span class="tour-tablet">{label}</span>
               <span class="tour-wide">{desktopLabel}</span>
@@ -104,11 +102,8 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
           />
           <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
             <OpticalGlass source="image" />
-            <span class="tour-tag-symbol liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
-              <picture>
-                <source media="(min-width: 1200px)" srcset={`/images/tour/${id}-icon.svg`} />
-                <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
-              </picture>
+            <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+              <Pictogram name={id} />
             </span>
             <span class="tour-tablet">{label}</span>
             <span class="tour-wide">{desktopLabel}</span>
@@ -124,8 +119,8 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
               <Image src={photo} alt={alt} format="webp" widths={[960, 1200]} sizes="934px" data-glass-image />
               <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
                 <OpticalGlass source="image" />
-                <span class="tour-tag-symbol liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
-                  <img src={`/images/tour/${id}-compact.svg`} alt="" loading="lazy" />
+                <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+                  <Pictogram name={id} />
                 </span>
                 {label}
               </figcaption>
@@ -260,15 +255,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
     line-height: var(--leading-control);
   }
 
-  .tour-tag-symbol {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 32px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-  }
-
   .tour-pagination { margin-block-start: .375rem; }
 
   .tour-invitation {
@@ -385,8 +371,6 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       max-width: calc(100% - 48px);
       padding-inline-end: 1rem;
     }
-
-    .tour-tag-symbol { width: 2.25rem; }
 
     .tour-invitation {
       grid-column: 2;

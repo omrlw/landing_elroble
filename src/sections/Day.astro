@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
 import BotanicalArt from '../components/BotanicalArt.astro';
+import Pictogram from '../components/Pictogram.astro';
 import blocks from '../assets/centro-de-dia/juego-de-colores.jpg';
 import groupMovement from '../assets/centro-de-dia/movimiento-al-aire-libre.jpg';
 import painting from '../assets/centro-de-dia/pintura-con-las-manos.jpg';
@@ -11,20 +12,13 @@ import games from '../assets/centro-de-dia/materiales-para-jugar.jpg';
 import gardenPlants from '../assets/centro-de-dia/plantas-del-jardin.jpg';
 import table from '../assets/opening/day-table.png';
 import gardenFlowers from '../assets/confianza/buganvilla-del-jardin.jpg';
-import memory from '../assets/opening/day-memory.svg';
-import movement from '../assets/opening/day-move.svg';
-import creativity from '../assets/opening/day-create.svg';
-import memoryMobile from '../assets/opening/day-memory-mobile.svg';
-import movementMobile from '../assets/opening/day-move-mobile.svg';
-import creativityMobile from '../assets/opening/day-create-mobile.svg';
 
 const activities = [
   {
     title: 'Mantener la mente activa.',
     mobileTitle: 'Memoria activa.',
     description: 'Talleres de memoria y reminiscencia que invitan a recordar, conversar y participar.',
-    icon: memory,
-    mobileIcon: memoryMobile,
+    icon: 'brain' as const,
     image: blocks,
     alt: 'Dos personas se concentran en un juego con piezas de colores',
     preview: games,
@@ -32,8 +26,7 @@ const activities = [
   {
     title: 'Moverse y expresarse.',
     description: 'Taichí, expresión corporal y terapia ocupacional, con participación adaptada a las capacidades de cada persona.',
-    icon: movement,
-    mobileIcon: movementMobile,
+    icon: 'movement' as const,
     image: groupMovement,
     alt: 'Varias personas se toman de las manos y se mueven en una ronda al aire libre',
     preview: gardenPlants,
@@ -42,8 +35,7 @@ const activities = [
     title: 'Crear y compartir.',
     mobileTitle: 'Crear y compartir',
     description: 'Manualidades y juegos para disfrutar y encontrarse con otros.',
-    icon: creativity,
-    mobileIcon: creativityMobile,
+    icon: 'palette' as const,
     image: painting,
     alt: 'Una mujer sonríe y muestra la palma pintada junto a sus huellas en el papel',
     preview: workshop,
@@ -108,7 +100,7 @@ const facilities = [
           return (
             <List class:list={['day__activity-list', sizing && 'day__activity-list--sizing']}
               aria-hidden={sizing || undefined} aria-labelledby={sizing ? undefined : 'day-panel-title'}>
-              {activities.map(({ title, mobileTitle, description, icon, mobileIcon }, index) => (
+              {activities.map(({ title, mobileTitle, description, icon }, index) => (
                 <div class="day__activity">
                   {!sizing && <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
                     aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />}
@@ -119,10 +111,7 @@ const facilities = [
                       <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
                       {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
                     </span>
-                    <picture>
-                      <source media="(max-width: 40rem)" srcset={mobileIcon.src} />
-                      <img src={icon.src} alt="" />
-                    </picture>
+                    <Pictogram name={icon} />
                     <span class="day__activity-description" data-sizing-open={sizingIndex === index || undefined}
                       id={sizing ? undefined : `day-activity-description-${index}`}>{description}</span>
                   </Row>
@@ -222,8 +211,6 @@ const facilities = [
   .day__activity:last-child .day__activity-label::after { display: none; }
   .day__activity-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); }
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
-  .day__activity-label picture { display: grid; place-items: center; inline-size: 1.5rem; min-block-size: 1.5rem; }
-  .day__activity-label img { filter: brightness(0) invert(1); }
   .day__activity-description { grid-column: 2 / -1; display: none; max-inline-size: 62ch; text-wrap: pretty; }
   .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label {
     --glass-rest-visibility: 1;
@@ -235,7 +222,6 @@ const facilities = [
     --glass-press: var(--glass-press-clear);
 
     .day__index { background: var(--color-forest); color: var(--color-paper); }
-    img { filter: brightness(0); opacity: .85; }
     &::before { transition: none; }
 
     @media (prefers-reduced-transparency: reduce) {

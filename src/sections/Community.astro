@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import OpticalGlass from '../components/OpticalGlass.astro';
+import ActionIcon from '../components/ActionIcon.astro';
+import Pictogram from '../components/Pictogram.astro';
 import { business, phoneUrl } from '../config/business';
 import oakBough from '../assets/botanical/community-oak-sprig.webp';
 import salon from '../assets/lower/community-salon.png';
@@ -48,17 +50,10 @@ const posters = [
               />
               <span class="play liquid-glass liquid-glass--clear liquid-glass--optical" aria-hidden="true">
                 <OpticalGlass source="image" />
-                <picture>
-                  <source media="(min-width: 80rem)" srcset="/lower/tiktok-play.svg" />
-                  <source media="(min-width: 40rem)" srcset="/lower/tiktok-play-tablet.svg" />
-                  <img src="/lower/tiktok-play-mobile.svg" alt="" />
-                </picture>
+                <ActionIcon name="play" size={24} />
               </span>
               <span class="poster-profile">
-                <picture>
-                  <source media="(min-width: 40rem)" srcset="/lower/tiktok-small.svg" />
-                  <img src="/lower/tiktok-mobile.svg" alt="" />
-                </picture>
+                <Pictogram name="tiktok" size={16} />
                 {profileHandle}
               </span>
             </a>
@@ -69,13 +64,10 @@ const posters = [
       <div class="profile-links">
         <p>{profileHandle}</p>
         <a class="profile-text" href={profileUrl} target="_blank" rel="noopener noreferrer">
-          Ver publicaciones en TikTok <img src="/lower/tiktok-external.svg" width="20" height="20" alt="" />
+          Ver publicaciones en TikTok <ActionIcon name="arrow-up-right" />
         </a>
         <a class="follow liquid-glass liquid-glass--action liquid-glass--interactive" href={profileUrl} target="_blank" rel="noopener noreferrer">
-          <picture>
-            <source media="(min-width: 80rem)" srcset="/lower/tiktok-action.svg" />
-            <img src="/lower/tiktok-action-tablet.svg" width="22" height="22" alt="" />
-          </picture>
+          <Pictogram name="tiktok" size={20} />
           <span class="follow-desktop">Síguenos</span>
           <span class="follow-mobile">Ver en TikTok</span>
         </a>
@@ -101,21 +93,21 @@ const posters = [
         <h2 class="contact-title">Visitas y contacto</h2>
         <address>
           <a class="contact-row location" href={business.mapUrl} target="_blank" rel="noopener noreferrer">
-            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><img src="/lower/location.svg" width="15" height="20" alt="" /></span>
+            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><ActionIcon name="map-pin" size={20} /></span>
             <span class="contact-copy">
               <strong>Ubicación</strong>
               <span class="contact-value">{street}<span class="address-comma">, </span><span class="address-locality">{locality.join(', ')}</span></span>
             </span>
           </a>
           <a class="contact-row phone" href={phoneUrl}>
-            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><img src="/lower/phone.svg" width="20" height="20" alt="" /></span>
+            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><ActionIcon name="phone" size={20} /></span>
             <span class="contact-copy">
               <strong>Teléfono</strong>
               <span class="contact-value">{business.phone}</span>
             </span>
           </a>
           <a class="contact-row email" href={emailHref}>
-            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><img src="/lower/mail.svg" width="20" height="14" alt="" /></span>
+            <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><ActionIcon name="mail" size={20} /></span>
             <span class="contact-copy">
               <strong>Correo</strong>
               <span class="contact-value">{business.email}</span>
@@ -127,9 +119,9 @@ const posters = [
       <div class="footer-meta">
         <div class="socials">
           <span class="social-label">Síguenos</span>
-          <a class="liquid-glass liquid-glass--forest-panel liquid-glass--lens liquid-glass--interactive" href={profileUrl} target="_blank" rel="noopener noreferrer" aria-label="El Roble en TikTok"><img src="/lower/tiktok.svg" alt="" /></a>
-          <span class="social-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><img src="/lower/instagram.svg" alt="Instagram" /></span>
-          <span class="social-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><img src="/lower/facebook.svg" alt="Facebook" /></span>
+          <a class="liquid-glass liquid-glass--forest-panel liquid-glass--lens liquid-glass--interactive" href={profileUrl} target="_blank" rel="noopener noreferrer" aria-label="El Roble en TikTok"><Pictogram name="tiktok" size={20} /></a>
+          <span class="social-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><Pictogram name="instagram" size={20} label="Instagram" /></span>
+          <span class="social-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><Pictogram name="facebook" size={20} label="Facebook" /></span>
         </div>
         <small>© 2026 El Roble</small>
         <small class="legal">Privacidad · Cookies · Términos</small>
@@ -210,7 +202,6 @@ const posters = [
       color-mix(in srgb, var(--color-cream) 55%, transparent)
     );
   }
-  .play img, .poster-profile img, .profile-links img { display: block; }
   .poster-profile { position: absolute; inset: auto auto 1rem 1rem; display: inline-flex; align-items: center; gap: .5rem; color: var(--color-paper); font-size: var(--text-meta); font-weight: 600; }
   .profile-links { display: grid; justify-items: center; }
   .profile-links p, .profile-text, .follow-desktop { display: none; }

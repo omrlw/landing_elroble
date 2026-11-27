@@ -1,5 +1,6 @@
 ---
 import { getImage, Image } from 'astro:assets';
+import Pictogram from '../components/Pictogram.astro';
 import accompaniment from '../assets/approach/acompanamiento-en-la-mesa.jpg';
 import portrait from '../assets/approach/portrait.png';
 import portraitMobile from '../assets/approach/portrait-mobile.png';
@@ -8,19 +9,19 @@ import oliveSprig from '../assets/botanical/olive-sprig.webp';
 const mobilePortrait = await getImage({ src: portraitMobile, width: 768, format: 'webp' });
 const principles = [
   {
-    id: 'listen',
+    id: 'listen' as const,
     title: ['Escuchar', 'su historia.'],
     description: 'Conocer sus intereses, hábitos y preferencias nos ayuda a proponer una participación que tenga sentido para esa persona.',
     tabletDescription: 'Proponemos actividades según sus gustos y hábitos.',
   },
   {
-    id: 'autonomy',
+    id: 'autonomy' as const,
     title: ['Dar espacio', 'a su autonomía.'],
     description: 'Acompañar también implica dar tiempo para elegir, intentar y hacer. Ofrecemos apoyo según sus capacidades, respetando lo que puede realizar por sí misma.',
     tabletDescription: 'Le damos tiempo y apoyo para elegir y hacer a su ritmo.',
   },
   {
-    id: 'family',
+    id: 'family' as const,
     title: ['Contar con', 'la familia.'],
     description: 'La familia aporta una mirada valiosa sobre su historia y su vida cotidiana. Esa información ayuda a orientar el acompañamiento y conversar sobre sus necesidades.',
     tabletDescription: 'Lo que comparte la familia nos ayuda a orientar el cuidado.',
@@ -58,8 +59,8 @@ const principles = [
       </picture>
 
       <div class="approach-note">
-        <span class="approach-note-symbol liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true">
-          <img src="/images/approach/autonomy-note.svg" alt="" loading="lazy" />
+        <span class="approach-note-symbol pictogram-medallion liquid-glass liquid-glass--forest-panel liquid-glass--lens">
+          <Pictogram name="autonomy" />
         </span>
         <p class="approach-note-desktop">Seguir eligiendo. Seguir participando.</p>
         <p><em>Seguir siendo uno mismo.</em></p>
@@ -69,8 +70,8 @@ const principles = [
         <article class={`approach-principle approach-principle--${id} liquid-glass liquid-glass--forest-panel`} data-reveal="quiet">
           <div class="approach-principle-heading">
             <h3><span>{title[0]}</span>{' '}{title[1]}</h3>
-            <span class="approach-principle-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens">
-              <img src={`/images/approach/${id}.svg`} alt="" loading="lazy" />
+            <span class="approach-principle-icon pictogram-medallion liquid-glass liquid-glass--forest-panel liquid-glass--lens">
+              <Pictogram name={id} />
             </span>
           </div>
           <p class="approach-intro-desktop">{description}</p>
@@ -206,21 +207,7 @@ const principles = [
     line-height: var(--leading-item);
   }
 
-  .approach-principle-icon,
-  .approach-note-symbol {
-    flex: none;
-    place-items: center;
-    width: 34px;
-    aspect-ratio: 1;
-    border: 1px solid transparent;
-    border-radius: 50%;
-  }
-
-  .approach-principle-icon {
-    display: grid;
-    order: -1;
-  }
-  .approach-principle-icon img, .approach-note-symbol img { filter: brightness(0) invert(.96); }
+  .approach-principle-icon { order: -1; }
 
   @media (max-width: 40rem) {
     .approach-inner { padding-inline: 0; }
@@ -319,10 +306,6 @@ const principles = [
 
     .approach-principle:is(.approach-principle--listen, .approach-principle--autonomy) { align-self: stretch; }
 
-    .approach-principle-icon {
-      width: 48px;
-    }
-
     .approach-principle p {
       margin-block-start: var(--space-related);
     }
@@ -331,7 +314,6 @@ const principles = [
 
     .approach-note-symbol {
       display: grid;
-      width: 44px;
       margin: 0 auto var(--space-related);
     }
   }

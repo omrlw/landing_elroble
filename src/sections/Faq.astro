@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BotanicalPattern from '../components/BotanicalPattern.astro';
 import Cta from '../components/Cta.astro';
+import ActionIcon from '../components/ActionIcon.astro';
 import oakTwig from '../assets/botanical/faq-oak-twig.webp';
 import { business } from '../config/business';
 
@@ -21,14 +22,11 @@ const questions = [
     answer: 'Incluye actividades de memoria y reminiscencia, talleres creativos, motricidad fina, juegos, convivencia, movimiento suave y acompañamiento especializado durante la mañana. Cualquier necesidad adicional se conversa previamente con la familia.',
   },
   {
-    title: '¿Puede participar una persona con deterioro cognitivo?',
-    compact: '¿Y si hay deterioro cognitivo?',
-    tablet: '¿Puede participar alguien con deterioro cognitivo?',
+    title: '¿Y si hay deterioro cognitivo?',
     answer: 'Antes de comenzar realizamos una evaluación para conocer las necesidades y capacidades de tu familiar, adaptar su participación y confirmar si El Roble es una alternativa adecuada.',
   },
   {
-    title: '¿Podemos conocer el centro antes de decidir?',
-    compact: '¿Podemos conocer el centro?',
+    title: '¿Podemos conocer el centro?',
     answer: 'Sí. Puedes coordinar una visita para recorrer los ambientes, conocer al equipo, contarnos sobre tu familiar y resolver tus dudas antes de elegir una modalidad.',
   },
   {
@@ -64,19 +62,15 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     <div class="questions">
       {questionColumns.map((column, index) => (
         <div class="question-column">
-          {column.map(({ title, compact, tablet, answer }) => (
+          {column.map(({ title, compact, answer }) => (
             <details class="liquid-glass liquid-glass--clear liquid-glass--underlay liquid-glass--row" name={`preguntas-el-roble-${index + 1}`}>
               <summary class="liquid-glass__trigger">
-                <span class:list={['question-title', { 'has-compact': compact, 'has-tablet': tablet }]}>
+                <span class:list={['question-title', { 'has-compact': compact }]}>
                   <span class="full-question">{title}</span>
                   {compact && <span class="compact-question">{compact}</span>}
-                  {tablet && <span class="tablet-question">{tablet}</span>}
                 </span>
-                <span class="question-icon liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                    <path d="M3 8h10" />
-                    <path class="question-icon__vertical" d="M8 3v10" />
-                  </svg>
+                <span class="question-icon disclosure-medallion liquid-glass liquid-glass--clear liquid-glass--lens" aria-hidden="true">
+                  <ActionIcon name="disclosure" />
                 </span>
               </summary>
               <p class="answer">{answer}</p>
@@ -88,7 +82,7 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 
     <div class="faq-close">
       <h3>¿Tienes otra pregunta?</h3>
-      <Cta label="Agendar una visita" icon="/lower/faq-arrow.svg" />
+      <Cta label="Agendar una visita" />
     </div>
   </div>
 </section>
@@ -131,11 +125,16 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   details {
     --question-gutter: clamp(.75rem, .55rem + .85vw, 1.5rem);
     --glass-rest-visibility: .8;
+    --glass-edge: transparent;
     min-inline-size: 0;
+    border: 1px solid var(--glass-divider);
+    border-radius: var(--radius-card);
   }
-  details[open] {
-    --glass-rest-visibility: 1;
-    --glass-edge: var(--glass-edge-selected);
+  details::before { border-radius: calc(var(--radius-card) - 1px); }
+  details[open] { --glass-rest-visibility: 1; }
+  details:has(> summary:focus-visible) {
+    outline: 2px solid var(--glass-focus);
+    outline-offset: 2px;
   }
 
   summary {
@@ -151,18 +150,10 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   }
   summary::-webkit-details-marker { display: none; }
   summary::marker { content: ''; }
-  summary:focus-visible { outline-color: var(--glass-focus); outline-offset: -2px; }
+  summary:focus-visible { outline: none; }
   .question-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); text-wrap: pretty; }
-  .has-compact .full-question, .tablet-question { display: none; }
-  .question-icon {
-    display: grid;
-    place-items: center;
-    inline-size: clamp(2.25rem, 2.1rem + .45vw, 2.625rem);
-    aspect-ratio: 1;
-    border-radius: 50%;
-  }
-  .question-icon__vertical { transform-origin: center; }
-  [open] .question-icon__vertical { scale: 1 0; }
+  .has-compact .full-question { display: none; }
+  details[open] .question-icon { --disclosure-stroke-scale: 0; }
   .answer { padding: .15rem max(var(--question-gutter), 16%) var(--space-inset) var(--question-gutter); }
   .faq-close {
     display: grid;
@@ -176,27 +167,20 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     .faq-sprig { inline-size: clamp(4.75rem, 9vw, 9rem); margin-inline-end: 0; }
     .faq-heading p, .faq-close h3 { display: block; }
     .questions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .has-compact .full-question, .tablet-question { display: inline; }
-    .has-tablet .full-question, .compact-question { display: none; }
+    .has-compact .full-question { display: inline; }
+    .compact-question { display: none; }
     .faq-close { justify-items: center; text-align: center; }
-  }
-
-  @media (min-width: 80rem) {
-    .has-tablet .full-question { display: inline; }
-    .tablet-question { display: none; }
   }
 
   @media (prefers-reduced-transparency: reduce) {
     details { --glass-rest-visibility: 1; }
   }
   @media (forced-colors: active) {
-    details, .question-icon { border: 1px solid CanvasText; }
+    details { border-color: CanvasText; }
     details[open] { border-color: Highlight; }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .question-icon__vertical { transition: scale var(--glass-motion) var(--glass-ease); }
-
     @supports (interpolate-size: allow-keywords) and selector(::details-content) {
       details { interpolate-size: allow-keywords; }
       details::details-content {

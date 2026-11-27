@@ -1,6 +1,8 @@
 ---
 import { Image, Picture } from 'astro:assets';
 import Cta from '../components/Cta.astro';
+import ActionIcon from '../components/ActionIcon.astro';
+import Pictogram from '../components/Pictogram.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
 import OpticalGlass from '../components/OpticalGlass.astro';
 import { business, firstVisitUrl } from '../config/business';
@@ -8,13 +10,6 @@ import hero from '../assets/opening/hero.png';
 import sharedActivity from '../assets/opening/hero-actividad-compartida.jpg';
 import room from '../assets/opening/hero-salon-luminoso.jpg';
 import workshop from '../assets/opening/hero-materiales-del-taller.jpg';
-import discoverArrow from '../assets/opening/discover-arrow.svg';
-import tourArrow from '../assets/opening/tour-arrow.svg';
-import mimp from '../assets/opening/mimp.svg';
-import mimpMobile from '../assets/opening/mimp-mobile.svg';
-import heart from '../assets/opening/heart.svg';
-import sunrise from '../assets/opening/sunrise.svg';
-import evaluation from '../assets/opening/evaluation.svg';
 import oakLeaf from '../assets/botanical/hero-oak-leaf.webp';
 import ring from '../assets/opening/promo-ring.svg';
 import ringTablet from '../assets/opening/promo-ring-tablet.svg';
@@ -28,11 +23,11 @@ const photos = [
 ];
 
 const credentials = [
-  { label: 'Acreditación MIMP', icon: mimp, mobile: mimpMobile },
-  { label: 'Centro de día', icon: sunrise },
-  { label: 'Cuidado geriátrico', icon: heart },
-  { label: 'Evaluación previa', icon: evaluation },
-];
+  { label: 'Acreditación MIMP', icon: 'mimp' },
+  { label: 'Centro de día', icon: 'sunrise' },
+  { label: 'Cuidado geriátrico', icon: 'heart' },
+  { label: 'Evaluación previa', icon: 'evaluation' },
+] as const;
 ---
 
 <section class="opening-hero" aria-labelledby="opening-title">
@@ -46,7 +41,7 @@ const credentials = [
       </h1>
       <div class="opening-hero__intro">
         <p>Acompañamiento integral durante el día para cuidar la autonomía, el bienestar y los vínculos de cada persona mayor.</p>
-        <Cta class="opening-hero__discover" href="#centro-de-dia" label="Descubre nuestro centro" icon={discoverArrow.src} variant="oak" />
+        <Cta class="opening-hero__discover" href="#centro-de-dia" label="Descubre nuestro centro" variant="oak" />
       </div>
     </div>
 
@@ -62,7 +57,7 @@ const credentials = [
         ))}
       </div>
       <div class="hero-media__shade" aria-hidden="true"></div>
-      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass" />
+      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" variant="glass" />
       <div class="hero-media__experience liquid-glass liquid-glass--blur">
         <OpticalGlass class="hero-media__mobile-lens" source="photo" />
         <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
@@ -82,7 +77,7 @@ const credentials = [
     </div>
 
     <aside class="first-visit" aria-label="Primera visita gratis" data-first-visit>
-      <a class="first-visit__link" href={firstVisitUrl}>
+      <a class="first-visit__link liquid-glass liquid-glass--oak liquid-glass--interactive" href={firstVisitUrl}>
         <picture aria-hidden="true">
           <source media="(max-width: 40rem)" srcset={ringMobile.src} />
           <source media="(max-width: 72.999rem)" srcset={ringTablet.src} />
@@ -92,21 +87,16 @@ const credentials = [
         <strong>GRATIS</strong>
       </a>
       <button class="first-visit__dismiss liquid-glass liquid-glass--clear liquid-glass--lens liquid-glass--interactive" type="button" aria-label="Cerrar promoción" hidden>
-        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="m5 5 8 8m0-8-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
+        <ActionIcon name="close" size={20} />
       </button>
     </aside>
 
     <div class="opening-hero__credentials liquid-glass liquid-glass--clear liquid-glass--optical">
       <OpticalGlass />
       <ul role="list" aria-label="Credenciales de El Roble">
-        {credentials.map(({ label, icon, mobile }) => (
+        {credentials.map(({ label, icon }) => (
           <li>
-            <picture>
-              {mobile && <source media="(max-width: 40rem)" srcset={mobile.src} />}
-              <img src={icon.src} alt="" />
-            </picture>
+            <Pictogram name={icon} size={20} />
             <span>{label}</span>
           </li>
         ))}
@@ -188,7 +178,6 @@ const credentials = [
     background: linear-gradient(transparent 62%, var(--color-dialog-backdrop));
   }
   .hero-media :global(.hero-media__tour) { white-space: nowrap; }
-  .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
 
   .hero-media__experience {
     position: relative;
@@ -238,6 +227,17 @@ const credentials = [
     color: var(--color-paper);
   }
   .first-visit__link {
+    --glass-sheen:
+      radial-gradient(ellipse 74% 48% at 29% 4%,
+        color-mix(in srgb, var(--color-honey) 32%, transparent), transparent),
+      radial-gradient(ellipse 58% 30% at 66% 98%,
+        color-mix(in srgb, var(--color-honey) 19%, transparent), transparent);
+    --glass-highlight: var(--highlight-dark),
+      inset 0 -2px 3px -2px color-mix(in srgb, var(--color-honey) 48%, transparent);
+    --glass-edge: color-mix(in srgb, var(--color-honey) 22%, transparent);
+    --glass-hover-edge: color-mix(in srgb, var(--color-honey) 30%, transparent);
+    --glass-lift: color-mix(in srgb, var(--color-honey) 5%, transparent);
+    --glass-depth: var(--shadow-control), var(--shadow-card);
     display: grid;
     position: relative;
     inline-size: 100%;
@@ -245,16 +245,37 @@ const credentials = [
     align-content: center;
     justify-items: center;
     border-radius: 50%;
-    background: var(--color-oak-highlight);
-    box-shadow: var(--shadow-control);
     font-size: clamp(.875rem, .79rem + .25vw, 1rem);
     line-height: 1.35;
   }
   .first-visit__link picture { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
   .first-visit__link strong { font: 700 clamp(1.5rem, 1.3rem + .48vw, 2rem) / 1.15 var(--font-display); }
-  .first-visit__link { transition: background-color var(--motion-state); }
-  .first-visit__link:active { background-color: var(--color-oak); }
-  @media (hover: hover) { .first-visit__link:hover { background-color: var(--color-oak); } }
+
+  @media (prefers-reduced-transparency: no-preference) {
+    .first-visit__link {
+      --glass-fill: linear-gradient(150deg, var(--color-oak-highlight),
+        color-mix(in srgb, var(--color-oak) 93%, transparent) 72%, var(--color-oak));
+    }
+  }
+
+  .first-visit__link:active { --glass-depth: var(--shadow-control); }
+  @media (prefers-reduced-motion: no-preference) {
+    .first-visit__link {
+      transition: --glass-wash var(--glass-motion) var(--glass-ease),
+        box-shadow var(--glass-motion) var(--glass-ease),
+        translate var(--motion-state) var(--ease-soft), scale var(--motion-state) var(--ease-soft);
+    }
+    .first-visit__link:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
+    @media (hover: hover) and (pointer: fine) {
+      .first-visit__link:hover:not(:active) { translate: 0 -1px; }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .first-visit__link { background: Canvas; color: LinkText; outline: 1px solid LinkText; outline-offset: -1px; }
+    .first-visit__link:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+  }
+
   .first-visit__dismiss {
     position: absolute;
     inset: -.75rem -.375rem auto auto;
@@ -302,14 +323,6 @@ const credentials = [
     min-block-size: 2.875rem;
     padding-block: .5rem;
   }
-  .opening-hero__credentials picture {
-    display: grid;
-    place-items: center;
-    flex: none;
-    inline-size: clamp(1.125rem, 1rem + .5vw, 1.375rem);
-    aspect-ratio: 1;
-  }
-  .opening-hero__credentials img { inline-size: 100%; block-size: auto; max-block-size: 1.375rem; object-fit: contain; }
 
   @media (max-width: 40rem) {
     .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }

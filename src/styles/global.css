@@ -476,6 +476,25 @@
   .liquid-glass--interactive { border-color: ButtonText; }
 }
 
+.pictogram { display: block; flex: none; }
+
+.pictogram-medallion,
+.disclosure-medallion {
+  display: grid;
+  flex: none;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+.pictogram-medallion { inline-size: 2.5rem; }
+.disclosure-medallion { inline-size: 1.75rem; }
+
+@media (forced-colors: active) {
+  :is(.pictogram-medallion, .disclosure-medallion) { border-color: CanvasText; }
+}
+
 .gallery-pagination::before {
   position: absolute;
   z-index: -1;
@@ -516,7 +535,8 @@
   border-radius: 50%;
   content: '';
 }
-.gallery-playback__play, .gallery-playback[data-playback-paused] .gallery-playback__pause { display: none; }
+.gallery-playback .gallery-playback__play,
+.gallery-playback[data-playback-paused] .gallery-playback__pause { display: none; }
 .gallery-playback[data-playback-paused] .gallery-playback__play { display: block; }
 @media (hover: hover) {
   .gallery-playback:hover::before {

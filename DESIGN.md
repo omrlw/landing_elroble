@@ -49,6 +49,38 @@ Centro de día abre con `--space-section`, igual que Programa. Usa ese mismo int
 
 Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--color-on-forest-muted` para texto secundario. Los paneles dentro de una sección verde pueden usar `--surface-on-forest`.
 
+## Iconos de acción
+
+[ActionIcon.astro](src/components/ActionIcon.astro) concentra los trazados en una cuadrícula de 20 unidades con un trazo de 1,5, extremos y uniones redondeados. El icono toma el color de su control. El enlace o botón aporta el nombre accesible.
+
+| Icono | Tamaño | Uso |
+| --- | --- | --- |
+| Flecha derecha | 16 px | Llamadas a la acción, incluida la de agendar en la cabecera |
+| Flecha abajo | 20 px | Avanzar entre escenas de Historia |
+| Flecha diagonal | 16 px | Enlace a publicaciones en TikTok |
+| Más y menos | 16 px | Filas desplegables de Confianza y Preguntas frecuentes, con medallón de 28 px |
+| Chevrón | 14 px | Abrir y cerrar «Nosotros» en la navegación |
+| Menú y cerrar | 20 px | Abrir y cerrar la navegación móvil y cerrar la promoción |
+| Reproducir y pausar | 14 px | Controles de reproducción automática de los carruseles |
+| Reproducir | 24 px | Vistas previas de Comunidad |
+| Teléfono | 16 y 20 px | Barra de cabecera compacta, menú móvil y contacto |
+| Reloj, ubicación y correo | 20 px | Horario en el menú y enlaces de contacto |
+
+Los puntos y las cápsulas de paginación indican la posición en el carrusel y usan `data-gallery-mark`.
+
+## Pictogramas
+
+[Pictogram.astro](src/components/Pictogram.astro) usa los SVG de [src/assets/icons](src/assets/icons). Cada dibujo ocupa aproximadamente 21 px en su eje principal dentro de una caja de 24 × 24 px. El trazo redondeado mide 1,55 px a ese tamaño y el dibujo toma el color del elemento que lo contiene.
+
+| Uso | Caja | Pictogramas |
+| --- | --- | --- |
+| Centro de día, Enfoque, Programa y Recorrido | 24 px | Cerebro, movimiento, paleta, escucha, autonomía, familia, conversación, convivencia, fisioterapia, salud, programa integral, entrada, rampa, salón y detalles |
+| Credenciales de portada | 20 px | Acreditación, centro de día, cuidado geriátrico y evaluación |
+| Redes sociales | 20 px | TikTok, Instagram y Facebook |
+| Identificador en fotos de Comunidad | 16 px | Marca de TikTok junto al nombre de perfil |
+
+Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Programa comparten el mismo cerebro para memoria y estimulación cognitiva y la misma paleta para actividades creativas.
+
 ## Ilustraciones botánicas
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
@@ -76,7 +108,7 @@ La navegación de escritorio tiene una sola cápsula, alineada con el elemento q
 
 En el hero, «Ver el recorrido» y «Desde 2009» comparten el tinte, el bisel y el desenfoque de `.liquid-glass--blur`. El botón usa el hover de `Cta.astro`. La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
 
-En el FAQ, cada pregunta tiene una tarjeta de vidrio claro con contorno completo y un medallón `+`. Al pasar el puntero, el reflejo y el contorno se refuerzan con el fundido de Confianza. Al abrir una pregunta, el borde gana contraste, el medallón cambia a `−` y la superficie acompaña toda la respuesta. Cada columna conserva su grupo de `details`.
+En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorno continuo con `--glass-divider`. El contorno enmarca la pregunta y su respuesta, también al pasar el puntero. El vidrio conserva el fundido de Confianza y el medallón cambia de `+` a `−` al abrir. El foco por teclado rodea toda la tarjeta. Cada columna conserva su grupo de `details`.
 
 ### Implementación y respaldo
 

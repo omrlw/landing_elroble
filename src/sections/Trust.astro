@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
+import ActionIcon from '../components/ActionIcon.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
 import clay from '../assets/confianza/persona-y-arcilla.jpg';
 import gardenPortrait from '../assets/confianza/retrato-en-el-jardin.jpg';
@@ -14,7 +15,6 @@ import sharedTable from '../assets/confianza/mesa-en-compania.jpg';
 import windowRoom from '../assets/confianza/sala-con-ventanales.jpg';
 import flowers from '../assets/confianza/buganvilla-del-jardin.jpg';
 import path from '../assets/confianza/camino-a-el-roble.jpg';
-import visitArrow from '../assets/opening/tour-arrow.svg';
 
 const reasons = [
   {
@@ -101,7 +101,9 @@ const photoSizes = [
             <button class="trust__reason-trigger liquid-glass__trigger" type="button" aria-expanded={index === 0}
               aria-controls={'trust-detail-' + index} data-trust-trigger>
               {title}
-              <span class="trust__reason-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true"></span>
+              <span class="trust__reason-icon disclosure-medallion liquid-glass liquid-glass--forest-panel liquid-glass--lens" aria-hidden="true">
+                <ActionIcon name="disclosure" />
+              </span>
             </button>
             <label class="trust__reason-fallback liquid-glass__trigger" for={'trust-scene-' + index}>{title}</label>
           </h3>
@@ -118,7 +120,7 @@ const photoSizes = [
           <h3>Ven a conocernos.</h3>
           <p>Conoce el espacio, conversa con nuestro equipo y decide con tranquilidad.</p>
         </div>
-        <Cta class="trust__visit" icon={visitArrow.src} variant="light" />
+        <Cta class="trust__visit" variant="light" />
       </div>
     </div>
   </div>
@@ -271,26 +273,8 @@ const photoSizes = [
   .trust__reason-trigger, .trust[data-gallery-index] .trust__reason-fallback { display: none; }
   .trust[data-gallery-index] .trust__reason-trigger { display: flex; }
 
-  .trust__reason-icon {
-    position: relative;
-    flex: 0 0 1.7rem;
-    aspect-ratio: 1;
-    border: 1px solid transparent;
-    border-radius: 50%;
-    color: var(--color-cream);
-  }
-  .trust__reason-icon::before, .trust__reason-icon::after {
-    position: absolute;
-    inset: 50% auto auto 50%;
-    inline-size: .57rem;
-    block-size: 1px;
-    background: currentColor;
-    content: '';
-  }
-  .trust__reason-icon::before { transform: translate(-50%, -50%); }
-  .trust__reason-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
-  .trust__reason-trigger[aria-expanded="true"] .trust__reason-icon::after {
-    transform: translate(-50%, -50%) rotate(0deg);
+  .trust__reason-trigger[aria-expanded="true"] .trust__reason-icon {
+    --disclosure-stroke-scale: 0;
   }
 
   .trust__detail {
@@ -311,7 +295,6 @@ const photoSizes = [
     --reason-hide-delay: 0s;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .trust__reason-icon::after { transition: transform 360ms var(--ease-soft); }
     .trust__detail {
       transition: grid-template-rows var(--glass-row-motion) var(--ease-soft), opacity 310ms ease,
         visibility 0s var(--reason-hide-delay, var(--glass-row-motion));
@@ -328,7 +311,6 @@ const photoSizes = [
   .trust__invitation h3 { color: inherit; }
   .trust__invitation p { margin-block-start: .55rem; color: var(--color-on-forest-muted); }
   .trust__invitation :global(.trust__visit) { justify-self: start; }
-  .trust__invitation :global(.trust__visit .cta-icon img) { inline-size: 20px; block-size: 20px; }
 
   @media (max-width: 40rem) {
     .trust__slides { block-size: clamp(15rem, 60vw, 18rem); }

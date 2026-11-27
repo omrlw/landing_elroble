@@ -1,0 +1,63 @@
+---
+const arrow = 'M4.25 10h11.5m-5-5 5 5-5 5';
+
+const paths = {
+  'arrow-right': [arrow],
+  'arrow-down': [arrow],
+  'arrow-up-right': ['M4.75 15.25 15.25 4.75m-8 0h8v8'],
+  'chevron-down': ['m5 7.5 5 5 5-5'],
+  disclosure: ['M4.5 10h11'],
+  close: ['m5 5 10 10M15 5 5 15'],
+  menu: ['M2.5 5.5h15m-15 4.5h15m-15 4.5h15'],
+  play: ['M7 5v10l8-5-8-5Z'],
+  pause: ['M7 5.5v9m6-9v9'],
+  clock: ['M17.5 10a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z', 'M10 6v4.25l2.75 1.75'],
+  phone: ['M17.75 13.8v2.35a1.6 1.6 0 0 1-1.75 1.6 15.5 15.5 0 0 1-6.8-2.43 15.5 15.5 0 0 1-4.75-4.75 15.5 15.5 0 0 1-2.2-6.57 1.6 1.6 0 0 1 1.6-1.75H6.2a1.6 1.6 0 0 1 1.58 1.36c.12.75.31 1.49.57 2.21a1.6 1.6 0 0 1-.35 1.67l-1 1a12.6 12.6 0 0 0 4.75 4.75l1-1a1.6 1.6 0 0 1 1.67-.35c.72.26 1.46.45 2.21.57a1.6 1.6 0 0 1 1.12 1.34Z'],
+  'map-pin': ['M16 8c0 4.25-6 9.5-6 9.5S4 12.25 4 8a6 6 0 1 1 12 0Z', 'M12 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z'],
+  mail: ['M4 4.5h12a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 14V6A1.5 1.5 0 0 1 4 4.5Z', 'm3 6 7 5 7-5'],
+};
+
+interface Props {
+  name: keyof typeof paths;
+  size?: 14 | 16 | 20 | 24;
+  class?: string;
+}
+
+const { name, size = 16, ...attributes } = Astro.props;
+---
+
+<svg
+  {...attributes}
+  width={size}
+  height={size}
+  viewBox="0 0 20 20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {paths[name].map((path) => (
+    <path
+      d={path}
+      transform={name === 'arrow-down' ? 'rotate(90 10 10)' : undefined}
+      fill={name === 'play' ? 'currentColor' : undefined}
+    />
+  ))}
+  {name === 'disclosure' && <path class="disclosure-stroke" d="M10 4.5v11" />}
+</svg>
+
+<style>
+  svg { display: block; flex: none; }
+
+  .disclosure-stroke {
+    transform-origin: center;
+    scale: 1 var(--disclosure-stroke-scale, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .disclosure-stroke { transition: scale var(--glass-motion) var(--glass-ease); }
+  }
+</style>

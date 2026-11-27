@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
+import Pictogram from '../components/Pictogram.astro';
 import health from '../assets/approach/portrait.png';
 import cognitive from '../assets/program/cognitive.png';
 import group from '../assets/program/group.png';
@@ -12,6 +13,7 @@ import reminiscence from '../assets/program/reminiscence.png';
 const activities = [
   {
     id: 'cognitive',
+    icon: 'brain' as const,
     title: 'Estimulación y terapia cognitiva',
     desktopTitle: ['Estimulación y', 'terapia cognitiva'],
     mobileTitle: 'Estimulación cognitiva',
@@ -22,6 +24,7 @@ const activities = [
   },
   {
     id: 'reminiscence',
+    icon: 'reminiscence' as const,
     title: 'Terapia de reminiscencia',
     description: 'Recuerdos y experiencias de vida para conversar, expresarse y compartir la propia historia.',
     mobileDescription: 'Recuerdos para conversar y compartir historias.',
@@ -30,6 +33,7 @@ const activities = [
   },
   {
     id: 'art',
+    icon: 'palette' as const,
     title: 'Talleres de arte creativos',
     desktopTitle: ['Talleres de arte', 'creativos'],
     mobileTitle: 'Talleres de arte',
@@ -38,6 +42,7 @@ const activities = [
   },
   {
     id: 'group',
+    icon: 'group' as const,
     title: 'Actividades grupales de convivencia y recreación',
     desktopTitle: ['Actividades grupales de', 'convivencia y recreación'],
     mobileTitle: 'Convivencia y recreación',
@@ -48,12 +53,14 @@ const activities = [
   },
   {
     id: 'physio',
+    icon: 'physio' as const,
     title: 'Fisioterapia suave',
     description: 'Movimientos suaves y pausados para trabajar la coordinación, la movilidad y el bienestar físico.',
     mobileDescription: 'Ejercicios de movilidad y coordinación.',
   },
   {
     id: 'health',
+    icon: 'health' as const,
     title: 'Monitoreo constante de signos vitales',
     desktopTitle: ['Monitoreo constante', 'de signos vitales'],
     mobileTitle: 'Control de signos vitales',
@@ -64,6 +71,7 @@ const activities = [
   },
   {
     id: 'integral',
+    icon: 'integral' as const,
     title: 'Programa integral',
     description: 'Un enfoque integral que combina apoyo cognitivo, creatividad, convivencia, movimiento y seguimiento de la salud para acompañar cada día.',
     mobileDescription: 'Apoyo cognitivo, físico y social en el día a día.',
@@ -117,11 +125,8 @@ const activities = [
             </div>
           )}
           <div class="program-content">
-            <div class:list={['program-symbol liquid-glass liquid-glass--lens', activity.id === 'art' ? 'liquid-glass--forest-panel' : 'liquid-glass--clear']} aria-hidden="true">
-              <picture>
-                <source media="(min-width: 1200px)" srcset={`/images/program/${activity.id}-icon.svg`} />
-                <img src={`/images/program/${activity.id}-compact.svg`} alt="" loading="lazy" />
-              </picture>
+            <div class:list={['program-symbol pictogram-medallion liquid-glass liquid-glass--lens', activity.id === 'art' ? 'liquid-glass--forest-panel' : 'liquid-glass--clear']}>
+              <Pictogram name={activity.icon} />
             </div>
             <div class="program-copy">
               <h3>
@@ -294,15 +299,6 @@ const activities = [
     min-width: 0;
   }
 
-  .program-symbol {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 44px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-  }
-
   .program-card h3 {
     color: var(--color-forest);
     font-size: var(--text-item);
@@ -470,10 +466,6 @@ const activities = [
     .program-card--physio .program-content {
       flex-direction: column;
       align-items: flex-start;
-    }
-
-    .program-symbol {
-      width: 48px;
     }
 
   }
