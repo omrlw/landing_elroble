@@ -74,7 +74,7 @@ Confianza y Centro de día muestran al pasar el puntero el mismo vidrio bosque c
 
 La navegación de escritorio tiene una sola cápsula, alineada con el elemento que corresponde a `aria-current`. GSAP anima su posición y escala sin recalcular el mapa a cada cuadro. El hover de otro enlace muestra un contorno leve y el foco visible conserva su propio anillo. El desplegable tiene un centro más difuso para leer los enlaces sobre texto o fotos. El menú móvil indica la sección activa con un borde neutro.
 
-En el hero, «Ver el recorrido» conserva su verde sobre la refracción en reposo. Al pasar el puntero, comparte el tinte bosque, el desenfoque y el bisel de «Desde 2009». La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
+En el hero, «Ver el recorrido» y «Desde 2009» comparten el tinte, el bisel y el desenfoque de `.liquid-glass--blur`. El botón usa el hover de `Cta.astro`. La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
 
 En el FAQ, cada pregunta tiene una tarjeta de vidrio claro con contorno completo y un medallón `+`. Al pasar el puntero, el reflejo y el contorno se refuerzan con el fundido de Confianza. Al abrir una pregunta, el borde gana contraste, el medallón cambia a `−` y la superficie acompaña toda la respuesta. Cada columna conserva su grupo de `details`.
 

@@ -62,9 +62,7 @@ const credentials = [
         ))}
       </div>
       <div class="hero-media__shade" aria-hidden="true"></div>
-      <Cta class="hero-media__tour liquid-glass--blur" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass">
-        <OpticalGlass slot="surface" source="photo" />
-      </Cta>
+      <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" icon={tourArrow.src} variant="glass" />
       <div class="hero-media__experience liquid-glass liquid-glass--blur">
         <OpticalGlass class="hero-media__mobile-lens" source="photo" />
         <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
@@ -189,33 +187,8 @@ const credentials = [
     pointer-events: none;
     background: linear-gradient(transparent 62%, var(--color-dialog-backdrop));
   }
-  .hero-media :global(.hero-media__tour) {
-    --optical-film: linear-gradient(165deg,
-      color-mix(in srgb, var(--color-action) 78%, transparent),
-      color-mix(in srgb, var(--color-forest) 90%, transparent));
-    --optical-rim: var(--glass-bevel-dark);
-    --glass-filter: none;
-    --glass-hover-edge: transparent;
-    --glass-lift: transparent;
-    white-space: nowrap;
-  }
+  .hero-media :global(.hero-media__tour) { white-space: nowrap; }
   .hero-media :global(.hero-media__tour .cta-icon img) { inline-size: 20px; block-size: 20px; }
-  @media (hover: hover) {
-    .hero-media :global(.hero-media__tour:hover) {
-      --glass-fill: var(--glass-optical-solid);
-      --glass-backdrop: var(--glass-forest-tint);
-      --glass-filter: var(--glass-blur);
-      --glass-highlight: var(--highlight-dark);
-    }
-    .hero-media :global(.hero-media__tour:hover > .optical-glass) { visibility: hidden; }
-
-    @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
-      .hero-media :global(.hero-media__tour:hover) {
-        --glass-backdrop: var(--glass-optical-solid);
-        --glass-filter: none;
-      }
-    }
-  }
 
   .hero-media__experience {
     position: relative;

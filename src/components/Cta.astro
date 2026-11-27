@@ -18,16 +18,22 @@ const {
   icon = '/icons/cta-arrow.svg',
   class: className,
 } = Astro.props;
+
+const surfaceClasses = {
+  primary: 'liquid-glass--action',
+  light: 'liquid-glass--clear',
+  glass: 'liquid-glass--blur',
+  compact: 'liquid-glass--action',
+  oak: 'liquid-glass--action liquid-glass--oak',
+};
 ---
 
 <a class:list={[
   'cta liquid-glass liquid-glass--interactive',
   `cta--${variant}`,
-  variant === 'light' ? 'liquid-glass--clear' : 'liquid-glass--action',
-  { 'liquid-glass--optical': variant === 'glass', 'liquid-glass--oak': variant === 'oak' },
+  surfaceClasses[variant],
   className,
 ]} href={href}>
-  <slot name="surface" />
   {compactLabel ? (
     <>
       <span class="cta-label cta-label--full">{label}</span>
@@ -88,6 +94,13 @@ const {
   .cta--light .cta-icon { background: var(--surface-action); }
   .cta--oak .cta-icon { inline-size: 1.25rem; background: none; box-shadow: none; }
 
+  @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+    .cta--glass {
+      --glass-backdrop: var(--glass-fill);
+      --glass-filter: none;
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .cta {
       transition: box-shadow var(--glass-motion) var(--glass-ease), --glass-wash var(--glass-motion) var(--glass-ease),
@@ -96,14 +109,13 @@ const {
     .cta-icon img { transition: translate var(--motion-state) var(--ease-soft); }
     .cta-icon { transition: scale var(--motion-state) var(--ease-soft); }
     .cta:focus-visible img { translate: .15rem 0; }
-    .cta:not(.cta--glass):active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
+    .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
     .cta:active .cta-icon { scale: .94; transition-duration: var(--motion-press); }
 
     @media (hover: hover) and (pointer: fine) {
-      .cta:not(.cta--glass):hover { translate: 0 -1px; }
-      .cta:not(.cta--glass):hover img { translate: .19rem 0; }
-      .cta:not(.cta--glass):hover:not(:active) .cta-icon { scale: 1.06; }
-      .cta:not(.cta--glass):active { translate: 0 1px; }
+      .cta:hover:not(:active) { translate: 0 -1px; }
+      .cta:hover img { translate: .19rem 0; }
+      .cta:hover:not(:active) .cta-icon { scale: 1.06; }
     }
   }
 </style>
