@@ -22,7 +22,7 @@ const posters = [
 ];
 ---
 
-<div class="closing">
+<div class="closing atmosphere atmosphere--forest">
   <div class="container closing-container">
     <section class="community" id="comunidad" aria-labelledby="community-heading">
       <Image class="community-bough" src={oakBough} alt="" aria-hidden="true"
@@ -132,10 +132,11 @@ const posters = [
 
 <style>
   .closing {
+    --atmosphere-light-field: ellipse 76% 66% at 53% 22%;
+    --atmosphere-depth-field: ellipse 64% 58% at 100% 85%;
     position: relative;
     isolation: isolate;
     overflow: clip;
-    background: var(--surface-forest);
     color: var(--color-cream);
     padding-block: var(--section-gap) var(--space-inset);
   }

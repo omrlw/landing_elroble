@@ -24,6 +24,15 @@
     color-mix(in srgb, var(--color-cream) 5%, transparent)
   );
 
+  /* Ambient light and pigments, mixed from the brand palette. */
+  --atmosphere-paper-light: color-mix(in srgb, var(--color-paper) 94%, transparent);
+  --atmosphere-paper-pigment: color-mix(in srgb, var(--color-honey) 47%, transparent);
+  --atmosphere-paper-depth: color-mix(in srgb, var(--color-action) 8%, transparent);
+  --atmosphere-forest-light: color-mix(in srgb, var(--color-honey) 15%, transparent);
+  --atmosphere-forest-pigment: color-mix(in srgb, var(--color-action) 26%, transparent);
+  --atmosphere-forest-depth: color-mix(in srgb, var(--color-ink) 40%, transparent);
+  --atmosphere-canopy-opacity: .12;
+
   /* Typography */
   --font-display: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
   --font-body: 'Google Sans Flex', system-ui, sans-serif;
@@ -107,6 +116,8 @@
   --motion-gallery: 450ms;
   --motion-reveal: 640ms;
   --motion-scene: 800ms;
+  --motion-drawer: var(--motion-scene);
+  --motion-drawer-exit: 540ms;
 
   /* Anchor targets and the sticky story stage align to the compact bar. */
   --header-compact-height: 4.375rem;

@@ -1,3 +1,4 @@
+import { duration, ease, gsap } from '../motion/gsap';
 import { setupNavGlass } from './nav-glass';
 import { desktop, reducedMotion } from './media';
 
@@ -5,7 +6,9 @@ export function setupHeader(header: HTMLElement) {
   const menu = header.querySelector<HTMLElement>('#opening-menu');
   const trigger = header.querySelector<HTMLButtonElement>('[popovertarget]');
   const closeButton = header.querySelector<HTMLButtonElement>('[data-nav-close]');
-  if (!menu || !trigger) return;
+  const menuIcon = trigger?.querySelector('svg');
+  const closeIcon = closeButton?.querySelector('svg');
+  if (!menu || !trigger || !closeButton || !menuIcon || !closeIcon) return;
 
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   let restoreFocusOnClose = false;
@@ -13,6 +16,19 @@ export function setupHeader(header: HTMLElement) {
   const setMenuExpanded = (open: boolean) => trigger.setAttribute('aria-expanded', String(open));
 
   if ('showPopover' in menu) {
+    const drawerContent = menu.querySelectorAll('.site-nav__body, .site-nav__drawer-foot');
+    let drawerMotion: gsap.core.Timeline | undefined;
+
+    const resetDrawerMotion = () => {
+      drawerMotion?.kill();
+      drawerMotion = undefined;
+      if (menu.hasAttribute('data-drawer-closing') && menu.matches(':popover-open')) menu.hidePopover();
+      menu.removeAttribute('data-drawer-closing');
+      gsap.set(menu, { clearProps: 'transform' });
+      gsap.set(drawerContent, { clearProps: 'transform,opacity' });
+      gsap.set([menuIcon, closeIcon], { clearProps: 'transform,opacity' });
+    };
+
     const syncNavigation = () => {
       if (desktop.matches) {
         if (menu.matches(':popover-open')) {
@@ -20,11 +36,50 @@ export function setupHeader(header: HTMLElement) {
           menu.hidePopover();
         }
         menu.removeAttribute('popover');
+        resetDrawerMotion();
       } else {
         menu.setAttribute('popover', 'auto');
       }
       setMenuExpanded(false);
     };
+
+    const animateDrawer = (opening: boolean, onComplete?: () => void) => {
+      const interrupted = drawerMotion?.isActive();
+      drawerMotion?.kill();
+
+      if (opening) {
+        if (!interrupted) {
+          gsap.set(menu, { xPercent: 100 });
+          gsap.set(drawerContent, { x: 20, opacity: 0.65 });
+          gsap.set(closeIcon, { rotation: -45, scale: 0.65, opacity: 0 });
+        }
+        drawerMotion = gsap.timeline({ defaults: { ease: ease.settle } })
+          .to(menu, { xPercent: 0, duration: duration.drawer, ease: 'power2.out', clearProps: 'transform' }, 0)
+          .to(menuIcon, { scale: 0.8, opacity: 0, duration: 0.22 }, 0)
+          .to(drawerContent, {
+            x: 0, opacity: 1, duration: duration.reveal, stagger: 0.055, clearProps: 'transform,opacity',
+          }, 0.1)
+          .to(closeIcon, {
+            rotation: 0, scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.05)',
+            clearProps: 'transform,opacity',
+          }, 0.38);
+      } else {
+        drawerMotion = gsap.timeline({ defaults: { ease: ease.dissolve }, onComplete })
+          .to(menu, { xPercent: 100, duration: duration.drawerExit }, 0)
+          .to(drawerContent, { x: 14, opacity: 0.7, duration: 0.36, stagger: 0.035 }, 0)
+          .to(closeIcon, { rotation: 45, scale: 0.7, opacity: 0, duration: 0.24, ease: ease.settle }, 0)
+          .to(menuIcon, {
+            scale: 1, opacity: 1, duration: 0.3, ease: ease.settle, clearProps: 'transform,opacity',
+          }, duration.drawerExit - 0.3);
+      }
+    };
+
+    menu.addEventListener('beforetoggle', (event) => {
+      const opening = event.newState === 'open';
+      if (opening) menu.removeAttribute('data-drawer-closing');
+      if (desktop.matches || reducedMotion.matches || menu.hasAttribute('data-drawer-closing')) return;
+      animateDrawer(opening);
+    });
 
     menu.addEventListener('toggle', (event) => {
       const open = menu.matches(':popover-open');
@@ -32,7 +87,9 @@ export function setupHeader(header: HTMLElement) {
       if (open) {
         restoreFocusOnClose = true;
         if (event instanceof ToggleEvent && event.newState === 'open') {
-          requestAnimationFrame(() => closeButton?.focus({ preventScroll: true }));
+          requestAnimationFrame(() => {
+            if (menu.matches(':popover-open')) closeButton.focus({ preventScroll: true });
+          });
         }
       } else if (restoreFocusOnClose && !desktop.matches) {
         restoreFocusOnClose = false;
@@ -40,10 +97,17 @@ export function setupHeader(header: HTMLElement) {
       }
     });
 
-    closeButton?.addEventListener('click', () => {
-      if (menu.matches(':popover-open')) {
-        restoreFocusOnClose = true;
+    closeButton.addEventListener('click', () => {
+      if (!menu.matches(':popover-open') || menu.hasAttribute('data-drawer-closing')) return;
+      restoreFocusOnClose = true;
+      if (reducedMotion.matches) {
         menu.hidePopover();
+      } else {
+        // Keep the popover in the top layer until the button's exit sequence has played.
+        menu.setAttribute('data-drawer-closing', '');
+        animateDrawer(false, () => {
+          if (menu.matches(':popover-open')) menu.hidePopover();
+        });
       }
     });
 
@@ -55,6 +119,7 @@ export function setupHeader(header: HTMLElement) {
     });
 
     desktop.addEventListener('change', syncNavigation);
+    reducedMotion.addEventListener('change', resetDrawerMotion);
     syncNavigation();
   }
 

@@ -6,6 +6,7 @@ interface Props {
   label?: string;
   compactLabel?: string;
   href?: string;
+  icon?: 'arrow-right' | 'whatsapp';
   variant?: 'primary' | 'light' | 'glass' | 'compact' | 'oak';
   class?: string;
 }
@@ -14,6 +15,7 @@ const {
   label = 'Agendar una visita',
   compactLabel,
   href = whatsappUrl,
+  icon = 'arrow-right',
   variant = 'primary',
   class: className,
 } = Astro.props;
@@ -40,7 +42,9 @@ const variantClasses = {
   ) : (
     <span>{label}</span>
   )}
-  <span class="cta-icon" aria-hidden="true"><ActionIcon name="arrow-right" /></span>
+  <span class:list={['cta-icon', icon === 'arrow-right' && 'cta-icon--arrow']} aria-hidden="true">
+    <ActionIcon name={icon} />
+  </span>
 </a>
 
 <style>
@@ -100,15 +104,15 @@ const variantClasses = {
       transition: box-shadow var(--glass-motion) var(--glass-ease), --glass-wash var(--glass-motion) var(--glass-ease),
         translate var(--motion-state) var(--ease-soft), scale var(--motion-state) var(--ease-soft);
     }
-    .cta-icon svg { transition: translate var(--motion-state) var(--ease-soft); }
+    .cta-icon--arrow svg { transition: translate var(--motion-state) var(--ease-soft); }
     .cta-icon { transition: scale var(--motion-state) var(--ease-soft); }
-    .cta:focus-visible .cta-icon svg { translate: .15rem 0; }
+    .cta:focus-visible .cta-icon--arrow svg { translate: .15rem 0; }
     .cta:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
     .cta:active .cta-icon { scale: .94; transition-duration: var(--motion-press); }
 
     @media (hover: hover) and (pointer: fine) {
       .cta:hover:not(:active) { translate: 0 -1px; }
-      .cta:hover .cta-icon svg { translate: .19rem 0; }
+      .cta:hover .cta-icon--arrow svg { translate: .19rem 0; }
       .cta:hover:not(:active) .cta-icon { scale: 1.06; }
     }
   }

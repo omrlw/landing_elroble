@@ -5,6 +5,15 @@ import portrait from '../assets/story/manos-creando.jpg';
 import hands from '../assets/story/detalle-cuentas.jpg';
 import garden from '../assets/story/ronda-en-el-jardin.jpg';
 import bingo from '../assets/story/bingo-en-el-roble.jpg';
+import acorns from '../assets/botanical/day-oak-acorns.webp';
+import oakTwig from '../assets/botanical/story-oak-twig.webp';
+import oakWood from '../assets/botanical/story-oak-wood.webp';
+
+const botanicalArt = {
+  acorns: { src: acorns, sizes: 'clamp(3.75rem, 7vw, 6rem)' },
+  wood: { src: oakWood, sizes: 'clamp(4.75rem, 8vw, 7.25rem)' },
+  twig: { src: oakTwig, sizes: 'clamp(4rem, 6.5vw, 5.5rem)' },
+};
 
 const scenes = [
   {
@@ -13,6 +22,7 @@ const scenes = [
     heading: 'Una mañana',
     emphasis: 'en El Roble.',
     copy: 'En nuestro centro de día en Arequipa, hay tiempo para hacer algo con las manos, moverse y disfrutar de la compañía de otros.',
+    botany: ['acorns', 'wood'] as const,
     image: portrait,
     alt: 'Una mujer ensarta cuentas de colores en una mesa de El Roble.',
   },
@@ -22,6 +32,7 @@ const scenes = [
     heading: 'Cada quien',
     emphasis: 'a su propio ritmo.',
     copy: 'Una ronda en el jardín invita a dar unos pasos y disfrutar juntos del aire libre.',
+    botany: ['twig'] as const,
     image: garden,
     alt: 'Varias personas se toman de las manos en una ronda en el jardín de El Roble.',
   },
@@ -30,6 +41,7 @@ const scenes = [
     anchor: 'historia-compania',
     heading: 'La alegría',
     emphasis: 'de estar juntos.',
+    botany: [] as const,
     image: bingo,
     alt: 'Personas mayores y acompañantes juegan bingo en el salón de El Roble.',
   },
@@ -62,6 +74,18 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
               <div class="story__copy" data-story-copy>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
                 {scene.copy && <p>{scene.copy}</p>}
+                {scene.botany.length > 0 && (
+                  <div class="story__botany" aria-hidden="true">
+                    {scene.botany.map((piece) => {
+                      const { src, sizes } = botanicalArt[piece];
+                      return (
+                        <Image class:list={['story__botanical', `story__botanical--${piece}`]}
+                          {src} {sizes} alt="" width={192} widths={[64, 96, 144, 192, 256, 320]}
+                          style={`--story-botanical-width: ${sizes}`} format="webp" loading="lazy" decoding="async" />
+                      );
+                    })}
+                  </div>
+                )}
               </div>
               <figure class="story__photo">
                 <div class="story__frame" data-story-frame>
@@ -182,6 +206,25 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 
   .story__copy p {
     max-inline-size: 48ch;
+  }
+
+  .story__botany {
+    display: flex;
+    align-items: end;
+    gap: clamp(.75rem, 1.25vw, 1rem);
+    pointer-events: none;
+  }
+
+  .story__botanical {
+    flex: none;
+    inline-size: var(--story-botanical-width);
+    block-size: auto;
+  }
+
+  .story__botanical--wood { margin-block-end: .375rem; }
+  .story__botanical--twig {
+    transform-origin: left bottom;
+    rotate: 17deg;
   }
 
   .story__photo {

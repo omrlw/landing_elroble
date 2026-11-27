@@ -7,6 +7,7 @@ function watchGalleryPlayback(
 ) {
   const button = area.querySelector<HTMLButtonElement>('[data-gallery-playback]');
   if (!button) return;
+  const subject = button.dataset.playbackSubject ?? 'carrusel';
 
   let enabled = true;
   let visible = false;
@@ -27,7 +28,7 @@ function watchGalleryPlayback(
 
   const reflect = () => {
     button.hidden = reducedMotion.matches;
-    button.setAttribute('aria-label', enabled ? 'Pausar carrusel' : 'Reproducir carrusel');
+    button.setAttribute('aria-label', `${enabled ? 'Pausar' : 'Reproducir'} ${subject}`);
     button.toggleAttribute('data-playback-paused', !enabled);
     sync();
   };

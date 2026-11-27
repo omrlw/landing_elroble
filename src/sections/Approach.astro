@@ -29,7 +29,7 @@ const principles = [
 ];
 ---
 
-<section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
+<section class="approach atmosphere atmosphere--forest" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
   <Image class="approach-sprig" src={oliveSprig} alt="" aria-hidden="true"
     width={320} widths={[128, 192, 256, 320]}
     sizes="(min-width: 100rem) 144px, (min-width: 48rem) 9vw, 28px" format="webp" />
@@ -94,12 +94,13 @@ const principles = [
 
 <style>
   .approach {
+    --atmosphere-light-field: ellipse 70% 54% at 29% 7%;
+    --atmosphere-depth-field: ellipse 56% 71% at 100% 63%;
     position: relative;
     isolation: isolate;
     overflow: clip;
     margin-inline: var(--section-edge);
     border-radius: 28px;
-    background: var(--surface-forest);
     color: var(--color-cream);
   }
 

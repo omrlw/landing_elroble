@@ -57,11 +57,13 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 
 | Icono | Tamaño | Uso |
 | --- | --- | --- |
-| Flecha derecha | 16 px | Llamadas a la acción, incluida la de agendar en la cabecera |
+| Flecha derecha | 16 px | Llamadas a la acción del contenido |
+| WhatsApp | 16, 20 y 38 px | Botón «Agendar una visita» en la cabecera y el menú lateral. Bajo 40 rem, el botón circular de 68 px se fija abajo a la derecha con un fondo bosque y bisel de vidrio. |
 | Flecha diagonal | 16 px | Enlace a publicaciones en TikTok |
 | Más y menos | 16 px | Filas desplegables de Confianza y Preguntas frecuentes, con medallón de 28 px |
 | Chevrón | 14 px | Abrir y cerrar «Nosotros» en la navegación |
-| Menú y cerrar | 20 px | Abrir y cerrar la navegación móvil y cerrar la promoción |
+| Menú y cerrar | 20 px | Abrir y cerrar la navegación móvil |
+| Cerrar promoción | 16 px | Medallón de vidrio claro de 28 px con área táctil de 44 px |
 | Reproducir y pausar | 14 px | Controles de reproducción automática de los carruseles |
 | Reproducir | 24 px | Vistas previas de Comunidad |
 | Teléfono | 16 y 20 px | Barra de cabecera compacta, menú móvil y contacto |
@@ -86,8 +88,20 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
 - La hoja del hero nace junto al final del título.
+- Historia usa bellotas, un corte de madera y una rama de roble como ilustraciones alineadas debajo del texto de sus dos escenas claras.
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
+
+## Atmósfera
+
+[atmosphere.css](src/styles/atmosphere.css) superpone un grano de papel y tres campos de luz, pigmento y profundidad sobre las superficies de la página. Las intensidades y los tintes parten de la paleta de [tokens.css](src/styles/tokens.css). Cada sección sitúa los campos con sus variables `--atmosphere-*-field` en función de sus fotografías y sus márgenes de lectura.
+
+- `.atmosphere` usa crema como base en Centro de día, Programa y Recorrido, y Preguntas frecuentes. Programa y Recorrido comparten una superficie continua.
+- `.atmosphere--forest` toma `--surface-forest` como base en Confianza, Enfoque, Testimonios y el fondo de cierre.
+- `.atmosphere--canopy` proyecta el roble detrás de Centro de día. La máscara SVG tiene dos grados de difusión y una opacidad menor en móvil. Los colores forzados retiran la proyección y las capas de fondo.
+- El fondo del hero tiene dos reflejos radiales que se desplazan lentamente. El control de reproducción del carrusel pausa también los reflejos. La preferencia de movimiento reducido presenta los reflejos fijos.
+
+La [bitácora de dirección atmosférica](docs/atmosfera.md) reúne las referencias y las tres pruebas visuales.
 
 ## Fotografías de Historia
 
@@ -117,14 +131,14 @@ Confianza y Centro de día muestran al pasar el puntero el mismo vidrio bosque c
 
 La navegación de escritorio tiene una sola cápsula, alineada con el elemento que corresponde a `aria-current`. GSAP anima su posición y escala sin recalcular el mapa a cada cuadro. El hover de otro enlace muestra un contorno leve y el foco visible conserva su propio anillo. El desplegable tiene un centro más difuso para leer los enlaces sobre texto o fotos. El menú móvil indica la sección activa con un borde neutro.
 
-En el hero, «Ver el recorrido» y «Desde 2009» comparten el tinte, el bisel y el desenfoque de `.liquid-glass--blur`. El botón usa el hover de `Cta.astro`. La franja de credenciales reúne cuatro valores en una superficie de vidrio crema. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
+En el hero, «Ver el recorrido» y «Desde 2009» comparten el tinte, el bisel y el desenfoque de `.liquid-glass--blur`. La tarjeta usa ese acabado en todos los tamaños y su encabezado se compacta en móvil. El botón usa el hover de `Cta.astro`. La franja de credenciales reúne cuatro valores en una sola fila de vidrio crema. En móvil se desplaza en bucle. Con movimiento reducido queda quieta y admite desplazamiento manual. En pantallas más anchas se muestran las cuatro credenciales en una fila fija. En pantallas amplias, su borde superior refracta el pie de la fotografía. En Testimonios, «Leer reseña» y «Cerrar reseña» comparten el vidrio claro de los controles secundarios.
 
 En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorno continuo con `--glass-divider`. El contorno enmarca la pregunta y su respuesta, también al pasar el puntero. El vidrio conserva el fundido de Confianza y el medallón cambia de `+` a `−` al abrir. El foco por teclado rodea toda la tarjeta. Cada columna conserva su grupo de `details`.
 
 ### Implementación y respaldo
 
 - Las clases de superficie viven en [glass.css](src/styles/glass.css) y los valores de película, bisel y desenfoque en [tokens.css](src/styles/tokens.css). Usa `OpticalGlass` para los controles que necesiten curvar el fondo. Para las demás superficies, usa los acabados CSS de la tabla.
-- En el hero, Recorrido y Comunidad, `OpticalGlass` filtra una copia decorativa alineada con la foto activa de `data-glass-scene` o con la imagen fija `data-glass-image`. CSS aporta el tinte y los reflejos. SVG desplaza los píxeles del borde con `feDisplacementMap`. Durante el fundido o el zoom inicial del hero se ve la foto en vivo bajo la película. [Especificación de filtros SVG](https://drafts.csswg.org/filter-effects-1/#feDisplacementMapElement).
+- En Recorrido y Comunidad, `OpticalGlass` filtra una copia decorativa alineada con la imagen de `data-glass-image` dentro de `data-glass-scene`. CSS aporta el tinte y los reflejos. SVG desplaza los píxeles del borde con `feDisplacementMap`. [Especificación de filtros SVG](https://drafts.csswg.org/filter-effects-1/#feDisplacementMapElement).
 - Para fondos variables, la cabecera y las credenciales usan el desenfoque CSS de `--optical-backdrop-blur`. En Chromium se mejora con un filtro SVG de fondo. El soporte de estos filtros varía según el motor. [Seguimiento en Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=1961378) y [seguimiento en WebKit](https://bugs.webkit.org/show_bug.cgi?id=245510).
 - [glass.ts](src/scripts/glass.ts) comparte los observadores de las escenas y agrupa los cambios antes de dibujar. Prepara las lentes hasta 120 px fuera del área visible. Al salir de ese margen, libera la copia y el filtro.
 - [OpticalFilterDefinitions.astro](src/components/OpticalFilterDefinitions.astro) declara el filtro SVG una vez por página. [optical-filter.ts](src/scripts/optical-filter.ts) lo ajusta al tamaño de la lente y del área muestreada. Ahí se define la intensidad de refracción. La escarcha se mide en píxeles CSS. Las fotos toman su valor de `glass.ts` y la cabecera puede ajustarla con `--optical-frost`.
@@ -135,7 +149,7 @@ En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorn
 
 Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
 
-El sello de primera visita mantiene el roble sólido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
+El sello de primera visita tiene una superficie roble, la ramita «Margen izquierdo» de Genial en el borde superior izquierdo y un cierre circular en vidrio claro. «Gratis» lleva la tipografía de títulos en cursiva. El sello parte de su posición en la portada y se acopla debajo de la cabecera al deslizar. La versión acoplada se compacta en móvil. La ramita se mueve brevemente cada doce segundos y respeta la preferencia de movimiento reducido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 
 ## Sombras y estados
 
@@ -152,4 +166,5 @@ Las llamadas a la acción se construyen con [Cta.astro](src/components/Cta.astro
 - Usa Historia como referencia. El movimiento guía la mirada entre escenas. Primero destaca un detalle, después abre el encuadre para mostrar su contexto y deja una pausa para leer antes de la siguiente transición.
 - Mantén las esquinas redondeadas durante toda la apertura de una escena y deja margen entre el marco y la pantalla. Retira el texto saliente antes de que la siguiente imagen lo cubra.
 - Para el texto, usa desplazamientos cortos y la curva `--ease-soft`. Para los cambios de plano ligados al scroll, usa una curva de entrada y salida suave. Reserva las secuencias fijadas para momentos narrativos en pantallas con espacio suficiente.
+- El menú móvil y de tablet se desliza desde el borde derecho con GSAP. La entrada comparte la duración y la curva de desaceleración de las imágenes del carrusel. La X gira al aparecer y al cerrar, y el icono de menú vuelve al terminar la salida. Con movimiento reducido, el panel abre y cierra de inmediato.
 - En pantallas pequeñas, conserva el orden de lectura y vincula el movimiento a cada imagen. Con movimiento reducido, presenta el relato completo en el flujo normal con sus enlaces y acciones.

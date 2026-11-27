@@ -18,6 +18,5 @@ function whatsappLink(message: string) {
 }
 
 export const whatsappUrl = whatsappLink('Hola, me gustaría agendar una visita a El Roble.');
-export const pricingUrl = whatsappLink('Hola, me gustaría consultar los precios del centro de día El Roble.');
 export const firstVisitUrl = whatsappLink('Hola, me gustaría agendar mi primera visita a El Roble.');
 export const phoneUrl = `tel:${business.phone.replace(/\s/g, '')}`;

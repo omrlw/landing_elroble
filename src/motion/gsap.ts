@@ -16,6 +16,8 @@ function curve(token: string) {
 }
 
 export const duration = {
+  drawer: seconds('drawer'),
+  drawerExit: seconds('drawer-exit'),
   gallery: seconds('gallery'),
   reveal: seconds('reveal'),
   scene: seconds('scene'),

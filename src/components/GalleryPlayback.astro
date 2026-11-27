@@ -3,12 +3,14 @@ import ActionIcon from './ActionIcon.astro';
 
 interface Props {
   controls: string;
+  subject?: string;
 }
 
-const { controls } = Astro.props;
+const { controls, subject } = Astro.props;
 ---
 
-<button class="gallery-playback" type="button" data-gallery-playback aria-controls={controls} aria-label="Pausar carrusel" hidden>
+<button class="gallery-playback" type="button" data-gallery-playback data-playback-subject={subject}
+  aria-controls={controls} aria-label={`Pausar ${subject ?? 'carrusel'}`} hidden>
   <ActionIcon class="gallery-playback__pause" name="pause" size={14} />
   <ActionIcon class="gallery-playback__play" name="play" size={14} />
 </button>

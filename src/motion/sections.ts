@@ -16,7 +16,6 @@ export function playOpening(compact: boolean) {
   const finish = () => {
     hero.removeEventListener('focusin', finish);
     opening.revert();
-    photos.removeAttribute('data-photo-moving');
   };
   const opening = gsap.timeline({ defaults: { ease: ease.settle }, onComplete: finish });
   opening.addLabel('title')
@@ -25,7 +24,6 @@ export function playOpening(compact: boolean) {
     .fromTo(intro, { y: compact ? 6 : 9, opacity: .8 }, { y: 0, opacity: 1, duration: duration.gallery }, 'title+=0.14');
 
   if (!compact) {
-    photos.setAttribute('data-photo-moving', '');
     opening.fromTo(photos, { scale: 1.035 }, { scale: 1, duration: duration.scene }, 'title+=0.06');
   }
   hero.addEventListener('focusin', finish);

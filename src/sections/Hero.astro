@@ -11,9 +11,7 @@ import sharedActivity from '../assets/opening/hero-actividad-compartida.jpg';
 import room from '../assets/opening/hero-salon-luminoso.jpg';
 import workshop from '../assets/opening/hero-materiales-del-taller.jpg';
 import oakLeaf from '../assets/botanical/hero-oak-leaf.webp';
-import ring from '../assets/opening/promo-ring.svg';
-import ringTablet from '../assets/opening/promo-ring-tablet.svg';
-import ringMobile from '../assets/opening/promo-ring-mobile.svg';
+import promoSprig from '../assets/botanical/genial-left-sprig.webp';
 
 const photos = [
   { src: hero, alt: 'Entrada de El Roble con un sendero entre jardines' },
@@ -31,6 +29,7 @@ const credentials = [
 ---
 
 <section class="opening-hero" aria-labelledby="opening-title">
+  <span class="opening-hero__waves" aria-hidden="true"></span>
   <div class="container opening-hero__inner">
     <div class="opening-hero__lead">
       <h1 id="opening-title">
@@ -45,7 +44,7 @@ const credentials = [
       </div>
     </div>
 
-    <div class="hero-media" data-swipe-gallery data-glass-scene>
+    <div class="hero-media" data-swipe-gallery>
       <div class="hero-media__photos" id="hero-gallery-photos">
         {photos.map(({ src, alt, position }, index) => (
           <div class="hero-media__scene" data-photo-scene>
@@ -59,7 +58,6 @@ const credentials = [
       <div class="hero-media__shade" aria-hidden="true"></div>
       <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" variant="glass" />
       <div class="hero-media__experience liquid-glass liquid-glass--blur">
-        <OpticalGlass class="hero-media__mobile-lens" sampleImage />
         <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
         <p>Acompañando a personas mayores y sus familias.</p>
       </div>
@@ -72,58 +70,130 @@ const credentials = [
             <span data-gallery-mark aria-hidden="true"></span>
           </label>
         ))}
-        <GalleryPlayback controls="hero-gallery-photos" />
+        <GalleryPlayback controls="hero-gallery-photos" subject="carrusel y fondo" />
       </fieldset>
     </div>
 
-    <aside class="first-visit" aria-label="Primera visita gratis" data-first-visit>
-      <a class="first-visit__link liquid-glass liquid-glass--oak liquid-glass--interactive" href={firstVisitUrl}>
-        <picture aria-hidden="true">
-          <source media="(max-width: 40rem)" srcset={ringMobile.src} />
-          <source media="(max-width: 72.999rem)" srcset={ringTablet.src} />
-          <img src={ring.src} alt="" />
-        </picture>
-        <span>Primera visita</span>
-        <strong>GRATIS</strong>
-      </a>
-      <button class="first-visit__dismiss liquid-glass liquid-glass--clear liquid-glass--lens liquid-glass--interactive" type="button" aria-label="Cerrar promoción" hidden>
-        <ActionIcon name="close" size={20} />
-      </button>
-    </aside>
+    <div class="first-visit-origin" data-first-visit-origin>
+      <aside class="first-visit" aria-label="Primera visita gratis" data-first-visit>
+        <a class="first-visit__link liquid-glass liquid-glass--action liquid-glass--oak liquid-glass--interactive" href={firstVisitUrl}>
+          <Image class="first-visit__leaf" src={promoSprig} alt="" aria-hidden="true"
+            width={128} widths={[64, 96, 128]} sizes="(min-width: 80rem) 64px, 52px" format="webp" />
+          <span class="first-visit__copy">
+            <span><span class="sr-only">Agendar </span>Primera visita</span>{' '}
+            <strong>Gratis</strong>
+          </span>
+        </a>
+        <button class="first-visit__dismiss liquid-glass liquid-glass--clear liquid-glass--blur liquid-glass--underlay liquid-glass--interactive" type="button" aria-label="Cerrar promoción" hidden>
+          <ActionIcon name="close" />
+        </button>
+      </aside>
+    </div>
 
     <div class="opening-hero__credentials liquid-glass liquid-glass--clear liquid-glass--optical">
       <OpticalGlass />
-      <ul role="list" aria-label="Credenciales de El Roble">
-        {credentials.map(({ label, icon }) => (
-          <li>
-            <Pictogram name={icon} size={20} />
-            <span>{label}</span>
-          </li>
-        ))}
-      </ul>
+      <div class="credentials-viewport" id="hero-credentials" role="region" aria-label="Credenciales de El Roble" tabindex="0">
+        <div class="credentials-track">
+          {[false, true].map((copy) => (
+            <ul role="list" aria-hidden={copy ? 'true' : undefined}>
+              {credentials.map(({ label, icon }) => (
+                <li>
+                  <Pictogram name={icon} size={20} />
+                  <span>{label}</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <script>
   import { setupRadioGallery } from '../scripts/gallery';
+  import { reducedMotion } from '../scripts/media';
 
   const media = document.querySelector<HTMLElement>('.hero-media');
   if (media) setupRadioGallery(media);
 
+  const credentials = document.querySelector<HTMLElement>('#hero-credentials');
+  if (credentials) {
+    const manualScroll = matchMedia('(max-width: 40rem) and (prefers-reduced-motion: reduce)');
+    const syncFocus = () => {
+      if (manualScroll.matches) credentials.tabIndex = 0;
+      else credentials.removeAttribute('tabindex');
+    };
+    manualScroll.addEventListener('change', syncFocus);
+    syncFocus();
+  }
+
   const promo = document.querySelector<HTMLElement>('[data-first-visit]');
+  const promoOrigin = document.querySelector<HTMLElement>('[data-first-visit-origin]');
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
   const dismiss = promo?.querySelector<HTMLButtonElement>('.first-visit__dismiss');
   const storageKey = 'el-roble-first-visit-dismissed';
 
   if (promo && dismiss) {
+    const listeners = new AbortController();
+    let pendingFrame = 0;
+    let placement: Animation | undefined;
+
+    const updatePlacement = (animate: boolean) => {
+      if (!promoOrigin || !header) return;
+      const origin = promoOrigin.getBoundingClientRect();
+      // Move before the branch reaches the sticky header.
+      const docked = origin.top <= header.getBoundingClientRect().bottom + 24;
+      if (docked === promo.hasAttribute('data-docked')) return;
+
+      const previous = promo.getBoundingClientRect();
+      placement?.cancel();
+      promo.toggleAttribute('data-docked', docked);
+      if (!animate || reducedMotion.matches) return;
+
+      const next = promo.getBoundingClientRect();
+      const distance = previous.top - next.top;
+      placement = promo.animate([
+        {
+          transform: Math.abs(distance) < next.height
+            ? `translate(${previous.right - next.right}px, ${distance}px) scale(${previous.width / next.width})`
+            : 'translateY(8px)',
+          opacity: Math.abs(distance) < next.height ? 1 : .75,
+        },
+        { transform: 'none', opacity: 1 },
+      ], { duration: 280, easing: 'cubic-bezier(.22, .66, .2, 1)' });
+    };
+
+    const schedulePlacement = () => {
+      if (pendingFrame) return;
+      pendingFrame = requestAnimationFrame(() => {
+        pendingFrame = 0;
+        updatePlacement(true);
+      });
+    };
+
     try { promo.hidden = sessionStorage.getItem(storageKey) === 'true'; } catch { /* Optional storage. */ }
-    dismiss.hidden = false;
-    dismiss.addEventListener('click', () => {
-      try { sessionStorage.setItem(storageKey, 'true'); } catch { /* Storage is optional. */ }
-      if (promo.contains(document.activeElement)) document.querySelector<HTMLAnchorElement>('.opening-hero__discover')?.focus({ preventScroll: true });
-      promo.inert = true;
-      promo.hidden = true;
-    }, { once: true });
+    if (!promo.hidden) {
+      dismiss.hidden = false;
+      updatePlacement(false);
+      const options = { passive: true, signal: listeners.signal };
+      window.addEventListener('scroll', schedulePlacement, options);
+      window.addEventListener('resize', schedulePlacement, options);
+      reducedMotion.addEventListener('change', () => placement?.cancel(), options);
+
+      dismiss.addEventListener('click', () => {
+        try { sessionStorage.setItem(storageKey, 'true'); } catch { /* Storage is optional. */ }
+        if (promo.contains(document.activeElement)) {
+          const target = promo.hasAttribute('data-docked') ? '.site-header__brand' : '.opening-hero__discover';
+          document.querySelector<HTMLAnchorElement>(target)?.focus({ preventScroll: true });
+        }
+        listeners.abort();
+        cancelAnimationFrame(pendingFrame);
+        placement?.cancel();
+        promo.inert = true;
+        promo.hidden = true;
+      }, { once: true });
+    }
   }
 </script>
 
@@ -135,9 +205,58 @@ const credentials = [
     overflow: clip;
     padding-block: clamp(1.75rem, 1rem + 2.6vw, 4rem) clamp(2.5rem, 1.75rem + 1.6vw, 3rem);
   }
+  .opening-hero::before {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(ellipse 54% 24rem at 47% 10rem, var(--color-paper), transparent),
+      radial-gradient(ellipse 49% 32rem at 0% 25%, var(--color-sand), transparent),
+      radial-gradient(ellipse 52% 35rem at 100% 34%,
+        color-mix(in srgb, var(--color-honey) 50%, transparent), transparent),
+      radial-gradient(ellipse 79% 18rem at 50% 88%,
+        color-mix(in srgb, var(--color-oak) 19%, transparent), transparent);
+    mask-image: linear-gradient(transparent, black 4rem, black 84%, transparent);
+    pointer-events: none;
+    content: '';
+  }
+  .opening-hero__waves {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+  }
+  .opening-hero__waves::before,
+  .opening-hero__waves::after {
+    position: absolute;
+    content: '';
+  }
+  .opening-hero__waves::before {
+    inset: -24rem clamp(-2.5rem, -2vw, -1rem) auto auto;
+    inline-size: clamp(35rem, 49vw, 61rem);
+    block-size: 39.5rem;
+    background: radial-gradient(ellipse closest-side,
+      transparent 64%,
+      color-mix(in srgb, var(--color-paper) 27%, transparent) 87%,
+      color-mix(in srgb, var(--color-paper) 84%, transparent) 98.6%,
+      transparent 100%);
+    mask-image: linear-gradient(114deg, transparent 38%, black 74%);
+  }
+  .opening-hero__waves::after {
+    inset: 1.5rem auto auto clamp(-18rem, -15vw, -12rem);
+    inline-size: clamp(20rem, 32vw, 33rem);
+    block-size: 32rem;
+    background: radial-gradient(ellipse closest-side,
+      transparent 88%,
+      color-mix(in srgb, var(--color-paper) 36%, transparent) 98%,
+      var(--color-paper) 99.5%,
+      transparent 100%);
+    mask-image: linear-gradient(153deg, black 20%, transparent 61%);
+  }
   .opening-hero__inner {
     display: grid;
     grid-template-areas: "lead" "photo" "badges";
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--opening-gap);
     position: relative;
   }
@@ -175,7 +294,12 @@ const credentials = [
   .hero-media__shade {
     z-index: -1;
     pointer-events: none;
-    background: linear-gradient(transparent 62%, var(--color-dialog-backdrop));
+    background:
+      radial-gradient(ellipse 69% 59% at 15% 0%,
+        color-mix(in srgb, var(--color-honey) 19%, transparent), transparent),
+      radial-gradient(ellipse at 47% 29%, transparent 50%,
+        color-mix(in srgb, var(--color-ink) 19%, transparent)),
+      linear-gradient(transparent 62%, var(--color-dialog-backdrop));
   }
   .hero-media :global(.hero-media__tour) { white-space: nowrap; }
 
@@ -189,7 +313,6 @@ const credentials = [
     line-height: 1.5;
   }
   .hero-media__experience > p { position: relative; }
-  :global(.hero-media__mobile-lens) { display: none; }
   .hero-media__year { display: grid; gap: var(--space-control-gap); margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, var(--color-on-forest-line), transparent) left bottom / 100% 1px no-repeat; }
   .hero-media__year span { color: var(--color-on-forest-muted); }
   .hero-media__year strong { font: 700 clamp(3rem, 2.65rem + .75vw, 4rem) / 1 var(--font-display); }
@@ -213,8 +336,10 @@ const credentials = [
     pointer-events: none;
   }
 
-  .first-visit {
-    --offer-size: 7.6rem;
+  .opening-hero:has(.first-visit[data-docked]:not([hidden])) { z-index: 10; }
+
+  .first-visit-origin {
+    --offer-size: clamp(7rem, 8.5vw, 8.75rem);
     grid-area: photo;
     z-index: 2;
     align-self: start;
@@ -223,75 +348,126 @@ const credentials = [
     inset: 0 0 auto auto;
     margin: 1rem;
     inline-size: var(--offer-size);
-    block-size: var(--offer-size);
-    color: var(--color-paper);
+    aspect-ratio: 1;
   }
+  .first-visit {
+    inline-size: 100%;
+    aspect-ratio: 1;
+    transform-origin: top right;
+  }
+  .first-visit[data-docked] {
+    position: fixed;
+    inset-block-start: calc(var(--header-block-size) + 1.75rem);
+    inset-inline-end: clamp(1.25rem, 2.5vw, 2.5rem);
+    inline-size: 7rem;
+  }
+  .first-visit[data-docked] .first-visit__leaf {
+    inset-block-start: -1.125rem;
+    inline-size: 3rem;
+  }
+  .first-visit[data-docked] .first-visit__copy strong { font-size: 2.125rem; }
   .first-visit__link {
-    --glass-sheen:
-      radial-gradient(ellipse 74% 48% at 29% 4%,
-        color-mix(in srgb, var(--color-honey) 32%, transparent), transparent),
-      radial-gradient(ellipse 58% 30% at 66% 98%,
-        color-mix(in srgb, var(--color-honey) 19%, transparent), transparent);
-    --glass-highlight: var(--highlight-dark),
-      inset 0 -2px 3px -2px color-mix(in srgb, var(--color-honey) 48%, transparent);
-    --glass-edge: color-mix(in srgb, var(--color-honey) 22%, transparent);
-    --glass-hover-edge: color-mix(in srgb, var(--color-honey) 30%, transparent);
-    --glass-lift: color-mix(in srgb, var(--color-honey) 5%, transparent);
-    --glass-depth: var(--shadow-control), var(--shadow-card);
-    display: grid;
+    --glass-fill: radial-gradient(ellipse at 30% 8%, var(--color-oak-highlight), var(--color-oak) 82%);
+    --glass-edge: color-mix(in srgb, var(--color-honey) 46%, transparent);
+    --glass-hover-edge: var(--color-honey);
     position: relative;
+    display: grid;
     inline-size: 100%;
     block-size: 100%;
-    align-content: center;
-    justify-items: center;
+    place-content: center;
+    place-items: center;
+    padding-block-start: .375rem;
+    border: 1px solid transparent;
     border-radius: 50%;
-    font-size: clamp(.875rem, .79rem + .25vw, 1rem);
-    line-height: 1.35;
+    font-size: var(--first-visit-label-size, var(--text-meta));
+    line-height: var(--leading-control);
+    text-align: center;
   }
-  .first-visit__link picture { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
-  .first-visit__link strong { font: 700 clamp(1.5rem, 1.3rem + .48vw, 2rem) / 1.15 var(--font-display); }
-
-  @media (prefers-reduced-transparency: no-preference) {
-    .first-visit__link {
-      --glass-fill: linear-gradient(150deg, var(--color-oak-highlight),
-        color-mix(in srgb, var(--color-oak) 93%, transparent) 72%, var(--color-oak));
-    }
+  .first-visit__copy { display: grid; gap: .125rem; font-weight: 500; }
+  .first-visit__copy strong {
+    color: color-mix(in srgb, var(--color-paper) 70%, var(--color-honey));
+    font: italic 700 clamp(2.125rem, 1.65rem + 1.35vw, 2.5rem) / .95 var(--font-display);
   }
-
-  .first-visit__link:active { --glass-depth: var(--shadow-control); }
-  @media (prefers-reduced-motion: no-preference) {
-    .first-visit__link {
-      transition: --glass-wash var(--glass-motion) var(--glass-ease),
-        box-shadow var(--glass-motion) var(--glass-ease),
-        translate var(--motion-state) var(--ease-soft), scale var(--motion-state) var(--ease-soft);
-    }
-    .first-visit__link:active { translate: 0 1px; scale: .989; transition-duration: var(--motion-press); }
-    @media (hover: hover) and (pointer: fine) {
-      .first-visit__link:hover:not(:active) { translate: 0 -1px; }
-    }
-  }
-
-  @media (forced-colors: active) {
-    .first-visit__link { background: Canvas; color: LinkText; outline: 1px solid LinkText; outline-offset: -1px; }
-    .first-visit__link:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+  .first-visit__leaf {
+    position: absolute;
+    inset-block-start: -1.375rem;
+    inset-inline-start: -.75rem;
+    inline-size: clamp(3.25rem, 4vw, 4rem);
+    rotate: -12deg;
+    transform-origin: 55% 75%;
+    filter: drop-shadow(0 3px 4px rgb(33 21 10 / 25%));
+    pointer-events: none;
   }
 
   .first-visit__dismiss {
+    --glass-rest-visibility: 1;
+    --glass-backdrop: linear-gradient(
+      color-mix(in srgb, var(--color-paper) 88%, transparent),
+      color-mix(in srgb, var(--color-paper) 68%, transparent)
+    );
+    --glass-filter: blur(8px);
     position: absolute;
-    inset: -.75rem -.375rem auto auto;
+    inset: -.875rem -.875rem auto auto;
     inline-size: var(--control-size);
     block-size: var(--control-size);
     display: grid;
     place-items: center;
     border-radius: 50%;
-    --glass-depth: var(--shadow-control);
   }
-  .first-visit[hidden], .first-visit__dismiss[hidden] { display: none; }
+  .first-visit__dismiss::before { inset: .5rem; }
+  .first-visit__dismiss[hidden] { display: none; }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .first-visit__dismiss { --glass-backdrop: var(--surface-paper); --glass-filter: none; }
+  }
+
+  @media (forced-colors: active) {
+    .opening-hero::before, .opening-hero__waves { display: none; }
+    .first-visit__link { border-color: LinkText; }
+    .first-visit__copy strong { color: inherit; }
+    .first-visit__dismiss::before { background: ButtonFace; border: 1px solid ButtonText; }
+    .first-visit__dismiss { color: ButtonText; }
+    .first-visit__dismiss:focus-visible, .first-visit__link:focus-visible {
+      outline-color: Highlight;
+    }
+  }
 
   @media (prefers-reduced-motion: no-preference) {
+    .opening-hero__waves::before {
+      --hero-light-offset: -1.375rem;
+      --hero-light-rise: .875rem;
+      animation: hero-light-drift 8.5s ease-in-out infinite alternate;
+    }
+    .opening-hero__waves::after {
+      --hero-light-offset: .875rem;
+      --hero-light-rise: -.625rem;
+      animation: hero-light-drift 11s ease-in-out infinite alternate;
+    }
+    .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::before,
+    .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::after {
+      animation-play-state: paused;
+    }
+    @keyframes hero-light-drift {
+      from { transform: none; opacity: 1; }
+      to { transform: translate(var(--hero-light-offset), var(--hero-light-rise)); opacity: .84; }
+    }
+    .first-visit__leaf {
+      animation: first-visit-breeze 12s 4s ease-in-out infinite;
+      transition: rotate var(--motion-state) var(--ease-soft);
+    }
+    .first-visit:focus-within .first-visit__leaf { animation-play-state: paused; }
+    .first-visit__link:focus-visible .first-visit__leaf { rotate: -18deg; }
+    @media (hover: hover) and (pointer: fine) {
+      .first-visit:hover .first-visit__leaf { animation-play-state: paused; }
+      .first-visit__link:hover .first-visit__leaf { rotate: -18deg; }
+    }
+    @keyframes first-visit-breeze {
+      0%, 10%, 100% { transform: rotate(0deg); }
+      3% { transform: rotate(-9deg); }
+      6% { transform: rotate(4deg); }
+    }
     @supports (transition-behavior: allow-discrete) {
       .first-visit {
-        transform-origin: top right;
         transition: opacity var(--motion-exit) var(--ease-soft), scale var(--motion-exit) var(--ease-soft), display var(--motion-exit) allow-discrete;
       }
       .first-visit[hidden] { opacity: 0; scale: .96; }
@@ -303,47 +479,95 @@ const credentials = [
     grid-area: badges;
     justify-self: center;
     z-index: 1;
-    inline-size: min(100%, 25rem);
+    inline-size: min(100%, 57rem);
     margin-block-start: calc(max(1rem, var(--space-related)) - var(--opening-gap));
-    padding: .45rem 1.25rem;
+    padding: .375rem .5rem;
     border-radius: var(--radius-pill);
     font-size: clamp(.9375rem, .87rem + .24vw, var(--text-control));
     font-weight: 600;
     line-height: 1.3;
   }
-  .opening-hero__credentials ul {
+  .credentials-track ul {
     display: grid;
-    grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
-    column-gap: .375rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-detail);
+    padding-inline: clamp(.375rem, 1.25vw, .75rem);
   }
-  .opening-hero__credentials li {
+  .credentials-track ul[aria-hidden='true'] { display: none; }
+  .credentials-track li {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: clamp(.4375rem, 1vw, .75rem);
     min-block-size: 2.875rem;
-    padding-block: .5rem;
+  }
+  .credentials-viewport:focus-visible { outline-offset: -2px; }
+
+  @media (max-width: 40rem) {
+    .credentials-viewport {
+      container-type: inline-size;
+      overflow-x: auto;
+    }
+    .credentials-track {
+      --credentials-gap: clamp(1.5rem, 4vw, 3rem);
+      display: flex;
+      inline-size: max-content;
+    }
+    .credentials-track ul {
+      display: flex;
+      flex: none;
+      justify-content: space-around;
+      min-inline-size: 100cqi;
+      gap: var(--credentials-gap);
+      padding-inline: calc(var(--credentials-gap) / 2);
+    }
+    .credentials-track li { white-space: nowrap; }
+  }
+
+  @media (max-width: 40rem) and (prefers-reduced-motion: no-preference) {
+    .credentials-viewport {
+      overflow: clip;
+      mask-image: linear-gradient(90deg, transparent, black .625rem, black calc(100% - .625rem), transparent);
+    }
+    .credentials-track ul[aria-hidden='true'] { display: flex; }
+    .credentials-track { animation: credentials-loop 28s linear infinite; }
+    @keyframes credentials-loop {
+      to { transform: translateX(-50%); }
+    }
   }
 
   @media (max-width: 40rem) {
     .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
-    .opening-hero__inner { grid-template-columns: minmax(0, 1fr); }
+    .opening-hero__waves::before {
+      inset-block-start: -14rem;
+      inset-inline-end: -10rem;
+      inline-size: 29rem;
+      block-size: 31rem;
+      mask-image: linear-gradient(114deg, transparent 23%, black 71%);
+    }
+    .opening-hero__waves::after {
+      inset-block-start: .75rem;
+      inset-inline-start: -11rem;
+      inline-size: 18rem;
+      block-size: 25rem;
+    }
     .hero-ending { display: block; inline-size: fit-content; }
     .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }
     .hero-media :global(.hero-media__tour) { display: none; }
-    :global(.hero-media__mobile-lens) {
-      --optical-film: linear-gradient(165deg, rgb(25 32 23 / 77%), rgb(20 27 19 / 92%));
-      --optical-rim: var(--glass-bevel-dark);
-      display: block;
-    }
     .hero-media__experience { padding: 1rem; inline-size: 100%; }
-    .hero-media__year { display: flex; align-items: center; gap: var(--space-detail); margin-block-end: .375rem; padding: 0; background: none; }
+    .hero-media__year { display: flex; align-items: center; gap: var(--space-detail); margin-block-end: .5rem; padding-block-end: .5rem; }
     .hero-media__year strong { font-size: 2rem; }
-    .first-visit { --offer-size: 7rem; grid-area: lead; margin: 2rem .625rem 0 0; }
-    .first-visit__dismiss { border-radius: .875rem; }
+    .first-visit-origin { grid-area: lead; margin: 2rem .625rem 0 0; }
+    .first-visit[data-docked] {
+      inset-block-start: calc(var(--header-block-size) + 1.125rem);
+      inline-size: 6rem;
+      --first-visit-label-size: .8125rem;
+    }
+    .first-visit[data-docked] .first-visit__leaf { inline-size: 2.625rem; }
+    .first-visit[data-docked] .first-visit__copy strong { font-size: 1.875rem; }
   }
   @media (max-width: 24rem) {
-    .first-visit { --offer-size: 6.675rem; grid-area: photo; margin-block-start: 1rem; margin-inline-end: 1rem; }
-    .first-visit__link picture { inset: .1rem; }
+    .first-visit-origin { grid-area: photo; margin: 1rem; }
   }
   @media (24rem < width <= 40rem) {
     .opening-hero__inner:has(.first-visit:not([hidden])) h1 { min-block-size: 8.5rem; }
@@ -353,11 +577,6 @@ const credentials = [
     .opening-hero__intro { gap: 1.25rem; }
     .hero-media { padding-inline: 1.5rem; }
   }
-  @media (min-width: 54rem) {
-    .opening-hero__credentials { inline-size: min(100%, 57rem); }
-    .opening-hero__credentials ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .opening-hero__credentials li { justify-content: center; }
-  }
   @media (min-width: 73rem) {
     .opening-hero__lead {
       grid-template-columns: minmax(0, 2.3fr) minmax(18.5rem, 1fr);
@@ -365,12 +584,9 @@ const credentials = [
       align-items: center;
       min-block-size: clamp(9.5rem, 11.25vw, 13.5rem);
     }
-    .first-visit {
-      --offer-size: clamp(7.5rem, 8vw, 9.5rem);
-      grid-area: photo;
+    .first-visit-origin {
       margin: clamp(1.5rem, 2vw, 2.25rem) clamp(1rem, 2vw, 2.25rem) 0 0;
     }
-    .first-visit__dismiss { inset: -1rem -.75rem auto auto; }
     .hero-media { padding-block-end: 2.5rem; }
     .hero-media__experience { inline-size: 17.5rem; }
     .hero-media__paging { inset-block-end: 1.375rem; }

@@ -48,7 +48,7 @@ const facilities = [
 ];
 ---
 
-<section class="day" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
+<section class="day atmosphere atmosphere--seamless atmosphere--canopy" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
   <div class="container day__inner">
     <div class="day__heading" data-reveal="heading">
       <h2 id="day-title">Un día con compañía.<br /><em>Conectada con casa.</em></h2>
@@ -137,7 +137,13 @@ const facilities = [
 </script>
 
 <style>
-  .day { padding-block: var(--space-section); }
+  .day {
+    --atmosphere-canopy-opacity: .19;
+    --atmosphere-light-field: ellipse 67% 23rem at 62% 8rem;
+    --atmosphere-pigment-field: ellipse 65% 34rem at 5% 21rem;
+    --atmosphere-depth-field: ellipse 58% 35% at 100% 58%;
+    padding-block: var(--space-section);
+  }
   .day__inner { display: grid; gap: var(--section-gap); }
   .day__heading { display: grid; gap: var(--space-related); }
   .day__heading em { color: var(--color-oak); }
