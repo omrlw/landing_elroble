@@ -1,15 +1,24 @@
 import { createPagination } from './pagination';
 import { setupAutoAdvance } from './autoplay';
-import { desktop, reducedMotion } from './media';
+import { reducedMotion } from './media';
 import { duration, gsap } from '../motion/gsap';
 
-export function setupRadioGallery(
-  surface: HTMLElement,
-  controls: HTMLInputElement[],
-  scenes: HTMLElement[],
-  root = surface,
-  onSelect?: (index: number) => void,
-) {
+function decodePhotos(images: HTMLImageElement[]) {
+  if (!images.length) return false;
+  return new Promise<boolean>((resolve) => {
+    const timeout = window.setTimeout(() => resolve(false), 8500);
+    void Promise.all(images.map((image) => image.decode())).then(
+      () => resolve(true),
+      () => resolve(false),
+    ).finally(() => clearTimeout(timeout));
+  });
+}
+
+export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) => void) {
+  const surface = root.matches('[data-swipe-gallery]') ? root : root.querySelector<HTMLElement>('[data-swipe-gallery]');
+  if (!surface) return;
+  const controls = [...root.querySelectorAll<HTMLInputElement>('[data-gallery-control]')];
+  const scenes = [...surface.querySelectorAll<HTMLElement>('[data-photo-scene]')];
   if (controls.length < 2 || scenes.length !== controls.length) return;
 
   const pagination = createPagination(root.querySelector<HTMLElement>('[data-gallery-pagination]'));
@@ -17,21 +26,21 @@ export function setupRadioGallery(
   let requested = selected;
   let nextAutomatic = selected;
   let version = 0;
-  let outgoing: HTMLElement | undefined;
-  let transition: { timeline: gsap.core.Timeline; finished: Promise<void>; complete: () => void } | undefined;
+  let staged: HTMLElement | undefined;
+  let transition: { timeline: gsap.core.Timeline; finished: Promise<void>; finish: () => void } | undefined;
   let gesture: { id: number; x: number; y: number; dragging: boolean } | undefined;
 
-  const photos = scenes.map((scene) => scene instanceof HTMLImageElement ? [scene] : [...scene.querySelectorAll('img')]);
-  const warm = (index: number) => {
-    for (const image of photos[index]) {
-      if (image.loading === 'eager') continue;
-      if (desktop.matches || !image.closest('[data-gallery-extra]')) image.loading = 'eager';
-    }
-  };
+  const photos = scenes.map((scene) => [...scene.querySelectorAll('img')]);
   const wrap = (index: number) => (index + scenes.length) % scenes.length;
   const warmNeighbors = () => {
-    warm(wrap(selected - 1));
-    warm(wrap(selected + 1));
+    const previous = photos[wrap(selected - 1)];
+    const next = photos[wrap(selected + 1)];
+    // Each scene uses the same photo slots. Only warm slots shown at this width.
+    photos[selected].forEach((image, index) => {
+      if (!image.getClientRects().length) return;
+      if (previous[index]) previous[index].loading = 'eager';
+      if (next[index]) next[index].loading = 'eager';
+    });
   };
 
   const setCurrent = (index: number) => {
@@ -42,80 +51,63 @@ export function setupRadioGallery(
     controls[index].setAttribute('data-gallery-current', '');
     for (const [position, scene] of scenes.entries()) scene.setAttribute('aria-hidden', String(position !== index));
     scenes[index].dataset.photoState = 'active';
-    root.dataset.galleryIndex = String(index);
     pagination?.select(index);
     onSelect?.(index);
-  };
-
-  const clearTransition = () => {
-    const current = transition;
-    transition = undefined;
-    if (outgoing) delete outgoing.dataset.photoState;
-    outgoing = undefined;
-    current?.timeline.revert();
-    current?.complete();
-  };
-
-  const settleTransition = (manual: boolean) => {
-    if (!transition) return;
-    const { timeline, finished } = transition;
-    if (manual) {
-      const remaining = timeline.duration() - timeline.time();
-      timeline.timeScale(Math.max(1, Math.min(1.45, remaining / duration.gallery)));
-    }
-    return finished;
   };
 
   async function select(index: number, stillPlaying?: () => boolean) {
     const currentRequest = ++version;
     requested = index;
-    for (const scene of scenes) {
-      if (scene.dataset.photoState === 'staged') delete scene.dataset.photoState;
-    }
+    if (staged) delete staged.dataset.photoState;
+    staged = undefined;
     if (index === selected) {
       controls[selected].checked = true;
       return;
     }
 
     const scene = scenes[index];
-    warm(index);
-    if (scene === outgoing) {
-      await settleTransition(!stillPlaying);
-      if (currentRequest !== version) return;
+    if (scene.dataset.photoState !== 'leaving') {
+      scene.dataset.photoState = 'staged';
+      staged = scene;
     }
-
-    scene.dataset.photoState = 'staged';
     const images = photos[index].filter((image) => image.getClientRects().length);
-    const ready = await new Promise<boolean>((resolve) => {
-      const timeout = window.setTimeout(() => resolve(false), 8500);
-      void Promise.all(images.map((image) => image.decode())).then(() => resolve(true), () => resolve(false)).finally(() => clearTimeout(timeout));
-    });
+    for (const image of images) image.loading = 'eager';
+    const ready = await decodePhotos(images);
     if (currentRequest !== version) return;
 
     // A new selection shortens the active dissolve without jumping between frames.
-    const settled = ready && images.length && stillPlaying?.() !== false ? settleTransition(!stillPlaying) : undefined;
-    if (settled) await settled;
+    if (transition && ready && stillPlaying?.() !== false) {
+      if (!stillPlaying) transition.timeline.timeScale(2.5);
+      await transition.finished;
+    }
     if (currentRequest !== version) return;
-    if (!images.length || !ready || stillPlaying?.() === false) {
-      delete scene.dataset.photoState;
+    if (!ready || stillPlaying?.() === false) {
+      if (staged) delete staged.dataset.photoState;
+      staged = undefined;
       requested = selected;
       controls[selected].checked = true;
       return;
     }
 
+    staged = undefined;
     const previous = scenes[selected];
-    previous.dataset.photoState = 'leaving';
-    outgoing = previous;
     setCurrent(index);
     warmNeighbors();
     if (reducedMotion.matches) {
-      clearTransition();
+      delete previous.dataset.photoState;
       return;
     }
+    previous.dataset.photoState = 'leaving';
 
     let complete!: () => void;
     const finished = new Promise<void>((resolve) => { complete = resolve; });
-    const timeline = gsap.timeline({ onComplete: clearTransition });
+    const finish = () => {
+      delete previous.dataset.photoState;
+      timeline.revert();
+      transition = undefined;
+      complete();
+    };
+    const timeline = gsap.timeline({ onComplete: finish });
     const tiles = [...scene.querySelectorAll<HTMLElement>('[data-gallery-tile]')]
       .filter((tile) => tile.getClientRects().length);
     const length = stillPlaying ? duration.scene : duration.reveal;
@@ -130,7 +122,7 @@ export function setupRadioGallery(
         scale: 1, duration: length, stagger, ease: 'power2.out',
       }, 0);
     }
-    transition = { timeline, finished, complete };
+    transition = { timeline, finished, finish };
   }
 
   const restart = setupAutoAdvance(surface, root, (stillPlaying) => {
@@ -143,7 +135,6 @@ export function setupRadioGallery(
   };
 
   controls.forEach((control, index) => {
-    control.setAttribute('data-gallery-bound', '');
     control.addEventListener('change', () => selectManually(index));
     control.addEventListener('focus', warmNeighbors);
   });
@@ -192,10 +183,22 @@ export function setupRadioGallery(
   surface.addEventListener('pointercancel', clearGesture);
   surface.addEventListener('lostpointercapture', (event) => { if (event.target === surface) clearGesture(); });
   surface.addEventListener('pointerleave', () => { if (!gesture?.dragging) clearGesture(); });
-  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) clearTransition(); });
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) {
+      clearGesture();
+      transition?.finish();
+    }
+  });
 
   setCurrent(selected);
-  surface.setAttribute('data-gallery-ready', '');
+  root.setAttribute('data-gallery-ready', '');
+  const preload = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    warmNeighbors();
+    preload.disconnect();
+  }, { rootMargin: '160px' });
+  preload.observe(surface);
+  return selectManually;
 }
 
 function addTrackDrag(track: HTMLElement, getStops: () => number[]) {

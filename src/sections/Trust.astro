@@ -68,8 +68,7 @@ const photoSizes = [
         {reasons.map(({ photos: slides }, index) => (
           <div class="trust__slides" data-scene={index} data-photo-scene>
             {[slides.slice(0, 2), slides.slice(2)].map((row, rowIndex) => (
-              <div class:list={['trust__row', rowIndex === 1 && 'trust__row--extra']}
-                data-gallery-extra={rowIndex === 1 ? '' : undefined}>
+              <div class:list={['trust__row', rowIndex === 1 && 'trust__row--extra']}>
                 {row.map(({ src, alt }, column) => (
                   <div class="trust__tile" data-gallery-tile>
                     <Image {src} {alt} widths={[320, 480, 720, 900].filter((width) => width <= src.width)}
@@ -85,7 +84,7 @@ const photoSizes = [
         <legend class="sr-only">Escenas de confianza</legend>
         {reasons.map(({ title }, index) => (
           <label title={title} data-gallery-dot>
-            <input id={'trust-scene-' + index} type="radio" name="trust-scene" value={index} checked={index === 0}
+            <input id={'trust-scene-' + index} type="radio" name="trust-scene" value={index} checked={index === 0} data-gallery-control
               aria-label={title} aria-controls={'trust-gallery-photos trust-detail-' + index} />
             <span data-gallery-mark aria-hidden="true"></span>
           </label>
@@ -107,7 +106,7 @@ const photoSizes = [
             </button>
             <label class="trust__reason-fallback liquid-glass__trigger" for={'trust-scene-' + index}>{title}</label>
           </h3>
-          <div class="trust__detail" id={'trust-detail-' + index} data-trust-detail>
+          <div class="gallery-detail trust__detail" id={'trust-detail-' + index} data-trust-detail>
             <div><p>{text}</p></div>
           </div>
         </article>
@@ -130,24 +129,19 @@ const photoSizes = [
   import { setupRadioGallery } from '../scripts/gallery';
 
   const trust = document.querySelector<HTMLElement>('[data-trust]');
-  const carousel = trust?.querySelector<HTMLElement>('[data-swipe-gallery]');
-  if (trust && carousel) {
-    const controls = [...trust.querySelectorAll<HTMLInputElement>('input[name="trust-scene"]')];
-    const scenes = [...carousel.querySelectorAll<HTMLElement>('[data-photo-scene]')];
+  if (trust) {
     const triggers = [...trust.querySelectorAll<HTMLButtonElement>('[data-trust-trigger]')];
     const details = [...trust.querySelectorAll<HTMLElement>('[data-trust-detail]')];
-    triggers.forEach((trigger, index) => {
-      trigger.addEventListener('click', () => {
-        if (trigger.getAttribute('aria-expanded') === 'false') controls[index].click();
-      });
-    });
-    setupRadioGallery(carousel, controls, scenes, trust, (current) => {
+    const select = setupRadioGallery(trust, (current) => {
       triggers.forEach((trigger, index) => {
         const expanded = index === current;
         trigger.setAttribute('aria-expanded', String(expanded));
         trigger.setAttribute('aria-disabled', String(expanded));
         details[index].inert = !expanded;
       });
+    });
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener('click', () => select?.(index));
     });
   }
 </script>
@@ -234,9 +228,9 @@ const photoSizes = [
   .trust__slides[data-scene="0"] .trust__row:first-child .trust__tile:nth-child(2) img { object-position: 50% 33%; }
   .trust__slides[data-scene="2"] .trust__row:first-child .trust__tile:nth-child(2) img { object-position: 37% center; }
   .trust__slides[data-scene="2"] .trust__row--extra .trust__tile:nth-child(2) img { object-position: 50% 69%; }
-  .trust:not([data-gallery-index]):has(#trust-scene-0:checked) .trust__slides[data-scene="0"],
-  .trust:not([data-gallery-index]):has(#trust-scene-1:checked) .trust__slides[data-scene="1"],
-  .trust:not([data-gallery-index]):has(#trust-scene-2:checked) .trust__slides[data-scene="2"] { display: grid; }
+  .trust:not([data-gallery-ready]):has(#trust-scene-0:checked) .trust__slides[data-scene="0"],
+  .trust:not([data-gallery-ready]):has(#trust-scene-1:checked) .trust__slides[data-scene="1"],
+  .trust:not([data-gallery-ready]):has(#trust-scene-2:checked) .trust__slides[data-scene="2"] { display: grid; }
 
   .trust__reasons {
     grid-area: reasons;
@@ -270,35 +264,22 @@ const photoSizes = [
   .trust__reason h3 { border-radius: inherit; }
   .trust__reason-trigger:focus-visible { outline-offset: -2px; }
   .trust__reason-trigger[aria-disabled="true"] { cursor: default; }
-  .trust__reason-trigger, .trust[data-gallery-index] .trust__reason-fallback { display: none; }
-  .trust[data-gallery-index] .trust__reason-trigger { display: flex; }
+  .trust__reason-trigger, .trust[data-gallery-ready] .trust__reason-fallback { display: none; }
+  .trust[data-gallery-ready] .trust__reason-trigger { display: flex; }
 
   .trust__reason-trigger[aria-expanded="true"] .trust__reason-icon {
     --disclosure-stroke-scale: 0;
   }
 
-  .trust__detail {
-    display: grid;
-    grid-template-rows: var(--reason-track, 0fr);
-    opacity: var(--reason-active);
-    visibility: var(--reason-visibility, hidden);
-  }
-  .trust__detail > div { min-block-size: 0; overflow: clip; }
+  .trust__detail { --gallery-detail-open: var(--reason-active); }
   .trust__detail p { max-inline-size: 58ch; padding: .225rem var(--reason-inset) clamp(1.2rem, 1.55vw, 1.45rem); }
-  .trust:not([data-gallery-index]):has(#trust-scene-0:checked) .trust__reason[data-scene="0"],
-  .trust:not([data-gallery-index]):has(#trust-scene-1:checked) .trust__reason[data-scene="1"],
-  .trust:not([data-gallery-index]):has(#trust-scene-2:checked) .trust__reason[data-scene="2"],
-  .trust[data-gallery-index] .trust__reason:has(.trust__reason-trigger[aria-expanded="true"]) {
+  .trust:not([data-gallery-ready]):has(#trust-scene-0:checked) .trust__reason[data-scene="0"],
+  .trust:not([data-gallery-ready]):has(#trust-scene-1:checked) .trust__reason[data-scene="1"],
+  .trust:not([data-gallery-ready]):has(#trust-scene-2:checked) .trust__reason[data-scene="2"],
+  .trust[data-gallery-ready] .trust__reason:has(.trust__reason-trigger[aria-expanded="true"]) {
     --reason-active: 1;
-    --reason-track: 1fr;
-    --reason-visibility: visible;
-    --reason-hide-delay: 0s;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .trust__detail {
-      transition: grid-template-rows var(--glass-row-motion) var(--ease-soft), opacity 310ms ease,
-        visibility 0s var(--reason-hide-delay, var(--glass-row-motion));
-    }
+    --gallery-detail-size: 1fr;
+    --gallery-detail-visibility: visible;
   }
 
   .trust__invitation {

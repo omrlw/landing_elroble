@@ -67,7 +67,7 @@ const credentials = [
         <legend class="sr-only">Fotografías de El Roble</legend>
         {photos.map(({ alt }, index) => (
           <label data-gallery-dot>
-            <input type="radio" name="opening-photo" value={index} checked={index === 0}
+            <input type="radio" name="opening-photo" value={index} checked={index === 0} data-gallery-control
               aria-label={alt} aria-controls="hero-gallery-photos" />
             <span data-gallery-mark aria-hidden="true"></span>
           </label>
@@ -109,7 +109,7 @@ const credentials = [
   import { setupRadioGallery } from '../scripts/gallery';
 
   const media = document.querySelector<HTMLElement>('.hero-media');
-  if (media) setupRadioGallery(media, [...media.querySelectorAll<HTMLInputElement>('input[type="radio"]')], [...media.querySelectorAll<HTMLElement>('[data-photo-scene]')]);
+  if (media) setupRadioGallery(media);
 
   const promo = document.querySelector<HTMLElement>('[data-first-visit]');
   const dismiss = promo?.querySelector<HTMLButtonElement>('.first-visit__dismiss');

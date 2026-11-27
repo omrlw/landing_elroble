@@ -59,68 +59,56 @@ const facilities = [
     </div>
 
     <div class="day__composition">
-      <div class="day__gallery" data-reveal="frame">
-        <div class="day__media">
-          <div class="day__photo" id="day-activity-photos" data-swipe-gallery data-reveal-image>
-            {activities.map(({ image, alt }, index) => (
-              <Image class:list={['day__activity-photo', `day__activity-photo--${index}`]} src={image} alt={alt} data-photo-scene
-                widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
-                sizes="(max-width: 40rem) calc(100vw - 24px), (max-width: 73rem) 58vw, 27vw" format="webp" />
-            ))}
-          </div>
-          <div class="gallery-pagination liquid-glass--clear day__pagination" data-gallery-pagination>
-            {activities.map(({ title }, index) => (
-              <label data-gallery-dot for={`day-activity-${index}`} title={title}>
-                <span data-gallery-mark aria-hidden="true"></span>
-              </label>
-            ))}
-            <GalleryPlayback controls="day-activity-photos" />
-          </div>
-        </div>
-        <div class="day__previews">
-          {activities.map((_, index) => {
+      <div class="day__gallery" data-swipe-gallery>
+        <div class="day__scenes" id="day-activity-photos">
+          {activities.map(({ image, alt }, index) => {
             const next = (index + 1) % activities.length;
             const { title, preview } = activities[next];
             return (
-              <label class="day__preview" data-preview-for={index} for={`day-activity-${next}`}>
-                <Image src={preview} alt="" widths={[240, 360, 480, 640]} sizes="(max-width: 73rem) 32vw, 17vw" format="webp" />
-                <span class="sr-only">Ver {title}</span>
-              </label>
+              <div class="day__scene" data-scene={index} data-photo-scene>
+                <div class="day__photo" data-gallery-tile>
+                  <Image src={image} alt={alt} widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
+                    sizes="(max-width: 40rem) calc(100vw - 24px), (width < 73rem) 58vw, 27vw" format="webp" />
+                </div>
+                <label class="day__preview" for={`day-activity-${next}`} data-gallery-tile>
+                  <Image src={preview} alt="" widths={[240, 360, 480, 640]} sizes="(width < 73rem) 32vw, 17vw" format="webp" />
+                  <span class="sr-only">Ver {title}</span>
+                </label>
+              </div>
             );
           })}
+        </div>
+        <div class="gallery-pagination liquid-glass--clear day__pagination" data-gallery-pagination>
+          {activities.map(({ title }, index) => (
+            <label data-gallery-dot for={`day-activity-${index}`} title={title}>
+              <span data-gallery-mark aria-hidden="true"></span>
+            </label>
+          ))}
+          <GalleryPlayback controls="day-activity-photos" />
         </div>
       </div>
       <div class="day__panel" data-reveal="quiet">
         <h3 id="day-panel-title">Así acompañamos sus días.</h3>
-        {/* Stack hidden copies of each state to reserve the largest wrapped layout. */}
-        {[null, ...activities.map((_, index) => index)].map((sizingIndex) => {
-          const sizing = sizingIndex !== null;
-          const List = sizing ? 'div' : 'fieldset';
-          const Row = sizing ? 'div' : 'label';
-          return (
-            <List class:list={['day__activity-list', sizing && 'day__activity-list--sizing']}
-              aria-hidden={sizing || undefined} aria-labelledby={sizing ? undefined : 'day-panel-title'}>
-              {activities.map(({ title, mobileTitle, description, icon }, index) => (
-                <div class="day__activity">
-                  {!sizing && <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
-                    aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />}
-                  <Row class:list={['day__activity-label',
-                    !sizing && 'liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row liquid-glass__trigger']}
-                    for={sizing ? undefined : `day-activity-${index}`}>
-                    <span class="day__index" aria-hidden="true">0{index + 1}</span>
-                    <span class="day__activity-title">
-                      <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
-                      {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
-                    </span>
-                    {sizing ? <span class="day__icon-placeholder"></span> : <Pictogram name={icon} />}
-                    <span class="day__activity-description" data-sizing-open={sizingIndex === index || undefined}
-                      id={sizing ? undefined : `day-activity-description-${index}`}>{description}</span>
-                  </Row>
-                </div>
-              ))}
-            </List>
-          );
-        })}
+        <fieldset class="day__activity-list" aria-labelledby="day-panel-title">
+          {activities.map(({ title, mobileTitle, description, icon }, index) => (
+            <div class="day__activity">
+              <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0} data-gallery-control
+                aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />
+              <label class="day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row liquid-glass__trigger"
+                for={`day-activity-${index}`}>
+                <span class="day__index" aria-hidden="true">0{index + 1}</span>
+                <span class="day__activity-title">
+                  <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
+                  {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
+                </span>
+                <Pictogram name={icon} />
+                <span class="gallery-detail day__activity-detail">
+                  <span id={`day-activity-description-${index}`}>{description}</span>
+                </span>
+              </label>
+            </div>
+          ))}
+        </fieldset>
       </div>
 
       <div class="day__facilities">
@@ -145,8 +133,7 @@ const facilities = [
 <script>
   import { setupRadioGallery } from '../scripts/gallery';
   const day = document.querySelector<HTMLElement>('#centro-de-dia');
-  const gallery = day?.querySelector<HTMLElement>('[data-swipe-gallery]');
-  if (day && gallery) setupRadioGallery(gallery, [...day.querySelectorAll<HTMLInputElement>('input[name="day-activity"]')], [...gallery.querySelectorAll<HTMLElement>('[data-photo-scene]')], day);
+  if (day) setupRadioGallery(day);
 </script>
 
 <style>
@@ -160,42 +147,46 @@ const facilities = [
     grid-template-areas: "gallery" "panel" "facilities" "invite";
     gap: var(--section-gap);
   }
-  .day__gallery { grid-area: gallery; display: grid; grid-template-columns: 1fr; gap: var(--space-related); }
-  .day__media { display: grid; align-content: start; gap: .375rem; min-inline-size: 0; }
-  .day__photo { position: relative; aspect-ratio: 366 / 320; overflow: hidden; border-radius: clamp(1rem, 2vw, 1.75rem); }
-  .day__photo, .day__previews, .day__facilities img { box-shadow: var(--shadow-card); }
+  .day__gallery {
+    grid-area: gallery;
+    display: grid;
+    grid-template: "photo" min-content "pagination" 1fr / minmax(0, 1fr);
+    align-items: start;
+    gap: .375rem var(--space-related);
+    isolation: isolate;
+  }
+  .day__scenes { display: contents; }
+  .day__scene { --photo-display: contents; display: none; }
+  .day__photo { grid-area: photo; position: relative; aspect-ratio: 366 / 320; overflow: hidden; border-radius: clamp(1rem, 2vw, 1.75rem); }
+  .day__photo, .day__preview, .day__facilities img { box-shadow: var(--shadow-card); }
+  .day__pagination { grid-area: pagination; z-index: 3; }
   .day__composition:has(#day-activity-0:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(1) [data-gallery-mark],
   .day__composition:has(#day-activity-1:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(2) [data-gallery-mark],
   .day__composition:has(#day-activity-2:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(3) [data-gallery-mark] { inline-size: var(--gallery-indicator-width); opacity: 1; }
-  .day__activity-photo, .day__preview img, .day__facilities img {
+  .day__photo img, .day__preview img, .day__facilities img {
     display: block;
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
   }
-  .day__activity-photo { position: absolute; inset: 0; display: none; object-position: center 14%; }
-  .day__composition:has(#day-activity-0:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--0,
-  .day__composition:has(#day-activity-1:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--1,
-  .day__composition:has(#day-activity-2:checked) .day__photo:not([data-gallery-ready]) .day__activity-photo--2 { display: block; }
-  .day__activity-photo--2 { object-position: 58% 14%; }
-  .day__previews { display: none; }
-  .day__preview { grid-area: 1 / 1; visibility: hidden; overflow: hidden; border-radius: inherit; cursor: pointer; }
-  :is(.day[data-gallery-index="0"], .day:not([data-gallery-index]):has(#day-activity-0:checked)) .day__preview[data-preview-for="0"],
-  :is(.day[data-gallery-index="1"], .day:not([data-gallery-index]):has(#day-activity-1:checked)) .day__preview[data-preview-for="1"],
-  :is(.day[data-gallery-index="2"], .day:not([data-gallery-index]):has(#day-activity-2:checked)) .day__preview[data-preview-for="2"] { visibility: visible; }
-  .day__panel { grid-area: panel; display: grid; grid-template-areas: "title" "activities"; align-content: center; gap: var(--space-related); padding: var(--space-inset); border-radius: clamp(1.5rem, 3vw, 1.75rem); background: var(--surface-forest); color: var(--color-cream); box-shadow: var(--shadow-card); }
-  .day__panel h3 { grid-area: title; color: inherit; }
-  .day__activity-list { grid-area: activities; display: grid; align-content: start; gap: var(--space-detail); min-inline-size: 0; }
-  .day__activity-list--sizing { visibility: hidden; }
+  .day__photo img { position: absolute; inset: 0; object-position: center 14%; }
+  .day__scene[data-scene="2"] .day__photo img { object-position: 58% 14%; }
+  .day:not([data-gallery-ready]):has(#day-activity-0:checked) .day__scene[data-scene="0"],
+  .day:not([data-gallery-ready]):has(#day-activity-1:checked) .day__scene[data-scene="1"],
+  .day:not([data-gallery-ready]):has(#day-activity-2:checked) .day__scene[data-scene="2"] { display: contents; }
+  .day__preview { grid-area: preview; position: relative; display: none; overflow: hidden; border-radius: 1.75rem; cursor: pointer; }
+  .day__preview img { position: absolute; inset: 0; }
+  .day__panel { grid-area: panel; display: grid; align-content: center; gap: var(--space-related); padding: var(--space-inset); border-radius: clamp(1.5rem, 3vw, 1.75rem); background: var(--surface-forest); color: var(--color-cream); box-shadow: var(--shadow-card); }
+  .day__panel h3 { color: inherit; }
+  .day__activity-list { display: grid; gap: var(--space-detail); min-inline-size: 0; }
   .day__activity { position: relative; }
   .day__radio { position: absolute; opacity: 0; }
   .day__activity-label {
-    --activity-row-gap: calc(var(--space-detail) / 2);
     --activity-inset: .75rem;
     display: grid;
     grid-template-columns: clamp(1.75rem, 1.4rem + 1vw, 2.125rem) minmax(0, 1fr) auto;
     align-items: center;
-    gap: var(--activity-row-gap) clamp(.5rem, 1vw, 1rem);
+    column-gap: clamp(.5rem, 1vw, 1rem);
     padding: var(--space-detail) var(--activity-inset);
     min-block-size: var(--control-row-min-height);
     cursor: pointer;
@@ -210,11 +201,11 @@ const facilities = [
     content: '';
   }
   .day__activity:last-child .day__activity-label::after { display: none; }
-  .day__icon-placeholder { inline-size: 24px; block-size: 24px; }
   .day__activity-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); }
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
-  .day__activity-description { grid-column: 2 / -1; display: none; max-inline-size: 62ch; text-wrap: pretty; }
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label {
+  .day__activity-detail { grid-column: 2 / -1; max-inline-size: 62ch; text-wrap: pretty; }
+  .day__activity-detail > span::before { content: ''; display: block; block-size: calc(var(--space-detail) / 2); }
+  :is(.day__radio[data-gallery-current], .day:not([data-gallery-ready]) .day__radio:checked) + .day__activity-label {
     --glass-rest-visibility: 1;
     --glass-color: var(--color-forest);
     --glass-fill: var(--glass-clear-tint);
@@ -222,6 +213,9 @@ const facilities = [
     --glass-highlight: var(--highlight-light);
     --glass-depth: 0 0 transparent;
     --glass-press: var(--glass-press-clear);
+    --gallery-detail-open: 1;
+    --gallery-detail-size: 1fr;
+    --gallery-detail-visibility: visible;
 
     .day__index { background: var(--color-forest); color: var(--color-paper); }
     &::before { transition: none; }
@@ -236,12 +230,9 @@ const facilities = [
   }
   .day__radio:focus-visible + .day__activity-label { outline: 2px solid var(--glass-focus); outline-offset: 2px; }
   .day__radio:focus:not(:focus-visible) + .day__activity-label .day__index { outline: 1px solid currentColor; outline-offset: -3px; }
-  .day__activity-description[data-sizing-open],
-  .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { display: block; }
   @media (prefers-reduced-motion: no-preference) {
     .day__activity-label::after { transition: opacity var(--glass-row-motion) var(--ease-in-out); }
-    .day__radio:is([data-gallery-current], :checked:not([data-gallery-bound])) + .day__activity-label .day__activity-description { animation: day-description var(--motion-panel) var(--ease-soft) both; }
-    @keyframes day-description { from { opacity: .68; translate: 0 .18rem; } }
+    .day__preview { transition: box-shadow var(--motion-state); }
   }
   .day__facilities { grid-area: facilities; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; gap: var(--space-related); }
   .day__facilities img { aspect-ratio: 165 / 100; border-radius: clamp(.5rem, 1.25vw, 1.25rem); }
@@ -264,19 +255,19 @@ const facilities = [
     .day__desktop-title { display: none; }
     .day__mobile-title { display: block; }
   }
-  @media (min-width: 40.001rem) {
+  @media (width > 40rem) {
     .day__composition {
       grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
       grid-template-areas: "gallery gallery" "panel facilities" "invite invite";
       column-gap: var(--space-inset);
     }
-    .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
+    .day__gallery { grid-template-areas: "photo preview" "pagination preview"; grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
     .day__photo { aspect-ratio: 440 / 360; }
     .day__activity-list { gap: var(--space-control-gap); }
     .day__activity-label { padding-block: .75rem; }
-    .day__previews { display: grid; align-self: start; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; transition: box-shadow var(--motion-state); }
-    .day__previews:active { box-shadow: var(--shadow-control); }
-    @media (hover: hover) { .day__previews:hover { box-shadow: var(--shadow-raised); } }
+    .day__preview { display: block; margin-block-start: 2rem; aspect-ratio: 240 / 304; }
+    .day__preview:active { box-shadow: var(--shadow-control); }
+    @media (hover: hover) { .day__preview:hover { box-shadow: var(--shadow-raised); } }
     .day__facilities { grid-template-columns: 1fr; }
     .day__facilities img { aspect-ratio: 240 / 184; }
     .day__facilities img:first-child { inline-size: 86.3%; }
@@ -294,7 +285,7 @@ const facilities = [
     }
     .day__gallery { grid-template-columns: 520fr 324fr; }
     .day__photo { aspect-ratio: 520 / 592; }
-    .day__previews { margin-block-start: clamp(2.75rem, 3.75vw, 4.5rem); aspect-ratio: 324 / 448; }
+    .day__preview { margin-block-start: clamp(2.75rem, 3.75vw, 4.5rem); aspect-ratio: 324 / 448; }
     .day__panel { min-block-size: 83%; align-self: center; padding: clamp(1.5rem, 2.08vw, 2.5rem); }
     .day__facilities { grid-template-columns: 456fr 216fr; max-inline-size: 94.5%; margin-inline-start: clamp(-2.5rem, -2vw, -1.5rem); }
     .day__facilities img, .day__facilities img:first-child { inline-size: 100%; }

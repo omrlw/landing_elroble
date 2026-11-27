@@ -18,7 +18,6 @@ export function createStory(section: HTMLElement) {
   const detailImage = detail?.querySelector('img');
   const visit = section.querySelector<HTMLElement>('[data-story-visit]');
   const cues = [...section.querySelectorAll<HTMLElement>('[data-story-cue]')];
-  const links = [...section.querySelectorAll<HTMLElement>('[data-story-link], [data-story-visit]')];
 
   if (!reel || !hands || !workshop || !table || !portrait || !activity || !group
     || !openingCopy || !workshopCopy || !tableCopy || !portraitFrame || !tableFrame || !detail || !visit) return;
@@ -63,13 +62,7 @@ export function createStory(section: HTMLElement) {
       cue.style.setProperty('--cue-progress', String(chapterStops[index]));
     });
 
-    let activeChapter = -1;
-    function syncChapter(index: number) {
-      if (index === activeChapter) return;
-      activeChapter = index;
-      links.forEach((link, linkIndex) => { link.inert = index !== linkIndex; });
-    }
-    syncChapter(0);
+    visit.inert = true;
 
     const timeline = gsap.timeline({
       defaults: { ease: 'sine.inOut' },
@@ -95,8 +88,7 @@ export function createStory(section: HTMLElement) {
       .fromTo(tableCopy, { y: 22, opacity: 0 }, { y: 0, opacity: 1, ease: ease.settle, duration: 0.13 }, 0.75)
       .fromTo(visit, { y: 14, opacity: 0 }, { y: 0, opacity: 1, ease: ease.settle, duration: 0.14 }, 0.83)
       .eventCallback('onUpdate', () => {
-        const progress = timeline.progress();
-        syncChapter(progress < 0.16 ? 0 : progress >= 0.41 && progress < 0.49 ? 1 : progress >= 0.89 ? 2 : -1);
+        visit.inert = timeline.progress() < 0.89;
       });
 
     const frame = requestAnimationFrame(() => {
@@ -115,7 +107,7 @@ export function createStory(section: HTMLElement) {
         cue.removeAttribute('id');
         cue.style.removeProperty('--cue-progress');
       });
-      links.forEach((link) => { link.inert = false; });
+      visit.inert = false;
     };
   });
 

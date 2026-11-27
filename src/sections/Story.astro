@@ -1,9 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import Cta from '../components/Cta.astro';
-import ActionIcon from '../components/ActionIcon.astro';
-import oakTwig from '../assets/botanical/story-oak-twig.webp';
-import oakWood from '../assets/botanical/story-oak-wood.webp';
 import portrait from '../assets/story/manos-creando.jpg';
 import hands from '../assets/story/detalle-cuentas.jpg';
 import garden from '../assets/story/ronda-en-el-jardin.jpg';
@@ -16,7 +13,6 @@ const scenes = [
     heading: 'Una mañana',
     emphasis: 'en El Roble.',
     copy: 'En nuestro centro de día en Arequipa, hay tiempo para hacer algo con las manos, moverse y disfrutar de la compañía de otros.',
-    next: { href: '#historia-taller', label: 'Ver la ronda en el jardín' },
     image: portrait,
     alt: 'Una mujer ensarta cuentas de colores en una mesa de El Roble.',
   },
@@ -26,7 +22,6 @@ const scenes = [
     heading: 'Cada quien',
     emphasis: 'a su propio ritmo.',
     copy: 'Una ronda en el jardín invita a dar unos pasos y disfrutar juntos del aire libre.',
-    next: { href: '#historia-compania', label: 'Ver la partida de bingo' },
     image: garden,
     alt: 'Varias personas se toman de las manos en una ronda en el jardín de El Roble.',
   },
@@ -35,7 +30,6 @@ const scenes = [
     anchor: 'historia-compania',
     heading: 'La alegría',
     emphasis: 'de estar juntos.',
-    next: null,
     image: bingo,
     alt: 'Personas mayores y acompañantes juegan bingo en el salón de El Roble.',
   },
@@ -64,30 +58,10 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
             aria-labelledby={titleId}
             tabindex={index ? -1 : undefined}
           >
-            {index === 0 && (
-              <Image class="story__twig" src={oakTwig} alt="" aria-hidden="true"
-                width={280} widths={[112, 168, 224, 280]}
-                sizes="(min-width: 48rem) clamp(96px, 10vw, 144px), 68px" format="webp" />
-            )}
             <div class="container story__composition">
               <div class="story__copy" data-story-copy>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
                 {scene.copy && <p>{scene.copy}</p>}
-                {scene.next && (
-                  <a
-                    class="story__next liquid-glass liquid-glass--clear liquid-glass--interactive"
-                    href={scene.next.href}
-                    aria-label={scene.next.label}
-                    data-story-link
-                  >
-                    <ActionIcon name="arrow-down" size={20} />
-                  </a>
-                )}
-                {index === 1 && (
-                  <Image class="story__wood" src={oakWood} alt="" aria-hidden="true"
-                    width={320} widths={[96, 144, 224, 320]}
-                    sizes="(min-width: 48rem) clamp(80px, 10vw, 144px), 80px" format="webp" />
-                )}
               </div>
               <figure class="story__photo">
                 <div class="story__frame" data-story-frame>
@@ -118,7 +92,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
                   </div>
                 )}
               </figure>
-              {!scene.next && (
+              {scene.key === 'table' && (
                 <div class="story__visit" id="historia-visita" data-story-visit tabindex="-1" role="group" aria-label="Visita a El Roble">
                   <p>Ven a conocer El Roble y conversemos sobre lo que necesita tu familia.</p>
                   <Cta variant="light" />
@@ -164,28 +138,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
   .story__scene--hands { padding-block-end: calc(var(--space-section) / 2); }
   .story__scene--workshop { padding-block-start: calc(var(--space-section) / 2); }
 
-  .story__twig,
-  .story__wood {
-    position: absolute;
-    block-size: auto;
-    pointer-events: none;
-  }
-
-  .story__twig {
-    z-index: -1;
-    inset: 1rem var(--page-gutter) auto auto;
-    inline-size: clamp(3.5rem, 16vw, 4.25rem);
-    rotate: 11deg;
-    opacity: .72;
-  }
-
-  .story__wood {
-    inset: auto .375rem .25rem auto;
-    inline-size: clamp(5rem, 10vw, 9rem);
-    rotate: -8deg;
-    opacity: .76;
-  }
-
   .story__scene--table {
     --story-ink: var(--color-paper);
     --story-accent: var(--color-honey);
@@ -230,24 +182,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 
   .story__copy p {
     max-inline-size: 48ch;
-  }
-
-  .story__next {
-    display: inline-grid;
-    place-items: center;
-    inline-size: 3rem;
-    block-size: 3rem;
-    border-radius: 50%;
-  }
-
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .story__next svg {
-      transition: translate var(--motion-state) var(--ease-soft);
-    }
-
-    .story__next:hover svg {
-      translate: 0 .125rem;
-    }
   }
 
   .story__photo {
@@ -318,12 +252,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
   }
 
   @media (min-width: 48rem) {
-    .story__twig {
-      inset: auto auto 5% max(var(--page-gutter) + 5rem, (100% - var(--content-max-width)) / 2 + 5rem);
-      inline-size: clamp(4.5rem, 10vw, 9rem);
-      rotate: -12deg;
-    }
-
     .story__scene:is(.story__scene--hands, .story__scene--workshop) .story__composition {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: center;
@@ -337,13 +265,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
       aspect-ratio: 2.2;
     }
 
-  }
-
-  @media (48rem <= width < 80rem) {
-    .story__twig {
-      inset-inline-start: 27%;
-      inline-size: clamp(4rem, 8vw, 6rem);
-    }
   }
 
   /* The base layout remains a continuous photo essay on short screens and

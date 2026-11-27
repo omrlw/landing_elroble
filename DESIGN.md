@@ -58,7 +58,6 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 | Icono | Tamaño | Uso |
 | --- | --- | --- |
 | Flecha derecha | 16 px | Llamadas a la acción, incluida la de agendar en la cabecera |
-| Flecha abajo | 20 px | Avanzar entre escenas de Historia |
 | Flecha diagonal | 16 px | Enlace a publicaciones en TikTok |
 | Más y menos | 16 px | Filas desplegables de Confianza y Preguntas frecuentes, con medallón de 28 px |
 | Chevrón | 14 px | Abrir y cerrar «Nosotros» en la navegación |
@@ -86,7 +85,7 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 ## Ilustraciones botánicas
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
-- La hoja del hero nace junto al final del título. Historia abre con un brote y retoma el corte de madera en la escena del jardín.
+- La hoja del hero nace junto al final del título.
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
 
