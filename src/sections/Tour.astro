@@ -61,7 +61,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
         <p class="tour-tablet">Conoce la entrada, el jardín y los salones donde se realizan las actividades.</p>
         <p class="tour-mobile">Un lugar para compartir y sentirse bien.</p>
       </div>
-      <BotanicalArt class="tour-branch" motif="branch" />
+      <BotanicalArt motif="branch" />
     </header>
 
     <div class="tour-layout">
@@ -79,7 +79,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
             />
             <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
               <OpticalGlass source="image" />
-              <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+              <span class="pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
                 <Pictogram name={id} />
               </span>
               <span class="tour-tablet">{label}</span>
@@ -102,7 +102,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
           />
           <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
             <OpticalGlass source="image" />
-            <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+            <span class="pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
               <Pictogram name={id} />
             </span>
             <span class="tour-tablet">{label}</span>
@@ -114,12 +114,12 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
       <div class="tour-gallery" data-tour-gallery data-reveal="rail">
         <div class="tour-track" id="tour-photos" role="region" aria-label="Galería del centro" tabindex="0">
           {galleryPhotos.map(({ id, photo, alt, label }) => (
-            <figure class={`tour-slide tour-slide--${id}`} data-glass-scene>
+            <figure class:list={['tour-slide', (id === 'entrance' || id === 'activities') && `tour-slide--${id}`]} data-glass-scene>
               {/* Cover scales these 1200:540 photos to the card's 420px height before cropping. */}
               <Image src={photo} alt={alt} format="webp" widths={[960, 1200]} sizes="934px" data-glass-image />
               <figcaption class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
                 <OpticalGlass source="image" />
-                <span class="tour-tag-symbol pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+                <span class="pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
                   <Pictogram name={id} />
                 </span>
                 {label}

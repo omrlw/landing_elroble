@@ -49,7 +49,7 @@ const credentials = [
       <div class="hero-media__photos" id="hero-gallery-photos">
         {photos.map(({ src, alt, position }, index) => (
           <div class="hero-media__scene" data-photo-scene>
-            <Picture {src} {alt} style={position ? `object-position: ${position}` : undefined} formats={['avif', 'webp']} fallbackFormat="jpg" quality={82}
+            <Picture {src} {alt} style={position ? `object-position: ${position}` : undefined} formats={['avif']} fallbackFormat="webp" quality={82}
               widths={[480, 768, 960, 1200, 1680, 2240].filter((width) => width <= src.width)}
               sizes="(max-width: 40rem) 52rem, (max-width: 73rem) max(60rem, calc(100vw - 64px)), min(87.5vw, 1600px)"
               loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'low'} decoding="async" />

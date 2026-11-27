@@ -52,7 +52,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
     <span class="story__cue" data-story-cue="historia-compania" aria-hidden="true"></span>
     <span class="story__cue" data-story-cue="historia-visita" aria-hidden="true"></span>
 
-    <div class="story__stage" data-story-stage>
+    <div class="story__stage">
       {scenes.map((scene, index) => {
         const Title = index === 0 ? 'h2' : 'h3';
         const titleId = index === 0 ? 'story-title' : `${scene.anchor}-titulo`;

@@ -293,7 +293,6 @@ export function setupSnapTrack(track: HTMLElement, buttons: HTMLButtonElement[],
       else button.removeAttribute('aria-current');
     });
     pagination?.select(active);
-    if (!pageCount) slides.forEach((slide, index) => slide.toggleAttribute('data-snapped', index === active));
   };
 
   const measure = () => {

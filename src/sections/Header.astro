@@ -46,7 +46,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
           <OpticalGlass class="site-nav__lens" indicator />
           <ul class="site-nav__list" role="list">
             {primaryLinks.map(({ label, href }) => (
-              <li class="site-nav__item">
+              <li>
                 <a class:list={['site-nav__link', glassLink]} href={href}>{label}</a>
               </li>
             ))}

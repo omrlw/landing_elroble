@@ -88,6 +88,16 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
 - Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
 
+## Fotografías de Historia
+
+Las fotografías proceden del archivo de El Roble.
+
+| Fotografías publicadas | Original |
+| --- | --- |
+| `manos-creando.jpg` y `detalle-cuentas.jpg` | `roble_fotos1/IMG_20260713_120241.jpg.jpeg` |
+| `ronda-en-el-jardin.jpg` | `roble_fotos1/IMG_20260619_122622.jpg.jpeg` |
+| `bingo-en-el-roble.jpg` | `roble_fotos2/IMG_20260917_120430.jpg.jpeg` |
+
 ## Vidrio y refracción
 
 El vidrio óptico tiene un centro casi transparente y concentra la refracción en el borde. El reflejo fino define la forma sobre fondos lisos. Sobre fotos o follaje, el borde curva la imagen y el centro conserva el detalle. El texto y los iconos se componen por encima del efecto.
@@ -123,8 +133,6 @@ En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorn
 ### Verificación del vidrio
 
 Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
-
-Se verificaron capturas a 320, 390, 768 y 1440 px en Chromium, y a 390 y 1440 px en Firefox y WebKit. Se probó también el fundido del hero, el cambio de ancho con la página abierta y la restauración de las lentes al volver de colores forzados.
 
 El sello de primera visita mantiene el roble sólido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 

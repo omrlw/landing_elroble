@@ -29,14 +29,14 @@ const surfaceClasses = {
 
 <a class:list={[
   'cta liquid-glass liquid-glass--interactive',
-  `cta--${variant}`,
+  variant !== 'primary' && `cta--${variant}`,
   surfaceClasses[variant],
   className,
 ]} href={href}>
   {compactLabel ? (
     <>
-      <span class="cta-label cta-label--full">{label}</span>
-      <span class="cta-label cta-label--compact">{compactLabel}</span>
+      <span class="cta-label--full">{label}</span>
+      <span class="cta-label--compact">{compactLabel}</span>
     </>
   ) : (
     <span>{label}</span>
