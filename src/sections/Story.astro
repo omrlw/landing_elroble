@@ -48,9 +48,9 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 
 <section class="story" id="historia" tabindex="-1" aria-labelledby="story-title" data-story>
   <div class="story__reel" data-story-reel>
-    <span class="story__cue" data-story-cue="historia-taller" aria-hidden="true"></span>
-    <span class="story__cue" data-story-cue="historia-compania" aria-hidden="true"></span>
-    <span class="story__cue" data-story-cue="historia-visita" aria-hidden="true"></span>
+    <span class="story__cue" data-story-cue aria-hidden="true"></span>
+    <span class="story__cue" data-story-cue aria-hidden="true"></span>
+    <span class="story__cue" data-story-cue aria-hidden="true"></span>
 
     <div class="story__stage">
       {scenes.map((scene, index) => {
@@ -121,7 +121,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
               {!scene.next && (
                 <div class="story__visit" id="historia-visita" data-story-visit tabindex="-1" role="group" aria-label="Visita a El Roble">
                   <p>Ven a conocer El Roble y conversemos sobre lo que necesita tu familia.</p>
-                  <Cta label="Agendar una visita" variant="light" />
+                  <Cta variant="light" />
                 </div>
               )}
             </div>

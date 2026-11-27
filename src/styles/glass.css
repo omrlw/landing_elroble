@@ -1,0 +1,225 @@
+@property --glass-wash {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
+:where(.liquid-glass, .gallery-pagination) {
+  --glass-fill: var(--surface-action);
+  --glass-backdrop: var(--glass-forest-tint);
+  --glass-sheen: none;
+  --glass-edge: transparent;
+  --glass-highlight: var(--highlight-dark);
+  --glass-depth: var(--shadow-control);
+  --glass-color: var(--color-paper);
+  --glass-focus: var(--color-paper);
+  --glass-focus-shadow: 0 0 0 2px var(--color-forest);
+  --glass-lift: color-mix(in srgb, var(--color-paper) 10%, transparent);
+  --glass-press: color-mix(in srgb, var(--color-ink) 15%, transparent);
+  --glass-wash: transparent;
+}
+
+.liquid-glass:where(:not(.liquid-glass--underlay)),
+.liquid-glass--underlay::before,
+.gallery-pagination::before,
+.gallery-playback::before {
+  --glass-material: var(--glass-fill);
+  background-image: linear-gradient(var(--glass-wash), var(--glass-wash)),
+    var(--glass-sheen), var(--glass-material);
+  box-shadow: var(--glass-highlight), inset 0 0 0 1px var(--glass-edge), var(--glass-depth, 0 0 transparent);
+}
+
+.liquid-glass, .gallery-pagination { color: var(--glass-color); }
+
+.liquid-glass--underlay {
+  --glass-visible: var(--glass-rest-visibility, 0);
+  --glass-rest-visibility: 0;
+  position: relative;
+  isolation: isolate;
+}
+.liquid-glass--underlay::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  opacity: var(--glass-visible, 0);
+  pointer-events: none;
+  content: '';
+}
+
+.liquid-glass--row { border-radius: .9rem; }
+.liquid-glass--row:where(.liquid-glass__trigger:active, :has(.liquid-glass__trigger:not([aria-disabled='true']):active)) {
+  --glass-visible: 1;
+  --glass-wash: var(--glass-press);
+}
+@media (hover: hover) {
+  .liquid-glass--row:where(.liquid-glass__trigger:hover, :has(.liquid-glass__trigger:not([aria-disabled='true']):hover)) {
+    --glass-visible: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .liquid-glass--row::before { transition: opacity var(--glass-row-motion) var(--ease-in-out); }
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .liquid-glass--blur:where(:not(.liquid-glass--underlay)),
+  .liquid-glass--blur.liquid-glass--underlay::before,
+  .gallery-pagination::before,
+  .gallery-playback::before {
+    --glass-material: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-filter, var(--glass-blur));
+    backdrop-filter: var(--glass-filter, var(--glass-blur));
+  }
+}
+
+:is(.liquid-glass--clear, .liquid-glass--reading) {
+  --glass-fill: var(--glass-clear-tint);
+  --glass-backdrop: var(--glass-clear-tint);
+  --glass-sheen: var(--glass-sheen-clear);
+  --glass-edge: var(--glass-edge-clear);
+  --glass-highlight: var(--glass-highlight-clear);
+  --glass-depth: var(--glass-shadow-soft);
+  --glass-color: var(--color-ink);
+  --glass-focus: var(--color-action);
+  --glass-focus-shadow: 0 0 0 2px var(--color-paper);
+  --glass-lift: var(--glass-lift-clear);
+  --glass-press: var(--glass-press-clear);
+}
+
+.liquid-glass--reading {
+  --glass-fill: var(--surface-paper);
+  --glass-sheen: none;
+  --glass-edge: var(--glass-divider);
+  --glass-depth: var(--glass-shadow-reading);
+}
+
+.liquid-glass--action {
+  --glass-sheen: var(--glass-sheen-forest);
+  --glass-edge: var(--glass-edge-forest);
+  --glass-focus: var(--color-paper);
+}
+
+.liquid-glass--oak {
+  --glass-fill: linear-gradient(var(--color-oak-highlight), var(--color-oak));
+}
+
+.liquid-glass--forest-panel {
+  --glass-fill: var(--surface-on-forest);
+  --glass-color: var(--color-cream);
+}
+
+.liquid-glass--optical {
+  --glass-optical-solid: var(--surface-paper);
+  --glass-fill: none;
+  --glass-backdrop: none;
+  --glass-sheen: none;
+  --glass-edge: transparent;
+  --glass-highlight: inset 0 0 transparent;
+  position: relative;
+  isolation: isolate;
+}
+.liquid-glass--optical.liquid-glass--action { --glass-optical-solid: var(--surface-action); }
+.liquid-glass--optical.liquid-glass--clear {
+  --optical-film: linear-gradient(
+    color-mix(in srgb, var(--color-cream) 84%, transparent),
+    color-mix(in srgb, var(--color-cream) 72%, transparent)
+  );
+}
+.liquid-glass--optical > .optical-glass { z-index: -1; }
+
+.liquid-glass--clear.liquid-glass--lens {
+  --glass-fill: var(--glass-lens-clear);
+  --glass-sheen: none;
+  --glass-depth: 0 0 transparent;
+}
+
+.liquid-glass--forest-panel.liquid-glass--lens {
+  --glass-fill: var(--glass-lens-forest);
+  --glass-edge: var(--glass-edge-forest);
+  --glass-depth: 0 0 transparent;
+  --glass-color: var(--color-paper);
+}
+
+.liquid-glass--interactive:is(:active, [aria-current='location'], [aria-expanded='true']) { --glass-visible: 1; }
+.liquid-glass--interactive:active { --glass-wash: var(--glass-press); }
+.liquid-glass--interactive:focus-visible {
+  outline: 2px solid var(--glass-focus);
+  outline-offset: 2px;
+}
+.liquid-glass--interactive.liquid-glass--underlay:focus-visible {
+  box-shadow: var(--glass-focus-shadow);
+}
+.liquid-glass--interactive:where(:not(.liquid-glass--underlay)):focus-visible {
+  box-shadow: var(--glass-focus-shadow), var(--glass-highlight), inset 0 0 0 1px var(--glass-edge), var(--glass-depth);
+}
+
+@media (hover: hover) {
+  .liquid-glass--interactive:hover {
+    --glass-visible: 1;
+    --glass-edge: var(--glass-hover-edge, var(--glass-edge-forest));
+  }
+  .liquid-glass--interactive.liquid-glass--clear { --glass-hover-edge: var(--glass-edge-clear); }
+  .liquid-glass--interactive:hover:not(:active) { --glass-wash: var(--glass-lift); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .liquid-glass--interactive {
+    transition:
+      --glass-wash var(--glass-motion) var(--glass-ease),
+      box-shadow var(--glass-motion) var(--glass-ease);
+  }
+
+  .liquid-glass--underlay.liquid-glass--interactive::before {
+    transition:
+      opacity var(--glass-motion) var(--glass-ease),
+      box-shadow var(--glass-motion) var(--glass-ease);
+  }
+}
+
+.optical-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: clip;
+  pointer-events: none;
+}
+.optical-glass:where(:not([data-optical-image])) {
+  -webkit-backdrop-filter: var(--optical-backdrop-blur);
+  backdrop-filter: var(--optical-backdrop-blur);
+}
+.optical-glass__sample {
+  position: absolute;
+  inset: -.75rem;
+  background: var(--optical-sample-background, transparent);
+  opacity: 0;
+}
+.optical-glass__sample[data-optical-ready] { opacity: 1; }
+.optical-glass__sample img {
+  position: absolute;
+  inset: 0 auto auto 0;
+  max-inline-size: none;
+}
+.optical-glass::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(var(--glass-wash), var(--glass-wash)), var(--optical-film, transparent);
+  box-shadow: var(--optical-rim, var(--optical-bevel));
+  content: '';
+}
+@media (prefers-reduced-motion: no-preference) {
+  .optical-glass__sample { transition: opacity var(--motion-state) var(--ease-soft); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass--clear { --glass-fill: var(--surface-paper); --glass-backdrop: var(--surface-paper); }
+  .optical-glass { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .optical-glass__sample { display: none; }
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .liquid-glass--optical { --glass-fill: var(--glass-optical-solid); --glass-backdrop: var(--glass-optical-solid); }
+  .liquid-glass--optical > .optical-glass { display: none; }
+}
+@media (forced-colors: active) {
+  .optical-glass { display: none; }
+  .liquid-glass--interactive { border-color: ButtonText; }
+}

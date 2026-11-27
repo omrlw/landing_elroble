@@ -210,8 +210,8 @@ const placements = [
     --glass-hover-edge: var(--glass-edge-selected);
     min-height: 2.5rem;
     padding-inline: .875rem;
-    margin-block-start: .5rem;
-    border-radius: 999px;
+    margin-block-start: var(--space-detail);
+    border-radius: var(--radius-pill);
     font-size: var(--text-meta);
     font-weight: 600;
   }
@@ -267,7 +267,7 @@ const placements = [
   }
   .review-popover h3 { margin: 0; }
   .review-popover blockquote { margin: 1rem 0; }
-  .review-popover button { border: 1px solid transparent; border-radius: 999px; padding: .65rem 1rem; font-size: var(--text-control); font-weight: 600; }
+  .review-popover button { border: 1px solid transparent; border-radius: var(--radius-pill); padding: .65rem 1rem; font-size: var(--text-control); font-weight: 600; }
 
   @media (prefers-reduced-motion: no-preference) {
     @supports (transition-behavior: allow-discrete) and selector(:popover-open) {
@@ -306,7 +306,7 @@ const placements = [
     .review-opening p { display: block; margin: 0; }
     .review-sprig { inline-size: clamp(5.5rem, 12vw, 11rem); margin-inline-end: 0; }
     .review-track { grid-auto-columns: clamp(13rem, 27vw, 16rem); }
-    .review-card { min-height: 14rem; border-radius: 1.5rem; }
+    .review-card { min-height: 14rem; border-radius: var(--radius-card); }
     .quote, .relationship, .rating-caption { display: none; }
     .tablet-quote { display: block; }
     .avatar { width: 2.25rem; height: 2.25rem; }

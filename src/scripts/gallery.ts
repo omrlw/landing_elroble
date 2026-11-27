@@ -1,5 +1,6 @@
 import { createPagination } from './pagination';
-import { reducedMotion, setupAutoAdvance } from './autoplay';
+import { setupAutoAdvance } from './autoplay';
+import { desktop, reducedMotion } from './media';
 import { duration, gsap } from '../motion/gsap';
 
 export function setupRadioGallery(
@@ -21,10 +22,10 @@ export function setupRadioGallery(
   let gesture: { id: number; x: number; y: number; dragging: boolean } | undefined;
 
   const photos = scenes.map((scene) => scene instanceof HTMLImageElement ? [scene] : [...scene.querySelectorAll('img')]);
-  const desktopMosaic = matchMedia('(min-width: 73rem)');
   const warm = (index: number) => {
     for (const image of photos[index]) {
-      if (!image.closest('[data-gallery-extra]') || desktopMosaic.matches) image.loading = 'eager';
+      if (image.loading === 'eager') continue;
+      if (desktop.matches || !image.closest('[data-gallery-extra]')) image.loading = 'eager';
     }
   };
   const wrap = (index: number) => (index + scenes.length) % scenes.length;
@@ -34,10 +35,11 @@ export function setupRadioGallery(
   };
 
   const setCurrent = (index: number) => {
+    controls[selected].removeAttribute('data-gallery-current');
     selected = index;
     nextAutomatic = index;
     controls[index].checked = true;
-    controls.forEach((control, position) => control.toggleAttribute('data-gallery-current', position === index));
+    controls[index].setAttribute('data-gallery-current', '');
     for (const [position, scene] of scenes.entries()) scene.setAttribute('aria-hidden', String(position !== index));
     scenes[index].dataset.photoState = 'active';
     root.dataset.galleryIndex = String(index);

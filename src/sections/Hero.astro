@@ -59,7 +59,7 @@ const credentials = [
       <div class="hero-media__shade" aria-hidden="true"></div>
       <Cta class="hero-media__tour" href="#recorrido" label="Ver el recorrido" variant="glass" />
       <div class="hero-media__experience liquid-glass liquid-glass--blur">
-        <OpticalGlass class="hero-media__mobile-lens" source="photo" />
+        <OpticalGlass class="hero-media__mobile-lens" sampleImage />
         <p class="hero-media__year"><span>desde</span> <strong>{business.foundedYear}</strong></p>
         <p>Acompañando a personas mayores y sus familias.</p>
       </div>
@@ -190,7 +190,7 @@ const credentials = [
   }
   .hero-media__experience > p { position: relative; }
   :global(.hero-media__mobile-lens) { display: none; }
-  .hero-media__year { display: grid; gap: .75rem; margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, var(--color-on-forest-line), transparent) left bottom / 100% 1px no-repeat; }
+  .hero-media__year { display: grid; gap: var(--space-control-gap); margin-block-end: .75rem; padding-block-end: .875rem; background: linear-gradient(90deg, var(--color-on-forest-line), transparent) left bottom / 100% 1px no-repeat; }
   .hero-media__year span { color: var(--color-on-forest-muted); }
   .hero-media__year strong { font: 700 clamp(3rem, 2.65rem + .75vw, 4rem) / 1 var(--font-display); }
 
@@ -279,8 +279,8 @@ const credentials = [
   .first-visit__dismiss {
     position: absolute;
     inset: -.75rem -.375rem auto auto;
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
+    inline-size: var(--control-size);
+    block-size: var(--control-size);
     display: grid;
     place-items: center;
     border-radius: 50%;
@@ -306,7 +306,7 @@ const credentials = [
     inline-size: min(100%, 25rem);
     margin-block-start: calc(max(1rem, var(--space-related)) - var(--opening-gap));
     padding: .45rem 1.25rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font-size: clamp(.9375rem, .87rem + .24vw, var(--text-control));
     font-weight: 600;
     line-height: 1.3;
@@ -336,7 +336,7 @@ const credentials = [
       display: block;
     }
     .hero-media__experience { padding: 1rem; inline-size: 100%; }
-    .hero-media__year { display: flex; align-items: center; gap: .5rem; margin-block-end: .375rem; padding: 0; background: none; }
+    .hero-media__year { display: flex; align-items: center; gap: var(--space-detail); margin-block-end: .375rem; padding: 0; background: none; }
     .hero-media__year strong { font-size: 2rem; }
     .first-visit { --offer-size: 7rem; grid-area: lead; margin: 2rem .625rem 0 0; }
     .first-visit__dismiss { border-radius: .875rem; }

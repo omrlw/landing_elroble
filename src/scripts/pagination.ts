@@ -1,6 +1,7 @@
 export function createPagination(rail: HTMLElement | null) {
-  const markers = [...(rail?.querySelectorAll<HTMLElement>('[data-gallery-dot]') ?? [])];
-  if (!rail || !markers.length) return;
+  if (!rail) return;
+  const markers = rail.querySelectorAll<HTMLElement>('[data-gallery-dot]');
+  if (!markers.length) return;
 
   const indicator = document.createElement('span');
   indicator.className = 'gallery-indicator';
@@ -24,8 +25,9 @@ export function createPagination(rail: HTMLElement | null) {
 
   return {
     select(index: number) {
+      if (active !== index) markers[active]?.removeAttribute('data-dot-active');
       active = index;
-      markers.forEach((marker, position) => marker.toggleAttribute('data-dot-active', position === active));
+      markers[active]?.setAttribute('data-dot-active', '');
       place();
     },
   };

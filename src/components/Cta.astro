@@ -18,19 +18,18 @@ const {
   class: className,
 } = Astro.props;
 
-const surfaceClasses = {
+const variantClasses = {
   primary: 'liquid-glass--action',
-  light: 'liquid-glass--clear',
-  glass: 'liquid-glass--blur',
-  compact: 'liquid-glass--action',
-  oak: 'liquid-glass--action liquid-glass--oak',
+  light: 'cta--light liquid-glass--clear',
+  glass: 'cta--glass liquid-glass--blur',
+  compact: 'cta--compact liquid-glass--action',
+  oak: 'cta--oak liquid-glass--action liquid-glass--oak',
 };
 ---
 
 <a class:list={[
   'cta liquid-glass liquid-glass--interactive',
-  variant !== 'primary' && `cta--${variant}`,
-  surfaceClasses[variant],
+  variantClasses[variant],
   className,
 ]} href={href}>
   {compactLabel ? (
@@ -52,10 +51,10 @@ const surfaceClasses = {
     min-height: var(--cta-height, var(--cta-min-height));
     align-items: center;
     justify-content: var(--cta-justify, space-between);
-    gap: var(--cta-gap, 0.75rem);
+    gap: var(--cta-gap, var(--space-control-gap));
     padding: var(--cta-padding, 0.65rem clamp(1rem, 2vw, 1.5rem));
     border: 1px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font-size: var(--text-cta);
     line-height: var(--leading-control);
     font-weight: 600;
@@ -66,8 +65,8 @@ const surfaceClasses = {
   .cta-label--compact { display: none; }
 
   .cta--compact {
-    --cta-height: 2.75rem;
-    --cta-gap: 0.5rem;
+    --cta-height: var(--control-size);
+    --cta-gap: var(--space-detail);
     --cta-padding: 0.375rem 0.5rem 0.375rem 1.0625rem;
     --cta-medallion-size: 1.75rem;
     font-size: var(--text-meta);

@@ -1,0 +1,127 @@
+:root {
+  /* Color and surfaces */
+  --color-ink: #142013;
+  --color-forest: #1c2b1a;
+  --color-section-forest: #233322;
+  --color-action: #2b4027;
+  --color-oak: #532d12;
+  --color-cream: #f4f1ec;
+  --color-paper: #fcfaf5;
+  --color-sand: #e8e2d6;
+  --color-text: #3d3935;
+  --color-oak-highlight: #8a541f;
+  --color-honey: #e8d7b9;
+  --color-surface-line: color-mix(in srgb, var(--color-sand) 85%, var(--color-oak));
+  --color-on-forest-muted: color-mix(in srgb, var(--color-paper) 90%, var(--color-forest));
+  --color-on-forest-line: color-mix(in srgb, var(--color-cream) 22%, transparent);
+  --color-dialog-backdrop: color-mix(in srgb, var(--color-ink) 70%, transparent);
+
+  --surface-forest: linear-gradient(180deg, color-mix(in srgb, var(--color-action) 92%, var(--color-cream)) 0%, var(--color-forest) 100%);
+  --surface-action: linear-gradient(var(--color-action), var(--color-forest));
+  --surface-paper: linear-gradient(var(--color-paper), var(--color-cream));
+  --surface-on-forest: linear-gradient(
+    color-mix(in srgb, var(--color-cream) 12%, transparent),
+    color-mix(in srgb, var(--color-cream) 5%, transparent)
+  );
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
+  --font-body: 'Google Sans Flex', system-ui, sans-serif;
+  --text-hero: clamp(2.125rem, 1.4rem + 3.2vw, 5rem);
+  --text-section: clamp(2rem, 1.55rem + 2.35vw, 4rem);
+  --text-subheading: clamp(1.75rem, 1.54rem + .6vw, 2.375rem);
+  --text-item: clamp(1.375rem, 1.22rem + .52vw, 1.95rem);
+  --text-copy: clamp(1rem, .94rem + .27vw, 1.125rem);
+  --text-cta: clamp(1.0625rem, .995rem + .2vw, 1.125rem);
+  --text-control: 1rem;
+  --text-meta: .875rem;
+  --leading-title: 1.08;
+  --leading-item: 1.15;
+  --leading-copy: 1.6;
+  --leading-control: 1.25;
+
+  /* Elevation */
+  --shadow-control: 0 4px 12px -4px color-mix(in srgb, var(--color-ink) 28%, transparent);
+  --shadow-card: 0 8px 20px -10px color-mix(in srgb, var(--color-ink) 26%, transparent);
+  --shadow-raised: 0 16px 32px -14px color-mix(in srgb, var(--color-ink) 32%, transparent);
+  --shadow-cutout: 0 8px 12px color-mix(in srgb, var(--color-ink) 18%, transparent);
+  --highlight-light: inset 0 1px 1px color-mix(in srgb, white 80%, transparent);
+  --highlight-dark: inset 0 1px 1px color-mix(in srgb, var(--color-cream) 26%, transparent);
+
+  /* Glass */
+  --glass-blur: blur(12px);
+  --glass-forest-tint: linear-gradient(
+    color-mix(in srgb, var(--color-action) 86%, transparent),
+    color-mix(in srgb, var(--color-forest) 94%, transparent)
+  );
+  --glass-clear-tint: linear-gradient(var(--color-cream), color-mix(in srgb, var(--color-cream) 77%, transparent));
+  --glass-lift-clear: rgb(255 255 255 / 18%);
+  --glass-press-clear: rgb(29 27 23 / 12%);
+  --glass-edge-clear: rgb(41 37 31 / 15%);
+  --glass-divider: rgb(57 49 36 / 15%);
+  --glass-edge-selected: rgb(41 37 31 / 36%);
+  --glass-edge-forest: color-mix(in srgb, var(--color-paper) 26%, transparent);
+  --glass-highlight-clear: inset 0 1px 1px rgb(255 255 255 / 96%), inset 0 -1px 1px rgb(255 255 255 / 32%);
+  --glass-shadow-soft: 0 6px 14px -9px rgb(41 37 31 / 35%);
+  --glass-shadow-reading: 0 12px 28px -22px rgb(47 38 26 / 30%);
+  --glass-ease: cubic-bezier(.22, .66, .2, 1);
+  --glass-motion: 320ms;
+  --glass-row-motion: 420ms;
+  --glass-sheen-forest: radial-gradient(ellipse at 18% 0%,
+    color-mix(in srgb, var(--color-paper) 13%, transparent), transparent 70%);
+  --glass-lens-clear: radial-gradient(circle at 29% 18%, var(--color-paper), var(--color-cream) 52%, color-mix(in srgb, var(--color-cream) 72%, var(--color-sand)));
+  --glass-sheen-clear: radial-gradient(ellipse at 24% 0%, rgb(255 255 255 / 54%), transparent 70%);
+  --optical-backdrop-blur: blur(5px);
+  --optical-bevel: inset 0 1px 1px rgb(255 255 255 / 77%),
+    inset 0 -1px 1px rgb(44 38 28 / 17%), inset 0 0 0 1px rgb(80 71 54 / 16%);
+  --glass-bevel-dark: inset 0 0 0 1px rgb(255 255 255 / 30%),
+    inset 0 2px 3px -2px rgb(255 255 255 / 87%), inset 0 -2px 3px -2px rgb(252 249 241 / 30%);
+  --glass-lens-forest: radial-gradient(circle at 30% 24%,
+    color-mix(in srgb, var(--color-paper) 24%, transparent),
+    color-mix(in srgb, var(--color-paper) 7%, transparent) 57%,
+    color-mix(in srgb, var(--color-ink) 16%, transparent));
+
+  /* Layout and controls */
+  --radius-card: 1.5rem;
+  --radius-pill: 999px;
+  --control-size: 2.75rem;
+  --control-row-min-height: 3.25rem;
+  --cta-min-height: 3.75rem;
+  --content-max-width: 1600px;
+  --page-gutter: clamp(0.75rem, 5.29vw - 0.54rem, 2rem);
+  --section-edge: clamp(.75rem, 2vw, 2rem);
+  --space-detail: .5rem;
+  --space-control-gap: .75rem;
+  --space-related: clamp(.75rem, .65rem + .5vw, 1.25rem);
+  --space-inset: clamp(1rem, .75rem + 1vw, 2rem);
+  --section-gap: clamp(1.5rem, 0.98rem + 2.1vw, 3rem);
+  --space-section: clamp(2.5rem, 1.85rem + 2.6vw, 4.75rem);
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.25, 1);
+  --motion-press: 120ms;
+  --motion-exit: 160ms;
+  --motion-state: 240ms;
+  --motion-panel: 280ms;
+  --motion-gallery: 450ms;
+  --motion-reveal: 640ms;
+  --motion-scene: 800ms;
+
+  /* Anchor targets and the sticky story stage align to the compact bar. */
+  --header-compact-height: 4.375rem;
+  --header-block-size: calc(var(--header-compact-height) + 1px);
+}
+
+@media (max-width: 40rem) {
+  :root { --page-gutter: 0.75rem; }
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --page-gutter: clamp(2rem, 7.64vw - 1.67rem, 7.5rem);
+  }
+}
+
+@media (min-width: 42rem) { :root { --header-compact-height: 4.5rem; } }
+@media (min-width: 73rem) { :root { --header-compact-height: 4.75rem; } }

@@ -104,14 +104,15 @@ const facilities = [
                 <div class="day__activity">
                   {!sizing && <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0}
                     aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />}
-                  <Row class:list={['day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row',
-                    !sizing && 'liquid-glass__trigger']} for={sizing ? undefined : `day-activity-${index}`}>
+                  <Row class:list={['day__activity-label',
+                    !sizing && 'liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row liquid-glass__trigger']}
+                    for={sizing ? undefined : `day-activity-${index}`}>
                     <span class="day__index" aria-hidden="true">0{index + 1}</span>
                     <span class="day__activity-title">
                       <span class:list={[mobileTitle && 'day__desktop-title']}>{title}</span>
                       {mobileTitle && <span class="day__mobile-title">{mobileTitle}</span>}
                     </span>
-                    <Pictogram name={icon} />
+                    {sizing ? <span class="day__icon-placeholder"></span> : <Pictogram name={icon} />}
                     <span class="day__activity-description" data-sizing-open={sizingIndex === index || undefined}
                       id={sizing ? undefined : `day-activity-description-${index}`}>{description}</span>
                   </Row>
@@ -165,7 +166,7 @@ const facilities = [
   .day__photo, .day__previews, .day__facilities img { box-shadow: var(--shadow-card); }
   .day__composition:has(#day-activity-0:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(1) [data-gallery-mark],
   .day__composition:has(#day-activity-1:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(2) [data-gallery-mark],
-  .day__composition:has(#day-activity-2:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(3) [data-gallery-mark] { inline-size: 1rem; opacity: 1; }
+  .day__composition:has(#day-activity-2:checked) .day__pagination:not([data-pagination-ready]) label:nth-child(3) [data-gallery-mark] { inline-size: var(--gallery-indicator-width); opacity: 1; }
   .day__activity-photo, .day__preview img, .day__facilities img {
     display: block;
     inline-size: 100%;
@@ -199,7 +200,7 @@ const facilities = [
     min-block-size: var(--control-row-min-height);
     cursor: pointer;
   }
-  .day__activity-label::after {
+  .day__activity-label:where(.liquid-glass__trigger)::after {
     position: absolute;
     inset: auto var(--activity-inset) 0;
     block-size: 1px;
@@ -209,6 +210,7 @@ const facilities = [
     content: '';
   }
   .day__activity:last-child .day__activity-label::after { display: none; }
+  .day__icon-placeholder { inline-size: 24px; block-size: 24px; }
   .day__activity-title { font: 700 var(--text-item) / var(--leading-item) var(--font-display); }
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
   .day__activity-description { grid-column: 2 / -1; display: none; max-inline-size: 62ch; text-wrap: pretty; }
@@ -270,7 +272,7 @@ const facilities = [
     }
     .day__gallery { grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem); }
     .day__photo { aspect-ratio: 440 / 360; }
-    .day__activity-list { gap: .75rem; }
+    .day__activity-list { gap: var(--space-control-gap); }
     .day__activity-label { padding-block: .75rem; }
     .day__previews { display: grid; align-self: start; margin-block-start: 2rem; aspect-ratio: 240 / 304; border-radius: 1.75rem; transition: box-shadow var(--motion-state); }
     .day__previews:active { box-shadow: var(--shadow-control); }

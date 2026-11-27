@@ -1,14 +1,14 @@
 ---
 interface Props {
   class?: string;
-  source?: 'photo' | 'image';
+  sampleImage?: boolean;
   indicator?: boolean;
 }
 
-const { class: className, source, indicator } = Astro.props;
+const { class: className, sampleImage, indicator } = Astro.props;
 ---
 
-<span class:list={['optical-glass', className]} aria-hidden="true" data-optical-glass data-optical-source={source}
+<span class:list={['optical-glass', className]} aria-hidden="true" data-optical-glass data-optical-image={sampleImage ? '' : undefined}
   data-nav-lens={indicator ? '' : undefined} hidden={indicator}>
-  {source && <span class="optical-glass__sample" data-optical-sample></span>}
+  {sampleImage && <span class="optical-glass__sample" data-optical-sample></span>}
 </span>

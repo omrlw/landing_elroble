@@ -49,7 +49,7 @@ const posters = [
                 decoding="async"
               />
               <span class="play liquid-glass liquid-glass--clear liquid-glass--optical" aria-hidden="true">
-                <OpticalGlass source="image" />
+                <OpticalGlass sampleImage />
                 <ActionIcon name="play" size={24} />
               </span>
               <span class="poster-profile">
@@ -180,7 +180,7 @@ const posters = [
     position: relative;
     display: block;
     overflow: hidden;
-    border-radius: 1.5rem;
+    border-radius: var(--radius-card);
     aspect-ratio: 9 / 16;
     background: var(--color-forest);
     color: var(--color-cream);
@@ -202,16 +202,16 @@ const posters = [
       color-mix(in srgb, var(--color-cream) 55%, transparent)
     );
   }
-  .poster-profile { position: absolute; inset: auto auto 1rem 1rem; display: inline-flex; align-items: center; gap: .5rem; color: var(--color-paper); font-size: var(--text-meta); font-weight: 600; }
+  .poster-profile { position: absolute; inset: auto auto 1rem 1rem; display: inline-flex; align-items: center; gap: var(--space-detail); color: var(--color-paper); font-size: var(--text-meta); font-weight: 600; }
   .profile-links { display: grid; justify-items: center; }
   .profile-links p, .profile-text, .follow-desktop { display: none; }
   .profile-links .follow {
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
+    gap: var(--space-detail);
     min-height: var(--cta-min-height);
-    padding: .5rem 1.25rem;
-    border-radius: 999px;
+    padding: var(--space-detail) 1.25rem;
+    border-radius: var(--radius-pill);
     font-size: var(--text-cta);
     font-weight: 600;
     line-height: var(--leading-control);
@@ -225,7 +225,7 @@ const posters = [
   .footer-navigation { display: none; }
   .contact-title { margin: 0; color: inherit; font: 700 var(--text-subheading) / var(--leading-title) var(--font-display); }
   address { display: grid; gap: var(--space-related); margin: 0; font-style: normal; }
-  .contact-row { display: flex; min-width: 0; min-height: 2.75rem; gap: .75rem; align-items: start; color: inherit; }
+  .contact-row { display: flex; min-width: 0; min-height: var(--control-size); gap: var(--space-control-gap); align-items: start; color: inherit; }
   .contact-copy { display: grid; gap: .125rem; min-width: 0; font-size: var(--text-control); }
   .contact-copy strong { font-weight: 600; color: var(--color-on-forest-muted); }
   .contact-value { text-decoration: underline; text-underline-offset: .16em; overflow-wrap: anywhere; }
@@ -233,8 +233,8 @@ const posters = [
   .address-locality { display: block; }
   .contact-icon { display: grid; flex: none; place-items: center; width: 2.25rem; aspect-ratio: 1; border-radius: 50%; }
   .footer-meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-detail); border-top: 1px solid var(--color-on-forest-line); margin-block-start: var(--section-gap); padding-block-start: var(--space-related); }
-  .socials { display: flex; align-items: center; gap: .5rem; }
-  .socials a, .social-icon { display: grid; place-items: center; width: 2.75rem; aspect-ratio: 1; border-radius: 50%; }
+  .socials { display: flex; align-items: center; gap: var(--space-detail); }
+  .socials a, .social-icon { display: grid; place-items: center; width: var(--control-size); aspect-ratio: 1; border-radius: 50%; }
   .social-label { display: none; }
   .footer-meta small { font-size: var(--text-meta); }
   .legal { text-decoration: underline; text-underline-offset: .16em; }
@@ -263,8 +263,8 @@ const posters = [
     .play { width: 3rem; }
     .poster-profile { inset: auto 0 .75rem; justify-content: center; }
     .profile-links p { display: block; margin: 0; font-size: var(--text-control); font-weight: 600; }
-    .profile-links .follow { padding-inline: 1.5rem; gap: .75rem; margin-block-start: var(--space-detail); }
-    .profile-text { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.25rem; color: inherit; font-size: var(--text-control); text-decoration: underline; text-underline-offset: .16em; }
+    .profile-links .follow { padding-inline: 1.5rem; gap: var(--space-control-gap); margin-block-start: var(--space-detail); }
+    .profile-text { display: inline-flex; align-items: center; gap: var(--space-detail); min-height: 2.25rem; color: inherit; font-size: var(--text-control); text-decoration: underline; text-underline-offset: .16em; }
     .follow-desktop { display: inline; }
     .follow-mobile { display: none; }
     .contact { border-top: 1px solid var(--color-on-forest-line); padding-block-start: var(--space-inset); }
@@ -272,8 +272,8 @@ const posters = [
     .footer-brand { grid-column: 1 / -1; }
     .footer-navigation { display: grid; gap: var(--space-related); }
     .footer-navigation p { margin: 0; font: 700 var(--text-subheading) / var(--leading-title) var(--font-display); }
-    .footer-navigation nav { display: flex; flex-direction: column; gap: .5rem; }
-    .footer-navigation a { --glass-edge: var(--glass-edge-forest); display: grid; place-items: center; min-height: 3.5rem; padding: .5rem 1rem; text-align: center; border: 1px solid transparent; border-radius: 999px; text-decoration: none; font-size: var(--text-control); font-weight: 600; }
+    .footer-navigation nav { display: flex; flex-direction: column; gap: var(--space-detail); }
+    .footer-navigation a { --glass-edge: var(--glass-edge-forest); display: grid; place-items: center; min-height: 3.5rem; padding: var(--space-detail) 1rem; text-align: center; border: 1px solid transparent; border-radius: var(--radius-pill); text-decoration: none; font-size: var(--text-control); font-weight: 600; }
     .contact-title { display: none; }
     .contact-row { gap: 1rem; min-height: 3.75rem; align-items: center; }
     .contact-icon { width: 3rem; border: 1px solid transparent; }
@@ -281,7 +281,7 @@ const posters = [
     .phone { order: 1; }
     .footer-meta { flex-flow: row wrap; align-items: center; gap: var(--space-related); }
     .socials { gap: 1rem; }
-    .social-label { display: inline; margin-inline-end: .5rem; font-size: var(--text-control); }
+    .social-label { display: inline; margin-inline-end: var(--space-detail); font-size: var(--text-control); }
   }
 
   @media (min-width: 80rem) {
@@ -290,14 +290,14 @@ const posters = [
     .posters { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; gap: var(--space-inset); padding-block-end: 0; }
     .posters > li:last-child { display: block; }
     .posters > li:nth-child(even) { translate: none; margin-block-start: 1.5rem; }
-    .poster { height: auto; aspect-ratio: 43 / 77; border-radius: 1.5rem; }
+    .poster { height: auto; aspect-ratio: 43 / 77; border-radius: var(--radius-card); }
     .play { width: 4rem; }
     .poster-profile { inset: auto auto 1.25rem 1rem; }
     .contact { border: 0; padding-block-start: 0; }
     .footer-main { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--section-gap); align-items: center; }
     .footer-brand { grid-column: 2; grid-row: 1; margin-inline: auto; }
     .footer-navigation { grid-column: 1; grid-row: 1; }
-    .footer-navigation nav { flex-direction: row; flex-wrap: wrap; gap: .75rem; }
+    .footer-navigation nav { flex-direction: row; flex-wrap: wrap; gap: var(--space-control-gap); }
     .footer-navigation a { min-width: max-content; padding-inline: 1.5rem; }
     address { grid-column: 3; grid-row: 1; }
     .contact-row { min-height: 4rem; }

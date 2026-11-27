@@ -1,4 +1,5 @@
 import { setupNavGlass } from './nav-glass';
+import { desktop, reducedMotion } from './media';
 
 export function setupHeader(header: HTMLElement) {
   const menu = header.querySelector<HTMLElement>('#opening-menu');
@@ -6,7 +7,6 @@ export function setupHeader(header: HTMLElement) {
   const closeButton = header.querySelector<HTMLButtonElement>('[data-nav-close]');
   if (!menu || !trigger) return;
 
-  const desktop = matchMedia('(min-width: 73rem)');
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   let restoreFocusOnClose = false;
 
@@ -134,7 +134,6 @@ export function setupHeader(header: HTMLElement) {
   }
 
   // Collapse within the first 112px, with a gentle start and finish.
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const setGlassAnchor = setupNavGlass(menu, reducedMotion);
   let expanded = 1;
 
@@ -159,8 +158,9 @@ export function setupHeader(header: HTMLElement) {
       const rect = section.getBoundingClientRect();
       return rect.top <= boundary && rect.bottom > boundary;
     });
-    const atEnd = document.documentElement.scrollHeight - scrollY <= window.innerHeight + 3;
-    const next = visible?.link ?? (atEnd ? links.at(-1)?.link : undefined);
+    const next = visible?.link ?? (document.documentElement.scrollHeight - scrollY <= window.innerHeight + 3
+      ? links.at(-1)?.link
+      : undefined);
 
     if (nextExpanded !== expanded) {
       expanded = nextExpanded;

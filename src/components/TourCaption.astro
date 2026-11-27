@@ -1,0 +1,19 @@
+---
+import type { ComponentProps, HTMLAttributes } from 'astro/types';
+import OpticalGlass from './OpticalGlass.astro';
+import Pictogram from './Pictogram.astro';
+
+interface Props extends HTMLAttributes<'figcaption'> {
+  icon: ComponentProps<typeof Pictogram>['name'];
+}
+
+const { icon, ...attributes } = Astro.props;
+---
+
+<figcaption {...attributes} class="tour-tag liquid-glass liquid-glass--clear liquid-glass--optical">
+  <OpticalGlass sampleImage />
+  <span class="pictogram-medallion liquid-glass liquid-glass--clear liquid-glass--lens">
+    <Pictogram name={icon} />
+  </span>
+  <slot />
+</figcaption>

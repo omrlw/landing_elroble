@@ -93,7 +93,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       </div>
 
       <div class="site-nav__drawer-foot">
-        <Cta class="site-nav__drawer-cta" label="Agendar una visita" variant="primary" />
+        <Cta class="site-nav__drawer-cta" />
         <a class:list={['site-nav__drawer-phone', glassControl]} href={phoneUrl}>
           <ActionIcon class="site-header__phone-icon" name="phone" size={20} />
           <span>{business.phone}</span>
@@ -151,7 +151,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     --header-height-growth: calc((var(--header-hero-height) - var(--header-compact-height)) * var(--site-header-expanded));
     --header-hero-control-growth: 0.25rem;
     --header-control-growth: calc(var(--header-hero-control-growth) * var(--site-header-expanded));
-    --header-control-height: calc(2.75rem + var(--header-control-growth));
+    --header-control-height: calc(var(--control-size) + var(--header-control-growth));
     --header-compact-text: var(--text-meta);
     --header-hero-text: var(--text-control);
     --header-text: calc(var(--header-compact-text) + (var(--header-hero-text) - var(--header-compact-text)) * var(--site-header-expanded));
@@ -204,7 +204,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     display: flex;
     align-items: center;
     inline-size: calc(var(--header-compact-logo) + var(--header-logo-growth) * var(--site-header-expanded));
-    min-block-size: 2.75rem;
+    min-block-size: var(--control-size);
     border-radius: 0.5rem;
     transition: opacity var(--motion-state) var(--ease-soft);
   }
@@ -237,9 +237,9 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     justify-content: center;
     gap: 0.25rem;
     min-block-size: var(--header-control-height);
-    padding-inline: 0.5rem;
+    padding-inline: var(--space-detail);
     border: 1px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     color: var(--color-ink);
     font-size: var(--header-text);
     font-weight: 600;
@@ -276,8 +276,8 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     gap: 0.375rem;
     min-inline-size: var(--header-control-height);
     min-block-size: var(--header-control-height);
-    padding-inline: 0.5rem;
-    border-radius: 999px;
+    padding-inline: var(--space-detail);
+    border-radius: var(--radius-pill);
     color: var(--color-forest);
     font-size: var(--text-control);
     font-weight: 600;
@@ -350,9 +350,9 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     display: grid;
     place-items: center;
     flex: none;
-    min-inline-size: 2.75rem;
-    min-block-size: 2.75rem;
-    border-radius: 999px;
+    min-inline-size: var(--control-size);
+    min-block-size: var(--control-size);
+    border-radius: var(--radius-pill);
     color: var(--color-forest);
   }
 
@@ -404,7 +404,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     justify-content: space-between;
     min-block-size: 3rem;
     padding-inline: 0.875rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     color: var(--color-ink);
     font-size: var(--text-control);
     font-weight: 500;
@@ -479,12 +479,12 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-detail);
     inline-size: 100%;
     min-block-size: 3rem;
     padding-inline: 1rem;
     border: 1px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     color: var(--color-ink);
     font-size: var(--text-control);
     font-weight: 600;
@@ -499,7 +499,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     .site-header {
       --header-compact-logo: clamp(5.375rem, 23vw, 9.25rem);
     }
-    .site-header__inner { gap: 0.5rem; }
+    .site-header__inner { gap: var(--space-detail); }
     .site-nav__drawer-brand { inline-size: var(--header-compact-logo); }
     .site-header__actions { gap: 0.375rem; }
     .site-header__phone {
@@ -531,7 +531,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       --header-logo-growth: 1.25rem;
       --header-compact-cta-medallion: 1.625rem;
     }
-    .site-header__inner { gap: 0.75rem; }
+    .site-header__inner { gap: var(--space-control-gap); }
     .site-header__actions { gap: 0.625rem; }
     .site-header__phone { padding-inline: 0.9375rem; }
     .site-header__actions :global(.site-header__cta) {
@@ -658,12 +658,12 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       --optical-film: linear-gradient(163deg, rgb(255 255 255 / 42%), rgb(255 255 255 / 11%) 65%);
       display: block;
       inset: auto;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       transform-origin: 0 0;
       box-shadow: 0 3px 9px -5px rgb(41 35 29 / 38%);
     }
     @media (prefers-reduced-transparency: reduce) {
-      .site-nav__rail > :global(.site-nav__lens:not([hidden])) { --optical-film: var(--glass-clear); }
+      .site-nav__rail > :global(.site-nav__lens:not([hidden])) { --optical-film: var(--color-paper); }
     }
 
     .site-nav__list {
@@ -680,7 +680,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       gap: 0.3125rem;
       min-block-size: calc(var(--header-control-height) - 0.25rem);
       padding-inline: clamp(0.4375rem, 1.5vw - 0.75rem, 0.9375rem);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       color: var(--color-ink);
       font-size: var(--header-text);
       font-weight: 500;
@@ -817,7 +817,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       align-items: center;
       min-block-size: calc(var(--header-control-height) - 0.25rem);
       padding-inline: 0.75rem;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       color: var(--color-ink);
       font-size: var(--header-text);
       font-weight: 500;
@@ -837,7 +837,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
   }
 
   @media (min-width: 73rem) and (width < 84rem) {
-    .site-header__inner { gap: 0.75rem; }
+    .site-header__inner { gap: var(--space-control-gap); }
     .site-header__actions :global(.site-header__cta .cta-label--full) { display: none; }
     .site-header__actions :global(.site-header__cta .cta-label--compact) { display: inline; }
   }

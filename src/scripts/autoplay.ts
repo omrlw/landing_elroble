@@ -1,4 +1,4 @@
-export const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+import { reducedMotion } from './media';
 
 function watchGalleryPlayback(
   surface: HTMLElement,

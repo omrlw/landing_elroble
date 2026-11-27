@@ -2,7 +2,7 @@
 
 La landing del centro de día combina fotografía cotidiana, fondos cálidos y verde bosque. Cormorant Garamond da voz a los títulos. Google Sans Flex se usa para lectura, navegación y controles.
 
-Los valores y combinaciones compartidas viven en [global.css](src/styles/global.css). Las secciones definen la composición y eligen los estilos por su función.
+Los valores compartidos viven en [tokens.css](src/styles/tokens.css). [global.css](src/styles/global.css) carga los estilos del sitio y cada sección define su propia composición.
 
 ## Tipografía
 
@@ -33,6 +33,8 @@ Los rangos corresponden a una raíz de 16 px. Programa y Recorrido comparten un 
 
 Confianza y Centro de día usan una altura mínima de 52 px (`--control-row-min-height`). Las filas de Preguntas frecuentes tienen un mínimo adaptable de 68 a 80 px y de 12 a 16 px entre ellas. A partir de 640 px, las dos columnas se expanden de forma independiente. La lectura y el foco recorren cada columna de arriba abajo.
 
+`--control-size` da a los controles compactos una medida base de 44 px con una raíz de 16 px. `--space-control-gap` mantiene una separación fija de 12 px donde los controles la necesitan. `--radius-pill` se usa en botones, cápsulas y paginadores.
+
 Centro de día abre con `--space-section`, igual que Programa. Usa ese mismo intervalo completo entre su último grupo y el panel verde de Enfoque. Entre Programa y Recorrido, el espacio visible se reparte entre las dos secciones.
 
 ## Paleta
@@ -43,7 +45,7 @@ Centro de día abre con `--space-section`, igual que Programa. Usa ese mismo int
 | Tarjetas y lectura sobre claro | `--color-paper` (`#fcfaf5`) y `--surface-paper` |
 | Vidrio claro | `--glass-clear-tint`, de `--color-cream` sólido a 77% de opacidad. |
 | Títulos y texto | `--color-ink` (`#142013`) y `--color-text` (`#3d3935`) |
-| Secciones y paneles verdes | `--surface-forest`, un degradado vertical desde `--el-roble-forest-surface-top` hasta `--el-roble-forest-deep`. |
+| Secciones y paneles verdes | `--surface-forest`, un degradado vertical desde el verde de acción mezclado con crema hasta `--color-forest`. |
 | Acciones principales | `--surface-action`, de `--color-action` (`#2b4027`) a bosque |
 | Acentos de roble | `--color-oak` (`#532d12`) en titulares, `--color-oak-highlight` (`#8a541f`) en la promoción y `--color-honey` (`#e8d7b9`) en detalles cálidos |
 
@@ -66,7 +68,7 @@ Usa `--color-paper` o `--color-cream` para texto principal sobre bosque y `--col
 | Teléfono | 16 y 20 px | Barra de cabecera compacta, menú móvil y contacto |
 | Reloj, ubicación y correo | 20 px | Horario en el menú y enlaces de contacto |
 
-Los puntos y las cápsulas de paginación indican la posición en el carrusel y usan `data-gallery-mark`.
+Los puntos y las cápsulas de paginación indican la posición en el carrusel y usan `data-gallery-mark`. Sus dimensiones y estados están en [gallery.css](src/styles/gallery.css).
 
 ## Pictogramas
 
@@ -122,7 +124,7 @@ En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorn
 
 ### Implementación y respaldo
 
-- Las clases de superficie y los tokens de película, bisel y desenfoque viven en [global.css](src/styles/global.css). Usa `OpticalGlass` para los controles que necesiten curvar el fondo. Para las demás superficies, usa los acabados CSS de la tabla.
+- Las clases de superficie viven en [glass.css](src/styles/glass.css) y los valores de película, bisel y desenfoque en [tokens.css](src/styles/tokens.css). Usa `OpticalGlass` para los controles que necesiten curvar el fondo. Para las demás superficies, usa los acabados CSS de la tabla.
 - En el hero, Recorrido y Comunidad, `OpticalGlass` filtra una copia decorativa alineada con la foto activa de `data-glass-scene` o con la imagen fija `data-glass-image`. CSS aporta el tinte y los reflejos. SVG desplaza los píxeles del borde con `feDisplacementMap`. Durante el fundido o el zoom inicial del hero se ve la foto en vivo bajo la película. [Especificación de filtros SVG](https://drafts.csswg.org/filter-effects-1/#feDisplacementMapElement).
 - Para fondos variables, la cabecera y las credenciales usan el desenfoque CSS de `--optical-backdrop-blur`. En Chromium se mejora con un filtro SVG de fondo. El soporte de estos filtros varía según el motor. [Seguimiento en Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=1961378) y [seguimiento en WebKit](https://bugs.webkit.org/show_bug.cgi?id=245510).
 - [glass.ts](src/scripts/glass.ts) comparte los observadores de las escenas y agrupa los cambios antes de dibujar. Prepara las lentes hasta 120 px fuera del área visible. Al salir de ese margen, libera la copia y el filtro.

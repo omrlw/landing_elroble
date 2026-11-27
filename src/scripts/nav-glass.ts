@@ -8,7 +8,7 @@ export function setupNavGlass(menu: HTMLElement, reducedMotion: MediaQueryList) 
   let anchor: HTMLElement | undefined;
 
   const position = (animate: boolean) => {
-    const previous = lens.getBoundingClientRect();
+    const previous = animate && !lens.hidden && !reducedMotion.matches ? lens.getBoundingClientRect() : undefined;
     gsap.killTweensOf(lens);
     gsap.set(lens, { clearProps: 'transform' });
 
@@ -28,7 +28,7 @@ export function setupNavGlass(menu: HTMLElement, reducedMotion: MediaQueryList) 
     lens.hidden = false;
 
     // Animate only the visual transform; the optics map keeps its final dimensions.
-    if (animate && previous.width && !reducedMotion.matches) {
+    if (previous?.width) {
       gsap.fromTo(lens, {
         x: previous.left - target.left,
         y: previous.top - target.top,

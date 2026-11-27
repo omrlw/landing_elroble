@@ -115,7 +115,7 @@ function setupGlass() {
 
   // Other engines get the native CSS blur without setting up backdrop lenses.
   if (supportsBackdropRefraction) {
-    for (const lens of document.querySelectorAll<HTMLElement>('[data-optical-glass]:not([data-optical-source])')) {
+    for (const lens of document.querySelectorAll<HTMLElement>('[data-optical-glass]:not([data-optical-image])')) {
       watchVisibility(lens, () => {
         let filter: OpticalFilter | undefined;
         const draw = () => {
@@ -145,7 +145,7 @@ function setupGlass() {
 
   for (const stage of document.querySelectorAll<HTMLElement>('[data-glass-scene]')) {
     watchVisibility(stage, () => {
-      const lenses = [...stage.querySelectorAll<HTMLElement>('[data-optical-source]')].flatMap((element): ImageLens[] => {
+      const lenses = [...stage.querySelectorAll<HTMLElement>('[data-optical-image]')].flatMap((element): ImageLens[] => {
         const sample = element.querySelector<HTMLElement>('[data-optical-sample]');
         return sample ? [{ element, sample }] : [];
       });
