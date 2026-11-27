@@ -58,7 +58,7 @@ const photoSizes = [
 ---
 
 <section class="trust" aria-labelledby="trust-title" data-trust>
-  <AmbientLight tone="forest" />
+  <AmbientLight profile="corner" side="end" tone="forest" />
   <div class="container trust__inner">
     <div class="trust__message" data-reveal="heading">
       <h2 id="trust-title">La confianza empieza<br /><em>por conocernos.</em></h2>
@@ -150,6 +150,12 @@ const photoSizes = [
 
 <style>
   .trust {
+    --trust-surface-top: 0px;
+    --ambient-y: 0px;
+    --ambient-shift: -12%;
+    --ambient-size: clamp(11rem, 21vw, 19rem);
+    --ambient-aspect: 1.65;
+    --ambient-crop: 23%;
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -161,10 +167,12 @@ const photoSizes = [
     position: absolute;
     z-index: -2;
     inset: 0;
+    inset-block-start: var(--trust-surface-top);
     border-radius: inherit;
     background: var(--surface-forest);
     content: '';
   }
+  .trust > :global([data-ambient-light]) { inset-block-start: var(--trust-surface-top); }
   .trust__inner {
     display: grid;
     position: relative;
@@ -306,7 +314,7 @@ const photoSizes = [
   }
 
   @media (min-width: 73rem) {
-    .trust::before { inset-block-start: clamp(3.25rem, 4.2vw, 5rem); }
+    .trust { --trust-surface-top: clamp(3.25rem, 4.2vw, 5rem); }
     .trust__inner {
       grid-template-columns: minmax(0, 744fr) minmax(0, 805fr);
       grid-template-rows: auto 1fr auto;

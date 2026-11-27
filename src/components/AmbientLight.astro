@@ -1,37 +1,43 @@
 ---
-const profiles = { lens: 0, halo: 1, veil: 2 } as const;
+import { ambientProfiles, arcPath, type AmbientProfile } from '../scripts/ambient-shader';
 
 interface Props {
-  profile?: keyof typeof profiles;
+  profile: AmbientProfile;
   side?: 'start' | 'end';
   tone?: 'cream' | 'forest';
-  bubbles?: boolean;
 }
 
-const { profile = 'lens', side = 'end', tone = 'cream', bubbles = false } = Astro.props;
+const { profile, side = 'start', tone = 'cream' } = Astro.props;
+const paths = ambientProfiles[profile].map(arcPath);
 ---
 
-<span class:list={['ambient-light', `ambient-light--${tone}`, `ambient-light--${profile}`, { 'ambient-light--start': side === 'start' }]}
-  data-ambient-light={profiles[profile]} data-light-side={side} data-light-tone={tone}
-  data-light-bubbles={bubbles || undefined} aria-hidden="true">
-  <span class="ambient-light__lens" data-light-lens>
-    <span class="ambient-light__fallback"></span>
-    <canvas class="ambient-light__canvas" width="1" height="1"></canvas>
+<span class:list={['ambient-light', `ambient-light--${tone}`, { 'ambient-light--end': side === 'end' }]}
+  data-ambient-light={profile} data-light-tone={tone} data-light-side={side} aria-hidden="true">
+  <span class="ambient-light__area" data-light-area>
+    <svg class="ambient-light__fallback" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+      {paths.map((path) => (
+        <>
+          <path class="ambient-light__shade" d={path} />
+          <path class="ambient-light__rim" d={path} />
+          <path class="ambient-light__glint" d={path} pathLength="100" />
+        </>
+      ))}
+    </svg>
   </span>
 </span>
 
 <script>
   import { setupAmbientLight } from '../scripts/ambient-light';
 
-  const stop = setupAmbientLight();
-  if (import.meta.hot) import.meta.hot.dispose(stop);
+  const dispose = setupAmbientLight();
+  if (import.meta.hot) import.meta.hot.dispose(dispose);
 </script>
 
 <style>
   .ambient-light {
-    --lens-edge: color-mix(in srgb, var(--color-paper) 52%, transparent);
-    --lens-fill: color-mix(in srgb, var(--color-sand) 42%, transparent);
-    --lens-glint: color-mix(in srgb, var(--color-paper) 46%, transparent);
+    --ambient-rim: color-mix(in srgb, var(--color-paper) 64%, transparent);
+    --ambient-shadow: color-mix(in srgb, var(--color-oak) 4%, transparent);
+    --ambient-glint: color-mix(in srgb, var(--color-paper) 86%, transparent);
     position: absolute;
     z-index: -1;
     inset: 0;
@@ -41,66 +47,52 @@ const { profile = 'lens', side = 'end', tone = 'cream', bubbles = false } = Astr
     pointer-events: none;
   }
 
-  .ambient-light__lens {
-    position: absolute;
-    inset-block-start: var(--ambient-y, 38%);
-    inset-inline-end: 0;
-    inline-size: min(var(--ambient-size, clamp(15rem, 29vw, 31rem)), 75%);
-    aspect-ratio: 1;
-    translate: var(--ambient-crop, 48%) -50%;
-  }
-
-  .ambient-light--start .ambient-light__lens {
-    inset-inline: 0 auto;
-    translate: calc(-1 * var(--ambient-crop, 48%)) -50%;
-  }
-
   .ambient-light--forest {
-    --lens-edge: color-mix(in srgb, var(--color-paper) 13%, transparent);
-    --lens-fill: color-mix(in srgb, var(--color-paper) 7%, transparent);
-    --lens-glint: color-mix(in srgb, var(--color-honey) 12%, transparent);
+    --ambient-rim: color-mix(in srgb, var(--color-honey) 20%, transparent);
+    --ambient-shadow: color-mix(in srgb, var(--color-paper) 3%, transparent);
+    --ambient-glint: color-mix(in srgb, var(--color-paper) 31%, transparent);
   }
 
-  .ambient-light--forest .ambient-light__lens {
-    inset: auto 0 0 auto;
-    inline-size: min(var(--ambient-size, clamp(17rem, 35vw, 34rem)), 80%);
-    translate: 45% 12%;
+  .ambient-light__area {
+    position: absolute;
+    inset-block: var(--ambient-y, 50%) var(--ambient-bottom, auto);
+    inset-inline-start: 0;
+    inline-size: min(var(--ambient-size, clamp(15rem, 31vw, 32rem)), 74%);
+    aspect-ratio: var(--ambient-aspect, 1.22);
+    translate: calc(-1 * var(--ambient-crop, 16%)) var(--ambient-shift, -50%);
+  }
+
+  .ambient-light--end .ambient-light__area {
+    inset-inline: auto 0;
+    translate: var(--ambient-crop, 16%) var(--ambient-shift, -50%);
   }
 
   .ambient-light__fallback,
-  .ambient-light__canvas {
+  .ambient-light__area > :global(canvas) {
     position: absolute;
     inset: 0;
     inline-size: 100%;
     block-size: 100%;
   }
-  .ambient-light__canvas { visibility: hidden; }
-  .ambient-light[data-light-live] .ambient-light__canvas { visibility: visible; }
-  .ambient-light[data-light-live] .ambient-light__fallback { visibility: hidden; }
 
-  .ambient-light__fallback {
-    border: 1px solid var(--lens-edge);
-    border-radius: 50%;
-    background: radial-gradient(ellipse at 27% 21%, var(--lens-glint), transparent 72%), var(--lens-fill);
-    transform: scale(.9);
+  .ambient-light[data-light-live] .ambient-light__fallback { visibility: hidden; }
+  .ambient-light--end .ambient-light__fallback { scale: -1 1; }
+  .ambient-light__fallback { fill: none; stroke-linecap: round; }
+  .ambient-light__fallback path { vector-effect: non-scaling-stroke; }
+  .ambient-light__shade { stroke: var(--ambient-shadow); stroke-width: 5; }
+  .ambient-light__rim { stroke: var(--ambient-rim); stroke-width: 1; }
+  .ambient-light__glint {
+    stroke: var(--ambient-glint);
+    stroke-width: 2;
+    stroke-dasharray: 13 87;
   }
-  .ambient-light--halo .ambient-light__fallback {
-    border: 0;
-    background: radial-gradient(ellipse at center, var(--lens-fill), transparent 68%);
-  }
-  .ambient-light--veil .ambient-light__fallback {
-    border: 0;
-    border-radius: 0;
-    background: radial-gradient(ellipse at 13% 52%, transparent 20%, var(--lens-glint) 28%, var(--lens-fill) 34%, transparent 57%);
-  }
-  .ambient-light--start.ambient-light--veil .ambient-light__fallback { scale: -1 1; }
 
   @media (prefers-reduced-motion: no-preference) {
-    .ambient-light:not([data-light-live]) .ambient-light__fallback {
-      animation: ambient-lustre 18s ease-in-out infinite alternate paused;
+    .ambient-light:not([data-light-live]) .ambient-light__glint {
+      animation: ambient-lustre 10s linear infinite paused;
     }
-    .ambient-light[data-light-visible] .ambient-light__fallback { animation-play-state: running; }
-    @keyframes ambient-lustre { from { opacity: .7; } to { opacity: 1; } }
+    .ambient-light[data-light-visible] .ambient-light__glint { animation-play-state: running; }
+    @keyframes ambient-lustre { to { stroke-dashoffset: -100; } }
   }
 
   @media (forced-colors: active) {

@@ -218,17 +218,23 @@ const credentials = [
     inset: 0;
     z-index: -2;
     background:
-      radial-gradient(ellipse 54% 24rem at 47% 10rem, var(--color-paper), transparent),
-      radial-gradient(ellipse 49% 32rem at 0% 25%, var(--color-sand), transparent),
-      radial-gradient(ellipse 52% 35rem at 100% 34%,
-        color-mix(in srgb, var(--color-honey) 50%, transparent), transparent),
-      radial-gradient(ellipse 79% 18rem at 50% 88%,
-        color-mix(in srgb, var(--color-oak) 19%, transparent), transparent);
+      radial-gradient(ellipse 56% 24rem at 47% 10rem, var(--color-paper), transparent),
+      radial-gradient(ellipse 47% 31rem at 0% 23%,
+        color-mix(in srgb, var(--color-sand) 70%, transparent), transparent),
+      radial-gradient(ellipse 51% 32rem at 100% 26%,
+        color-mix(in srgb, var(--color-honey) 34%, transparent), transparent),
+      radial-gradient(ellipse 74% 16rem at 50% 88%,
+        color-mix(in srgb, var(--color-sand) 50%, transparent), transparent);
     mask-image: linear-gradient(transparent, black 4rem, black 84%, transparent);
     pointer-events: none;
     content: '';
   }
   .opening-hero__waves {
+    --hero-arc-mask: linear-gradient(to right, transparent 54%, black 75%);
+    --hero-arc-top: -19rem;
+    --hero-arc-overhang: clamp(-5.5rem, -5vw, -3rem);
+    --hero-arc-width: clamp(34rem, 48vw, 58rem);
+    --hero-arc-height: 35.5rem;
     position: absolute;
     z-index: -1;
     inset: 0;
@@ -239,6 +245,7 @@ const credentials = [
     inset: 0 0 auto;
     inline-size: 100%;
     block-size: min(23rem, 100%);
+    mask-image: linear-gradient(transparent, black 1rem, black 93%, transparent);
     visibility: hidden;
   }
   .opening-hero__waves[data-wave-rendered] .opening-hero__light { visibility: visible; }
@@ -247,29 +254,23 @@ const credentials = [
   .opening-hero__waves::before,
   .opening-hero__waves::after {
     position: absolute;
+    inset-block-start: var(--hero-arc-top);
+    inline-size: var(--hero-arc-width);
+    block-size: var(--hero-arc-height);
+    background: radial-gradient(ellipse closest-side,
+      transparent 72%,
+      color-mix(in srgb, var(--color-paper) 22%, transparent) 94%,
+      color-mix(in srgb, var(--color-paper) 78%, transparent) 98.6%,
+      transparent 100%);
+    mask-image: var(--hero-arc-mask);
     content: '';
   }
-  .opening-hero__waves::before {
-    inset: -24rem clamp(-2.5rem, -2vw, -1rem) auto auto;
-    inline-size: clamp(35rem, 49vw, 61rem);
-    block-size: 39.5rem;
-    background: radial-gradient(ellipse closest-side,
-      transparent 64%,
-      color-mix(in srgb, var(--color-paper) 27%, transparent) 87%,
-      color-mix(in srgb, var(--color-paper) 84%, transparent) 98.6%,
-      transparent 100%);
-    mask-image: linear-gradient(114deg, transparent 38%, black 74%);
-  }
+  .opening-hero__waves::before { inset-inline-end: var(--hero-arc-overhang); }
   .opening-hero__waves::after {
-    inset: 1.5rem auto auto clamp(-18rem, -15vw, -12rem);
-    inline-size: clamp(20rem, 32vw, 33rem);
-    aspect-ratio: 1;
-    background: radial-gradient(ellipse closest-side,
-      transparent 88%,
-      color-mix(in srgb, var(--color-paper) 36%, transparent) 98%,
-      var(--color-paper) 99.5%,
-      transparent 100%);
-    mask-image: linear-gradient(153deg, black 20%, transparent 61%);
+    inset-block-start: calc(var(--hero-arc-top) - .75rem);
+    inset-inline-start: var(--hero-arc-overhang);
+    scale: -1 1;
+    opacity: .64;
   }
   .opening-hero__inner {
     display: grid;
@@ -297,7 +298,7 @@ const credentials = [
     padding: 1rem clamp(1rem, 4vw, 3.5rem) 2.75rem;
     background: var(--color-forest);
     color: var(--color-cream);
-    box-shadow: var(--shadow-raised);
+    box-shadow: var(--shadow-card);
   }
   .hero-media__photos, .hero-media__scene, .hero-media__shade { position: absolute; inset: 0; }
   .hero-media__photos { z-index: -2; }
@@ -453,20 +454,20 @@ const credentials = [
   @media (prefers-reduced-motion: no-preference) {
     .opening-hero__waves[data-wave-fallback]::before,
     .opening-hero__waves[data-wave-fallback]::after {
-      mask-image: linear-gradient(116deg, rgb(0 0 0 / .25) 8%, black 47% 60%, rgb(0 0 0 / .35) 90%);
-      mask-size: 185% 100%;
+      mask-image: var(--hero-arc-mask),
+        linear-gradient(106deg, rgb(0 0 0 / .34) 8%, black 47% 60%, rgb(0 0 0 / .40) 90%);
+      mask-size: 100% 100%, 185% 100%;
+      mask-composite: intersect;
       animation: hero-light-glint 6.5s ease-in-out infinite alternate;
     }
-    .opening-hero__waves[data-wave-fallback]::after {
-      animation-direction: alternate-reverse;
-    }
+    .opening-hero__waves[data-wave-fallback]::after { animation-direction: alternate-reverse; }
     .opening-hero__waves[data-wave-idle]::before,
     .opening-hero__waves[data-wave-idle]::after {
       animation-play-state: paused;
     }
     @keyframes hero-light-glint {
-      from { mask-position: left center; }
-      to { mask-position: right center; }
+      from { mask-position: center, left center; }
+      to { mask-position: center, right center; }
     }
     .first-visit__leaf {
       animation: first-visit-breeze 12s 4s ease-in-out infinite;
@@ -556,17 +557,11 @@ const credentials = [
   @media (max-width: 40rem) {
     .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
     .opening-hero__light { block-size: min(25rem, 100%); }
-    .opening-hero__waves::before {
-      inset-block-start: -14rem;
-      inset-inline-end: -10rem;
-      inline-size: 29rem;
-      block-size: 31rem;
-      mask-image: linear-gradient(114deg, transparent 23%, black 71%);
-    }
-    .opening-hero__waves::after {
-      inset-block-start: .75rem;
-      inset-inline-start: -11rem;
-      inline-size: 18rem;
+    .opening-hero__waves {
+      --hero-arc-top: -11rem;
+      --hero-arc-overhang: -5.5rem;
+      --hero-arc-width: 26rem;
+      --hero-arc-height: 28rem;
     }
     .hero-ending { display: block; inline-size: fit-content; }
     .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }

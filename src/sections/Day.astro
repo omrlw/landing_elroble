@@ -50,7 +50,7 @@ const facilities = [
 ---
 
 <section class="day" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
-  <AmbientLight profile="halo" />
+  <AmbientLight profile="sweep" side="end" />
   <div class="container day__inner">
     <div class="day__heading" data-reveal="heading">
       <h2 id="day-title">Un día con compañía.<br /><em>Conectada con casa.</em></h2>
@@ -140,8 +140,10 @@ const facilities = [
 
 <style>
   .day {
-    --ambient-y: 30%;
-    --ambient-size: clamp(17rem, 33vw, 34rem);
+    --ambient-y: 23%;
+    --ambient-size: clamp(15rem, 33vw, 33rem);
+    --ambient-aspect: 1.64;
+    --ambient-crop: 20%;
     position: relative;
     isolation: isolate;
     padding-block: var(--space-section);

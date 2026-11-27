@@ -31,7 +31,7 @@ const principles = [
 ---
 
 <section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
-  <AmbientLight tone="forest" />
+  <AmbientLight profile="rise" side="end" tone="forest" />
   <div class="container approach-inner">
     <header class="approach-heading" data-reveal="heading">
       <Image class="approach-sprig" src={oliveSprig} alt="" aria-hidden="true"
@@ -96,6 +96,11 @@ const principles = [
 
 <style>
   .approach {
+    --ambient-y: auto;
+    --ambient-bottom: 0px;
+    --ambient-shift: 34%;
+    --ambient-size: clamp(12rem, 24vw, 23rem);
+    --ambient-crop: 28%;
     position: relative;
     isolation: isolate;
     overflow: clip;

@@ -74,6 +74,9 @@ export function createStory(section: HTMLElement) {
       },
     });
 
+    const openingLight = hands.querySelector('[data-ambient-light]');
+    if (openingLight) timeline.to(openingLight, { opacity: 0, duration: 0.19 }, 0.14);
+
     timeline
       // Move from the detail to the workshop, then open the frame to the group.
       .to(detail, { yPercent: -16, scale: 1.05, duration: 0.23 }, 0.04)

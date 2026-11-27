@@ -83,7 +83,7 @@ const activities = [
 ---
 
 <section class="program" id="programa" tabindex="-1" aria-labelledby="program-title">
-  <AmbientLight profile="veil" side="start" />
+  <AmbientLight profile="fan" />
   <div class="container program-inner">
     <header class="program-heading" data-reveal="heading">
       <h2 id="program-title">
@@ -160,9 +160,10 @@ const activities = [
 
 <style>
   .program {
-    --ambient-y: 60%;
-    --ambient-size: clamp(16rem, 34vw, 35rem);
-    --ambient-crop: 41%;
+    --ambient-y: 40%;
+    --ambient-size: clamp(15rem, 32vw, 31rem);
+    --ambient-aspect: 1.13;
+    --ambient-crop: 31%;
     position: relative;
     isolation: isolate;
     overflow: clip;

@@ -69,9 +69,11 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
             aria-labelledby={titleId}
             tabindex={index ? -1 : undefined}
           >
-            {scene.key === 'hands' && <AmbientLight profile="halo" side="start" bubbles />}
-            {scene.key === 'workshop' && <AmbientLight profile="veil" bubbles />}
-            {scene.key === 'table' && <AmbientLight tone="forest" />}
+            <AmbientLight
+              profile="portrait"
+              side={scene.key === 'hands' ? 'start' : 'end'}
+              tone={scene.key === 'table' ? 'forest' : 'cream'}
+            />
             <div class="container story__composition">
               <div class="story__copy" data-story-copy>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
@@ -134,6 +136,9 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 
 <style>
   .story {
+    --ambient-size: min(clamp(16rem, 33vw, 32rem), calc(74vw - 2 * var(--story-edge)));
+    --ambient-aspect: 1.14;
+    --ambient-crop: 18%;
     --story-radius: clamp(.875rem, 1.2vw, 1.25rem);
     --story-panel-radius: clamp(1.25rem, 2.25vw, 2rem);
     --story-edge: clamp(.75rem, 1.6vw, 1.5rem);
@@ -162,21 +167,17 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
 
   /* Split the transition between the two scenes on the continuous light surface. */
   .story__scene--hands {
-    --ambient-y: 34%;
-    --ambient-size: clamp(17rem, 34vw, 35rem);
+    --ambient-y: 28%;
     padding-block-end: calc(var(--space-section) / 2);
   }
   .story__scene--workshop {
-    --ambient-y: 62%;
-    --ambient-size: clamp(17rem, 35vw, 37rem);
-    --ambient-crop: 34%;
-    --ambient-mask: linear-gradient(to left, transparent, black clamp(1.5rem, 4vw, 3.5rem));
+    --ambient-mask: linear-gradient(to left, transparent, black .5rem);
     padding-block-start: calc(var(--space-section) / 2);
   }
 
   @media (max-width: 40rem) {
-    .story__scene--hands { --ambient-y: 23%; }
-    .story__scene--workshop { --ambient-y: 26%; }
+    .story { --ambient-crop: 22%; }
+    .story__scene--hands { --ambient-y: 20%; }
   }
 
   .story__scene--table {
@@ -188,6 +189,9 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
   }
 
   .story__scene:is(.story__scene--workshop, .story__scene--table) {
+    --ambient-y: auto;
+    --ambient-bottom: 0px;
+    --ambient-shift: 9%;
     margin-inline: var(--story-edge);
   }
 
@@ -438,6 +442,8 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
     --story-reveal-inline: 50%;
     clip-path: inset(var(--story-reveal-top) var(--story-reveal-inline) var(--story-reveal-bottom) round var(--story-panel-radius));
   }
+
+  [data-story-cinema] .story__scene--table > :global(.ambient-light) { display: none; }
 
   [data-story-cinema] .story__scene--table .story__photo {
     position: absolute;

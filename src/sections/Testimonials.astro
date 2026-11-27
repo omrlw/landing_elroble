@@ -16,7 +16,7 @@ const placements = [
 ---
 
 <section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
-  <AmbientLight tone="forest" />
+  <AmbientLight profile="sweep" tone="forest" />
   <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
     <p>Historias de familias que encontraron en El Roble tranquilidad, compañía y un cuidado digno para quienes más quieren.</p>
@@ -124,6 +124,11 @@ const placements = [
 
 <style>
   .testimonials {
+    --ambient-y: 0px;
+    --ambient-shift: -33%;
+    --ambient-size: clamp(13rem, 25vw, 25rem);
+    --ambient-aspect: 1.8;
+    --ambient-crop: 23%;
     --track-gap: var(--space-related);
     position: relative;
     isolation: isolate;

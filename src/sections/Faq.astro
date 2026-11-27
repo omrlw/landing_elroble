@@ -50,7 +50,7 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 ---
 
 <section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
-  <AmbientLight profile="halo" />
+  <AmbientLight profile="sweep" side="end" />
   <div class="container faq-container">
     <header class="faq-heading" data-reveal="heading">
       <h2 id="faq-heading">Lo importante,<br /><em>antes de la visita.</em></h2>
@@ -96,8 +96,11 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 
 <style>
   .faq {
-    --ambient-y: 24%;
-    --ambient-crop: 39%;
+    --ambient-y: clamp(2.5rem, 4.5vw, 4.75rem);
+    --ambient-shift: -13%;
+    --ambient-size: clamp(15rem, 32vw, 28rem);
+    --ambient-aspect: 1.72;
+    --ambient-crop: 22%;
     position: relative;
     isolation: isolate;
     overflow: clip;

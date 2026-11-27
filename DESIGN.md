@@ -94,11 +94,11 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 ## Luz de fondo
 
-[hero-light.ts](src/scripts/hero-light.ts) recorre los dos biseles suaves del hero con un destello WebGL. El borde se flexiona unos pocos píxeles y el cursor modula el reflejo en escritorio. El botón de pausa del carrusel detiene también la luz del hero.
+[hero-light.ts](src/scripts/hero-light.ts) dibuja el mismo arco abierto de vidrio en los dos márgenes del hero. El reflejo izquierdo tiene menos intensidad. La luz recorre el bisel que reaparece en Historia, con una sombra suave. El cursor modula el reflejo en escritorio. El botón de pausa del carrusel detiene también la luz del hero.
 
-[AmbientLight.astro](src/components/AmbientLight.astro) dibuja lentes, halos y velos con luz lateral en WebGL. En verde bosque aparece una lente circular recortada por la esquina inferior derecha. Sobre crema, el reflejo es tenue y se mueve más despacio. En Historia, las burbujas translúcidas ascienden junto a los reflejos laterales, y el desplazamiento modula su paso. La capa queda detrás de las fotos y los controles. Ancla la decoración a la superficie de la sección con `position: relative` e `isolation: isolate`.
+[AmbientLight.astro](src/components/AmbientLight.astro) reutiliza el bisel del hero en arcos abiertos. Cambian de tamaño, lado y altura según el espacio libre de cada sección. Sobre bosque, el brillo tiene menos intensidad. Historia usa el mismo arco y la misma escala en sus escenas, con el retrato a la izquierda y el jardín en la esquina inferior derecha. La capa queda detrás de las fotos y los controles. Ancla la decoración a la superficie de la sección con `position: relative` e `isolation: isolate`.
 
-Al detener el scroll, el brillo sigue cambiando sobre la superficie de vidrio. La alternativa CSS mantiene una pulsación suave. Con movimiento reducido queda un reflejo fijo y en colores forzados se oculta. El mapa de fondos y las referencias están en [docs/atmosfera.md](docs/atmosfera.md).
+La luz recorre el bisel en reposo y el scroll modula su fase. En ausencia de WebGL, el destello viaja sobre un trazo SVG. Con movimiento reducido el reflejo queda fijo y en colores forzados se oculta. El mapa de fondos y las referencias están en [docs/atmosfera.md](docs/atmosfera.md).
 
 ## Fotografías de Historia
 

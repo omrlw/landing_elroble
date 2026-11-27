@@ -24,10 +24,10 @@ const posters = [
 ---
 
 <div class="closing">
-  <AmbientLight tone="forest" />
+  <AmbientLight profile="rise" tone="forest" />
   <div class="container closing-container">
     <section class="community" id="comunidad" aria-labelledby="community-heading">
-      <AmbientLight side="start" />
+      <AmbientLight profile="fan" side="end" />
       <header data-reveal="heading">
         <Image class="community-oak" src={oakTree} alt=""
           width={96} widths={[56, 96, 184]} sizes="clamp(56px, 7vw, 88px)" format="webp" />
@@ -134,6 +134,12 @@ const posters = [
 
 <style>
   .closing {
+    --ambient-y: auto;
+    --ambient-bottom: 0px;
+    --ambient-shift: 39%;
+    --ambient-size: clamp(13rem, 26vw, 25rem);
+    --ambient-aspect: 1.65;
+    --ambient-crop: 28%;
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -143,8 +149,12 @@ const posters = [
   }
   .closing-container { position: relative; }
   .community {
-    --ambient-y: 26%;
+    --ambient-y: 21%;
+    --ambient-bottom: auto;
+    --ambient-shift: -50%;
     --ambient-size: clamp(13rem, 24vw, 25rem);
+    --ambient-aspect: 1.16;
+    --ambient-crop: 18%;
     --community-content-width: 54rem;
     position: relative;
     isolation: isolate;

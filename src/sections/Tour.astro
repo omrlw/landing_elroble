@@ -48,7 +48,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 ---
 
 <section class="tour" id="recorrido" tabindex="-1" aria-labelledby="tour-title">
-  <AmbientLight />
+  <AmbientLight profile="rise" side="end" />
   <div class="container tour-inner">
     <header class="tour-heading botanical-layout" data-reveal="heading">
       <div class="tour-heading-copy">
@@ -148,7 +148,9 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 
 <style>
   .tour {
-    --ambient-y: 51%;
+    --ambient-y: 72%;
+    --ambient-size: clamp(14rem, 31vw, 31rem);
+    --ambient-crop: 28%;
     --tour-photo-radius: 24px;
     position: relative;
     isolation: isolate;
