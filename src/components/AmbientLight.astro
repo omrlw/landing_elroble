@@ -1,0 +1,109 @@
+---
+const profiles = { lens: 0, halo: 1, veil: 2 } as const;
+
+interface Props {
+  profile?: keyof typeof profiles;
+  side?: 'start' | 'end';
+  tone?: 'cream' | 'forest';
+  bubbles?: boolean;
+}
+
+const { profile = 'lens', side = 'end', tone = 'cream', bubbles = false } = Astro.props;
+---
+
+<span class:list={['ambient-light', `ambient-light--${tone}`, `ambient-light--${profile}`, { 'ambient-light--start': side === 'start' }]}
+  data-ambient-light={profiles[profile]} data-light-side={side} data-light-tone={tone}
+  data-light-bubbles={bubbles || undefined} aria-hidden="true">
+  <span class="ambient-light__lens" data-light-lens>
+    <span class="ambient-light__fallback"></span>
+    <canvas class="ambient-light__canvas" width="1" height="1"></canvas>
+  </span>
+</span>
+
+<script>
+  import { setupAmbientLight } from '../scripts/ambient-light';
+
+  const stop = setupAmbientLight();
+  if (import.meta.hot) import.meta.hot.dispose(stop);
+</script>
+
+<style>
+  .ambient-light {
+    --lens-edge: color-mix(in srgb, var(--color-paper) 52%, transparent);
+    --lens-fill: color-mix(in srgb, var(--color-sand) 42%, transparent);
+    --lens-glint: color-mix(in srgb, var(--color-paper) 46%, transparent);
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    overflow: clip;
+    border-radius: inherit;
+    mask-image: var(--ambient-mask, none);
+    pointer-events: none;
+  }
+
+  .ambient-light__lens {
+    position: absolute;
+    inset-block-start: var(--ambient-y, 38%);
+    inset-inline-end: 0;
+    inline-size: min(var(--ambient-size, clamp(15rem, 29vw, 31rem)), 75%);
+    aspect-ratio: 1;
+    translate: var(--ambient-crop, 48%) -50%;
+  }
+
+  .ambient-light--start .ambient-light__lens {
+    inset-inline: 0 auto;
+    translate: calc(-1 * var(--ambient-crop, 48%)) -50%;
+  }
+
+  .ambient-light--forest {
+    --lens-edge: color-mix(in srgb, var(--color-paper) 13%, transparent);
+    --lens-fill: color-mix(in srgb, var(--color-paper) 7%, transparent);
+    --lens-glint: color-mix(in srgb, var(--color-honey) 12%, transparent);
+  }
+
+  .ambient-light--forest .ambient-light__lens {
+    inset: auto 0 0 auto;
+    inline-size: min(var(--ambient-size, clamp(17rem, 35vw, 34rem)), 80%);
+    translate: 45% 12%;
+  }
+
+  .ambient-light__fallback,
+  .ambient-light__canvas {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .ambient-light__canvas { visibility: hidden; }
+  .ambient-light[data-light-live] .ambient-light__canvas { visibility: visible; }
+  .ambient-light[data-light-live] .ambient-light__fallback { visibility: hidden; }
+
+  .ambient-light__fallback {
+    border: 1px solid var(--lens-edge);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 27% 21%, var(--lens-glint), transparent 72%), var(--lens-fill);
+    transform: scale(.9);
+  }
+  .ambient-light--halo .ambient-light__fallback {
+    border: 0;
+    background: radial-gradient(ellipse at center, var(--lens-fill), transparent 68%);
+  }
+  .ambient-light--veil .ambient-light__fallback {
+    border: 0;
+    border-radius: 0;
+    background: radial-gradient(ellipse at 13% 52%, transparent 20%, var(--lens-glint) 28%, var(--lens-fill) 34%, transparent 57%);
+  }
+  .ambient-light--start.ambient-light--veil .ambient-light__fallback { scale: -1 1; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ambient-light:not([data-light-live]) .ambient-light__fallback {
+      animation: ambient-lustre 18s ease-in-out infinite alternate paused;
+    }
+    .ambient-light[data-light-visible] .ambient-light__fallback { animation-play-state: running; }
+    @keyframes ambient-lustre { from { opacity: .7; } to { opacity: 1; } }
+  }
+
+  @media (forced-colors: active) {
+    .ambient-light { display: none; }
+  }
+</style>

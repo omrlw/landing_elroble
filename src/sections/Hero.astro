@@ -238,7 +238,7 @@ const credentials = [
     position: absolute;
     inset: 0 0 auto;
     inline-size: 100%;
-    block-size: min(27rem, 100%);
+    block-size: min(23rem, 100%);
     visibility: hidden;
   }
   .opening-hero__waves[data-wave-rendered] .opening-hero__light { visibility: visible; }
@@ -263,7 +263,7 @@ const credentials = [
   .opening-hero__waves::after {
     inset: 1.5rem auto auto clamp(-18rem, -15vw, -12rem);
     inline-size: clamp(20rem, 32vw, 33rem);
-    block-size: 32rem;
+    aspect-ratio: 1;
     background: radial-gradient(ellipse closest-side,
       transparent 88%,
       color-mix(in srgb, var(--color-paper) 36%, transparent) 98%,
@@ -451,25 +451,22 @@ const credentials = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .opening-hero__waves[data-wave-fallback]::before {
-      --hero-light-offset: -1.5rem;
-      --hero-light-rise: .875rem;
-      --hero-light-scale: 1.085, .93;
-      animation: hero-light-drift 4.8s ease-in-out infinite alternate;
+    .opening-hero__waves[data-wave-fallback]::before,
+    .opening-hero__waves[data-wave-fallback]::after {
+      mask-image: linear-gradient(116deg, rgb(0 0 0 / .25) 8%, black 47% 60%, rgb(0 0 0 / .35) 90%);
+      mask-size: 185% 100%;
+      animation: hero-light-glint 6.5s ease-in-out infinite alternate;
     }
     .opening-hero__waves[data-wave-fallback]::after {
-      --hero-light-offset: 1.15rem;
-      --hero-light-rise: -.625rem;
-      --hero-light-scale: 1.07, 1.045;
-      animation: hero-light-drift 6.5s ease-in-out infinite alternate;
+      animation-direction: alternate-reverse;
     }
-    .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::before,
-    .opening-hero:has(.hero-media__paging [data-playback-paused]) .opening-hero__waves::after {
+    .opening-hero__waves[data-wave-idle]::before,
+    .opening-hero__waves[data-wave-idle]::after {
       animation-play-state: paused;
     }
-    @keyframes hero-light-drift {
-      from { transform: none; opacity: 1; }
-      to { transform: translate(var(--hero-light-offset), var(--hero-light-rise)) scale(var(--hero-light-scale)); opacity: .82; }
+    @keyframes hero-light-glint {
+      from { mask-position: left center; }
+      to { mask-position: right center; }
     }
     .first-visit__leaf {
       animation: first-visit-breeze 12s 4s ease-in-out infinite;
@@ -558,6 +555,7 @@ const credentials = [
 
   @media (max-width: 40rem) {
     .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
+    .opening-hero__light { block-size: min(25rem, 100%); }
     .opening-hero__waves::before {
       inset-block-start: -14rem;
       inset-inline-end: -10rem;
@@ -569,7 +567,6 @@ const credentials = [
       inset-block-start: .75rem;
       inset-inline-start: -11rem;
       inline-size: 18rem;
-      block-size: 25rem;
     }
     .hero-ending { display: block; inline-size: fit-content; }
     .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }

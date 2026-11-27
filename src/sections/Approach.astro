@@ -1,5 +1,6 @@
 ---
 import { getImage, Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import Pictogram from '../components/Pictogram.astro';
 import accompaniment from '../assets/approach/acompanamiento-en-la-mesa.jpg';
 import portrait from '../assets/approach/portrait.png';
@@ -30,11 +31,12 @@ const principles = [
 ---
 
 <section class="approach" id="enfoque" tabindex="-1" aria-labelledby="approach-title">
-  <Image class="approach-sprig" src={oliveSprig} alt="" aria-hidden="true"
-    width={320} widths={[128, 192, 256, 320]}
-    sizes="(min-width: 100rem) 144px, (min-width: 48rem) 9vw, 28px" format="webp" />
+  <AmbientLight tone="forest" />
   <div class="container approach-inner">
     <header class="approach-heading" data-reveal="heading">
+      <Image class="approach-sprig" src={oliveSprig} alt="" aria-hidden="true"
+        width={256} widths={[48, 96, 160, 256]}
+        sizes="clamp(28px, 7vw, 112px)" format="webp" />
       <h2 id="approach-title">Cuidar también es<br /><em>reconocer quién es.</em></h2>
       <p class="approach-intro-desktop">
         Sus gustos, sus decisiones y su manera de hacer las cosas forman parte del cuidado. En El
@@ -111,11 +113,9 @@ const principles = [
   }
 
   .approach-sprig {
-    position: absolute;
-    z-index: -1;
-    inset-block-start: clamp(.9rem, 2.5vw, 2.625rem);
-    inset-inline-start: clamp(.375rem, 1.65vw, 1.75rem);
-    inline-size: clamp(3rem, 9vw, 9rem);
+    grid-area: 1 / 1;
+    place-self: center start;
+    inline-size: var(--approach-sprig-width);
     block-size: auto;
     scale: -1 1;
     rotate: -14deg;
@@ -124,11 +124,18 @@ const principles = [
   }
 
   .approach-heading {
+    --approach-sprig-width: clamp(1.75rem, 7vw, 7rem);
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     gap: var(--space-related);
     margin-block-end: var(--section-gap);
     text-align: center;
+  }
+
+  .approach-heading h2 {
+    grid-area: 1 / 1;
+    margin-inline: calc(var(--approach-sprig-width) + var(--space-detail));
   }
 
   .approach-heading h2,
@@ -211,7 +218,6 @@ const principles = [
 
   @media (max-width: 40rem) {
     .approach-inner { padding-inline: 0; }
-    .approach-sprig { inset-block-start: .25rem; inset-inline-start: .625rem; inline-size: 1.75rem; }
   }
 
   @media (min-width: 768px) {

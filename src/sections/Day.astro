@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import Cta from '../components/Cta.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
 import BotanicalArt from '../components/BotanicalArt.astro';
@@ -49,6 +50,7 @@ const facilities = [
 ---
 
 <section class="day" id="centro-de-dia" tabindex="-1" aria-labelledby="day-title">
+  <AmbientLight profile="halo" />
   <div class="container day__inner">
     <div class="day__heading" data-reveal="heading">
       <h2 id="day-title">Un día con compañía.<br /><em>Conectada con casa.</em></h2>
@@ -137,7 +139,13 @@ const facilities = [
 </script>
 
 <style>
-  .day { padding-block: var(--space-section); }
+  .day {
+    --ambient-y: 30%;
+    --ambient-size: clamp(17rem, 33vw, 34rem);
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--space-section);
+  }
   .day__inner { display: grid; gap: var(--section-gap); }
   .day__heading { display: grid; gap: var(--space-related); }
   .day__heading em { color: var(--color-oak); }

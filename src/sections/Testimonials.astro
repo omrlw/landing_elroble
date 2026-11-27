@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
-import oakBough from '../assets/botanical/testimonials-oak-bough.webp';
 import carmen from '../assets/lower/testimonial-carmen.png';
 import jorge from '../assets/lower/testimonial-jorge.png';
 import patricia from '../assets/lower/testimonial-patricia.png';
@@ -16,11 +16,9 @@ const placements = [
 ---
 
 <section class="testimonials" id="testimonios" aria-labelledby="testimonials-heading" data-reviews>
+  <AmbientLight tone="forest" />
   <header class="container review-opening" data-reveal="heading">
     <h2 id="testimonials-heading">La tranquilidad,<br /><em>en sus palabras.</em></h2>
-    <Image class="review-sprig" src={oakBough} alt="" aria-hidden="true"
-      width={320} widths={[96, 144, 224, 320]}
-      sizes="(min-width: 40rem) clamp(88px, 12vw, 176px), 74px" format="webp" />
     <p>Historias de familias que encontraron en El Roble tranquilidad, compañía y un cuidado digno para quienes más quieren.</p>
   </header>
 
@@ -137,8 +135,7 @@ const placements = [
 
   .review-opening {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-detail);
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
     margin-block-end: var(--section-gap);
   }
@@ -150,14 +147,6 @@ const placements = [
   }
   .review-opening em { font-weight: inherit; }
   .review-opening p { display: none; }
-  .review-sprig {
-    inline-size: clamp(3.5rem, 16vw, 4.625rem);
-    block-size: auto;
-    margin-inline-end: .375rem;
-    rotate: -8deg;
-    opacity: .83;
-    pointer-events: none;
-  }
 
   .review-container { overflow: clip; }
   @media (width < 80rem) {
@@ -302,9 +291,8 @@ const placements = [
 
   @media (min-width: 40rem) {
     .testimonials { --track-gap: var(--space-inset); border-radius: 0; }
-    .review-opening { grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--section-gap); }
+    .review-opening { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--section-gap); }
     .review-opening p { display: block; margin: 0; }
-    .review-sprig { inline-size: clamp(5.5rem, 12vw, 11rem); margin-inline-end: 0; }
     .review-track { grid-auto-columns: clamp(13rem, 27vw, 16rem); }
     .review-card { min-height: 14rem; border-radius: var(--radius-card); }
     .quote, .relationship, .rating-caption { display: none; }

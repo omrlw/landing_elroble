@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
-import BotanicalPattern from '../components/BotanicalPattern.astro';
+import AmbientLight from '../components/AmbientLight.astro';
 import Cta from '../components/Cta.astro';
 import ActionIcon from '../components/ActionIcon.astro';
 import oakTwig from '../assets/botanical/faq-oak-twig.webp';
+import acorn from '../assets/botanical/genial-acorn.png';
 import { business } from '../config/business';
 
 const questions = [
@@ -49,13 +50,13 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
 ---
 
 <section class="faq" id="preguntas" tabindex="-1" aria-labelledby="faq-heading">
-  <BotanicalPattern />
+  <AmbientLight profile="halo" />
   <div class="container faq-container">
     <header class="faq-heading" data-reveal="heading">
       <h2 id="faq-heading">Lo importante,<br /><em>antes de la visita.</em></h2>
       <Image class="faq-sprig" src={oakTwig} alt="" aria-hidden="true"
-        width={280} widths={[96, 144, 192, 280]}
-        sizes="(min-width: 40rem) clamp(76px, 9vw, 144px), 66px" format="webp" />
+        width={96} widths={[48, 96, 144, 192]}
+        sizes="(min-width: 40rem) clamp(52px, 6vw, 88px), clamp(40px, 12vw, 48px)" format="webp" />
       <p>Lo esencial para conocer cómo funciona El Roble, qué incluye cada modalidad y cómo acompañamos a tu familiar.</p>
     </header>
 
@@ -81,14 +82,22 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     </div>
 
     <div class="faq-close">
-      <h3>¿Tienes otra pregunta?</h3>
-      <Cta />
+      <div class="faq-close-content">
+        <h3>¿Tienes otra pregunta?</h3>
+        <Cta />
+        <Image class="faq-acorn" src={acorn} alt=""
+          width={96} widths={[48, 96, 144, 192]}
+          sizes="(min-width: 40rem) clamp(64px, 7vw, 96px), clamp(36px, 10vw, 56px)"
+          format="webp" />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .faq {
+    --ambient-y: 24%;
+    --ambient-crop: 39%;
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -105,11 +114,10 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   }
   h2 em { color: var(--color-oak); }
   .faq-sprig {
-    inline-size: clamp(3.5rem, 17vw, 4.125rem);
+    inline-size: clamp(2.5rem, 12vw, 3rem);
     block-size: auto;
     margin-inline-end: .375rem;
     rotate: -12deg;
-    opacity: .76;
     pointer-events: none;
   }
   .faq-heading p, .answer { max-inline-size: 65ch; color: var(--color-text); }
@@ -158,15 +166,30 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   .faq-close {
     display: grid;
     justify-items: start;
-    gap: var(--space-related);
     margin-block-start: var(--section-gap);
+  }
+  .faq-close-content {
+    position: relative;
+    display: grid;
+    justify-items: inherit;
+    gap: var(--space-related);
+  }
+  .faq-acorn {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(100% + var(--space-related));
+    translate: 0 -50%;
+    inline-size: clamp(2.25rem, 10vw, 3.5rem);
+    block-size: auto;
+    pointer-events: none;
   }
 
   @media (min-width: 40rem) {
     .faq-heading { grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--section-gap); }
-    .faq-sprig { inline-size: clamp(4.75rem, 9vw, 9rem); margin-inline-end: 0; }
+    .faq-sprig { inline-size: clamp(3.25rem, 6vw, 5.5rem); margin-inline-end: 0; }
     .faq-heading p, .faq-close h3 { display: block; }
     .questions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .faq-acorn { inline-size: clamp(4rem, 7vw, 6rem); }
     .has-compact .full-question { display: inline; }
     .compact-question { display: none; }
     .faq-close { justify-items: center; text-align: center; }

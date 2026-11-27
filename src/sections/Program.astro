@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import Cta from '../components/Cta.astro';
 import Pictogram from '../components/Pictogram.astro';
 import health from '../assets/approach/portrait.png';
@@ -82,14 +83,8 @@ const activities = [
 ---
 
 <section class="program" id="programa" tabindex="-1" aria-labelledby="program-title">
+  <AmbientLight profile="veil" side="start" />
   <div class="container program-inner">
-    <div class="program-decoration" aria-hidden="true">
-      <Image class="program-leaves--left" src={leavesLeft} alt="" width={240} widths={[128, 192, 240]}
-        sizes="clamp(112px, 9.4vw, 160px)" format="webp" />
-      <Image class="program-leaves--right" src={leavesRight} alt="" width={360} widths={[96, 144, 192, 280, 360]}
-        sizes="(min-width: 75rem) clamp(112px, 9.4vw, 160px), 64px" format="webp" />
-    </div>
-
     <header class="program-heading" data-reveal="heading">
       <h2 id="program-title">
         <span class="program-title-default">Un programa para</span>
@@ -153,12 +148,21 @@ const activities = [
     <div class="program-close">
       <p class="program-expanded">Conoce el espacio donde puede compartir sus días.</p>
       <Cta label="Recorrer el centro" href="#recorrido" />
+      <div class="program-decoration" aria-hidden="true">
+        <Image class="program-leaves--left" src={leavesLeft} alt="" width={240} widths={[128, 192, 240]}
+          sizes="clamp(112px, 9.4vw, 160px)" format="webp" />
+        <Image class="program-leaves--right" src={leavesRight} alt="" width={96} widths={[48, 96, 144, 192]}
+          sizes="(min-width: 75rem) clamp(56px, 4.5vw, 76px), clamp(36px, 10vw, 48px)" format="webp" />
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .program {
+    --ambient-y: 60%;
+    --ambient-size: clamp(16rem, 34vw, 35rem);
+    --ambient-crop: 41%;
     position: relative;
     isolation: isolate;
     overflow: clip;
@@ -181,14 +185,16 @@ const activities = [
 
   .program-leaves--right {
     position: absolute;
-    inset-block-end: 0;
+    inset-block-start: 50%;
     inset-inline-end: .125rem;
-    inline-size: clamp(3.25rem, 12vw, 4rem);
-    max-block-size: 5.5rem;
+    inline-size: clamp(2.25rem, 10vw, 3rem);
     block-size: auto;
-    object-fit: contain;
+    translate: 0 -50%;
     rotate: 15deg;
-    opacity: .62;
+  }
+
+  @media (width < 48rem) {
+    .program-close { position: relative; }
   }
 
   @media (48rem <= width < 75rem) {
@@ -204,22 +210,21 @@ const activities = [
     .program-decoration img {
       display: block;
       position: absolute;
-      inline-size: clamp(7rem, 9.4vw, 10rem);
+      inset-block-start: 43%;
       block-size: auto;
-      max-block-size: none;
-      opacity: .77;
+      translate: 0 -50%;
       scale: -1 1;
     }
 
     .program-leaves--left {
-      inset-block-start: 36%;
+      inline-size: clamp(7rem, 9.4vw, 10rem);
       inset-inline-start: calc(.75rem - var(--program-gutter));
       rotate: -8deg;
     }
 
     .program-leaves--right {
-      inset-block: 50% auto;
-      inset-inline-end: calc(1rem - var(--program-gutter));
+      inline-size: clamp(3.5rem, 4.5vw, 4.75rem);
+      inset-inline-end: calc(.75rem - var(--program-gutter));
       rotate: 5deg;
     }
   }

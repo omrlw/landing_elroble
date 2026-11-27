@@ -88,13 +88,17 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
 - La hoja del hero nace junto al final del título.
-- Historia usa bellotas, un corte de madera y una rama de roble como ilustraciones alineadas debajo del texto de sus dos escenas claras.
+- Historia usa bellotas y una rama de roble como ilustraciones alineadas debajo del texto de sus dos escenas claras.
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
-- Testimonios y Preguntas frecuentes tienen una ramita en el encabezado. [BotanicalPattern.astro](src/components/BotanicalPattern.astro) sitúa los anillos de «Genial» al pie de Preguntas frecuentes.
+- Preguntas frecuentes tiene una ramita en el encabezado y una bellota de «Genial» junto a la invitación para agendar una visita. Comunidad usa el roble de «Genial» encima del título.
 
-## Luz del hero
+## Luz de fondo
 
-[hero-light.ts](src/scripts/hero-light.ts) dibuja en WebGL los dos reflejos radiales del hero. Los reflejos cambian de forma y responden al cursor en escritorio. El control de reproducción del carrusel también pausa la luz. Con movimiento reducido se usan los reflejos fijos de CSS.
+[hero-light.ts](src/scripts/hero-light.ts) recorre los dos biseles suaves del hero con un destello WebGL. El borde se flexiona unos pocos píxeles y el cursor modula el reflejo en escritorio. El botón de pausa del carrusel detiene también la luz del hero.
+
+[AmbientLight.astro](src/components/AmbientLight.astro) dibuja lentes, halos y velos con luz lateral en WebGL. En verde bosque aparece una lente circular recortada por la esquina inferior derecha. Sobre crema, el reflejo es tenue y se mueve más despacio. En Historia, las burbujas translúcidas ascienden junto a los reflejos laterales, y el desplazamiento modula su paso. La capa queda detrás de las fotos y los controles. Ancla la decoración a la superficie de la sección con `position: relative` e `isolation: isolate`.
+
+Al detener el scroll, el brillo sigue cambiando sobre la superficie de vidrio. La alternativa CSS mantiene una pulsación suave. Con movimiento reducido queda un reflejo fijo y en colores forzados se oculta. El mapa de fondos y las referencias están en [docs/atmosfera.md](docs/atmosfera.md).
 
 ## Fotografías de Historia
 
@@ -142,7 +146,7 @@ En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorn
 
 Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
 
-El sello de primera visita tiene una superficie roble, la ramita «Margen izquierdo» de Genial en el borde superior izquierdo y un cierre circular en vidrio claro. «Gratis» lleva la tipografía de títulos en cursiva. El sello parte de su posición en la portada y se acopla debajo de la cabecera al deslizar. La versión acoplada se compacta en móvil. La ramita se mueve brevemente cada doce segundos y respeta la preferencia de movimiento reducido. La esfera decorativa de Recorrido usa un degradado radial, un borde interior luminoso y una sombra suave. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
+El sello de primera visita tiene una superficie roble, la ramita «Margen izquierdo» de Genial en el borde superior izquierdo y un cierre circular en vidrio claro. «Gratis» lleva la tipografía de títulos en cursiva. El sello parte de su posición en la portada y se acopla debajo de la cabecera al deslizar. La versión acoplada se compacta en móvil. La ramita se mueve brevemente cada doce segundos y respeta la preferencia de movimiento reducido. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 
 ## Sombras y estados
 

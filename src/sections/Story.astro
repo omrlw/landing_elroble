@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import Cta from '../components/Cta.astro';
 import portrait from '../assets/story/manos-creando.jpg';
 import hands from '../assets/story/detalle-cuentas.jpg';
@@ -7,11 +8,9 @@ import garden from '../assets/story/ronda-en-el-jardin.jpg';
 import bingo from '../assets/story/bingo-en-el-roble.jpg';
 import acorns from '../assets/botanical/day-oak-acorns.webp';
 import oakTwig from '../assets/botanical/story-oak-twig.webp';
-import oakWood from '../assets/botanical/story-oak-wood.webp';
 
 const botanicalArt = {
   acorns: { src: acorns, sizes: 'clamp(3.75rem, 7vw, 6rem)' },
-  wood: { src: oakWood, sizes: 'clamp(4.75rem, 8vw, 7.25rem)' },
   twig: { src: oakTwig, sizes: 'clamp(4rem, 6.5vw, 5.5rem)' },
 };
 
@@ -22,7 +21,7 @@ const scenes = [
     heading: 'Una mañana',
     emphasis: 'en El Roble.',
     copy: 'En nuestro centro de día en Arequipa, hay tiempo para hacer algo con las manos, moverse y disfrutar de la compañía de otros.',
-    botany: ['acorns', 'wood'] as const,
+    botany: ['acorns'] as const,
     image: portrait,
     alt: 'Una mujer ensarta cuentas de colores en una mesa de El Roble.',
   },
@@ -70,6 +69,9 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
             aria-labelledby={titleId}
             tabindex={index ? -1 : undefined}
           >
+            {scene.key === 'hands' && <AmbientLight profile="halo" side="start" bubbles />}
+            {scene.key === 'workshop' && <AmbientLight profile="veil" bubbles />}
+            {scene.key === 'table' && <AmbientLight tone="forest" />}
             <div class="container story__composition">
               <div class="story__copy" data-story-copy>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
@@ -159,8 +161,23 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
   }
 
   /* Split the transition between the two scenes on the continuous light surface. */
-  .story__scene--hands { padding-block-end: calc(var(--space-section) / 2); }
-  .story__scene--workshop { padding-block-start: calc(var(--space-section) / 2); }
+  .story__scene--hands {
+    --ambient-y: 34%;
+    --ambient-size: clamp(17rem, 34vw, 35rem);
+    padding-block-end: calc(var(--space-section) / 2);
+  }
+  .story__scene--workshop {
+    --ambient-y: 62%;
+    --ambient-size: clamp(17rem, 35vw, 37rem);
+    --ambient-crop: 34%;
+    --ambient-mask: linear-gradient(to left, transparent, black clamp(1.5rem, 4vw, 3.5rem));
+    padding-block-start: calc(var(--space-section) / 2);
+  }
+
+  @media (max-width: 40rem) {
+    .story__scene--hands { --ambient-y: 23%; }
+    .story__scene--workshop { --ambient-y: 26%; }
+  }
 
   .story__scene--table {
     --story-ink: var(--color-paper);
@@ -221,7 +238,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
     block-size: auto;
   }
 
-  .story__botanical--wood { margin-block-end: .375rem; }
   .story__botanical--twig {
     transform-origin: left bottom;
     rotate: 17deg;
@@ -369,6 +385,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
     inline-size: min(100%, calc(var(--story-viewport) * .71));
     min-block-size: 0;
   }
+
 
   [data-story-cinema] .story__scene--hands .story__frame {
     aspect-ratio: auto;

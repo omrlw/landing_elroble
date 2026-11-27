@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import Cta from '../components/Cta.astro';
 import ActionIcon from '../components/ActionIcon.astro';
 import GalleryPlayback from '../components/GalleryPlayback.astro';
@@ -57,6 +58,7 @@ const photoSizes = [
 ---
 
 <section class="trust" aria-labelledby="trust-title" data-trust>
+  <AmbientLight tone="forest" />
   <div class="container trust__inner">
     <div class="trust__message" data-reveal="heading">
       <h2 id="trust-title">La confianza empieza<br /><em>por conocernos.</em></h2>

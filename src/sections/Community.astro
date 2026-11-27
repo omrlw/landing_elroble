@@ -1,11 +1,12 @@
 ---
 import { Image } from 'astro:assets';
+import AmbientLight from '../components/AmbientLight.astro';
 import OpticalGlass from '../components/OpticalGlass.astro';
 import ActionIcon from '../components/ActionIcon.astro';
 import Pictogram from '../components/Pictogram.astro';
 import { business, phoneUrl } from '../config/business';
-import oakBough from '../assets/botanical/community-oak-sprig.webp';
 import salon from '../assets/lower/community-salon.png';
+import oakTree from '../assets/botanical/genial-oak-tree.png';
 import activity from '../assets/lower/community-activity.png';
 import clay from '../assets/lower/community-clay.png';
 import participant from '../assets/lower/community-participant.png';
@@ -23,12 +24,13 @@ const posters = [
 ---
 
 <div class="closing">
+  <AmbientLight tone="forest" />
   <div class="container closing-container">
     <section class="community" id="comunidad" aria-labelledby="community-heading">
-      <Image class="community-bough" src={oakBough} alt="" aria-hidden="true"
-        width={480} widths={[160, 240, 320, 480, 640]}
-        sizes="(min-width: 80rem) 270px, (min-width: 40rem) 22vw, 108px" format="webp" />
+      <AmbientLight side="start" />
       <header data-reveal="heading">
+        <Image class="community-oak" src={oakTree} alt=""
+          width={96} widths={[56, 96, 184]} sizes="clamp(56px, 7vw, 88px)" format="webp" />
         <h2 id="community-heading">La vida que <em>compartimos.</em></h2>
         <p class="community-description">Pequeños momentos de nuestro día a día.</p>
         <p class="community-compact-description">Entre talleres, juegos y charlas, así se vive un día en El Roble.</p>
@@ -141,6 +143,8 @@ const posters = [
   }
   .closing-container { position: relative; }
   .community {
+    --ambient-y: 26%;
+    --ambient-size: clamp(13rem, 24vw, 25rem);
     --community-content-width: 54rem;
     position: relative;
     isolation: isolate;
@@ -153,17 +157,6 @@ const posters = [
     color: var(--color-ink);
     box-shadow: var(--shadow-raised);
   }
-  .community-bough {
-    position: absolute;
-    z-index: -1;
-    inset-block-start: .125rem;
-    inset-inline-end: clamp(-1.5rem, 3.1vw - 2.25rem, .75rem);
-    inline-size: clamp(5rem, 19vw, 15rem);
-    block-size: auto;
-    rotate: -7deg;
-    opacity: .62;
-    pointer-events: none;
-  }
   .community header {
     display: grid;
     gap: var(--space-related);
@@ -171,6 +164,12 @@ const posters = [
     text-align: center;
   }
   .community h2 em { display: block; color: var(--color-oak); font-weight: inherit; }
+  .community-oak {
+    justify-self: center;
+    inline-size: clamp(3.5rem, 7vw, 5.5rem);
+    block-size: auto;
+    margin-block-end: calc(var(--space-detail) - var(--space-related));
+  }
   .community header p { justify-self: center; max-inline-size: 65ch; }
   .community-description { display: none; }
 
