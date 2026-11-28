@@ -8,10 +8,12 @@ import garden from '../assets/story/ronda-en-el-jardin.jpg';
 import bingo from '../assets/story/bingo-en-el-roble.jpg';
 import acorns from '../assets/botanical/day-oak-acorns.webp';
 import oakTwig from '../assets/botanical/story-oak-twig.webp';
+import oakLeaf from '../assets/botanical/hero-oak-leaf.webp';
 
 const botanicalArt = {
   acorns: { src: acorns, sizes: 'clamp(3.75rem, 7vw, 6rem)' },
   twig: { src: oakTwig, sizes: 'clamp(4rem, 6.5vw, 5.5rem)' },
+  leaf: { src: oakLeaf, sizes: '40px' },
 };
 
 const scenes = [
@@ -21,7 +23,7 @@ const scenes = [
     heading: 'Una mañana',
     emphasis: 'en El Roble.',
     copy: 'En nuestro centro de día en Arequipa, hay tiempo para hacer algo con las manos, moverse y disfrutar de la compañía de otros.',
-    botany: ['acorns'] as const,
+    botany: 'acorns' as const,
     image: portrait,
     alt: 'Una mujer ensarta cuentas de colores en una mesa de El Roble.',
   },
@@ -31,7 +33,7 @@ const scenes = [
     heading: 'Cada quien',
     emphasis: 'a su propio ritmo.',
     copy: 'Una ronda en el jardín invita a dar unos pasos y disfrutar juntos del aire libre.',
-    botany: ['twig'] as const,
+    botany: 'twig' as const,
     image: garden,
     alt: 'Varias personas se toman de las manos en una ronda en el jardín de El Roble.',
   },
@@ -40,7 +42,7 @@ const scenes = [
     anchor: 'historia-compania',
     heading: 'La alegría',
     emphasis: 'de estar juntos.',
-    botany: [] as const,
+    botany: 'leaf' as const,
     image: bingo,
     alt: 'Personas mayores y acompañantes juegan bingo en el salón de El Roble.',
   },
@@ -61,6 +63,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
       {scenes.map((scene, index) => {
         const Title = index === 0 ? 'h2' : 'h3';
         const titleId = index === 0 ? 'story-title' : `${scene.anchor}-titulo`;
+        const art = botanicalArt[scene.botany];
         return (
           <article
             class:list={['story__scene', `story__scene--${scene.key}`]}
@@ -69,27 +72,20 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
             aria-labelledby={titleId}
             tabindex={index ? -1 : undefined}
           >
-            <AmbientLight
-              profile="portrait"
-              side={scene.key === 'hands' ? 'start' : 'end'}
-              tone={scene.key === 'table' ? 'forest' : 'cream'}
-            />
+            {scene.key !== 'table' && <AmbientLight profile="portrait" side={scene.key === 'hands' ? 'start' : 'end'} />}
             <div class="container story__composition">
+              {scene.key === 'table' && <AmbientLight profile="portrait" side="end" tone="forest" />}
               <div class="story__copy" data-story-copy>
+                <div class="story__botany" aria-hidden="true">
+                  <span class:list={['story__glass liquid-glass liquid-glass--lens',
+                    scene.key === 'table' ? 'liquid-glass--forest-panel' : 'liquid-glass--clear']}></span>
+                  <Image class:list={['story__botanical', `story__botanical--${scene.botany}`]}
+                    src={art.src} alt="" width={192} widths={[48, 64, 96, 144, 192, 256, 320].filter((width) => width <= art.src.width)}
+                    sizes={`(width < 40rem) 40px, ${art.sizes}`} style={`--story-botanical-width: ${art.sizes}`}
+                    format="webp" loading="lazy" decoding="async" data-story-botanical />
+                </div>
                 <Title id={titleId}>{scene.heading} <em>{scene.emphasis}</em></Title>
                 {scene.copy && <p>{scene.copy}</p>}
-                {scene.botany.length > 0 && (
-                  <div class="story__botany" aria-hidden="true">
-                    {scene.botany.map((piece) => {
-                      const { src, sizes } = botanicalArt[piece];
-                      return (
-                        <Image class:list={['story__botanical', `story__botanical--${piece}`]}
-                          {src} {sizes} alt="" width={192} widths={[64, 96, 144, 192, 256, 320]}
-                          style={`--story-botanical-width: ${sizes}`} format="webp" loading="lazy" decoding="async" />
-                      );
-                    })}
-                  </div>
-                )}
               </div>
               <figure class="story__photo">
                 <div class="story__frame" data-story-frame>
@@ -194,6 +190,7 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
     display: grid;
     gap: var(--section-gap);
   }
+  .story__scene--table :global(.ambient-light) { border-radius: var(--story-panel-radius); }
 
   .story__scene:is(.story__scene--workshop, .story__scene--table) .story__composition {
     width: calc(100% - max(.75rem, var(--page-gutter) - var(--story-edge)) * 2);
@@ -226,10 +223,12 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
 
   .story__botany {
     display: flex;
+    order: 1;
     align-items: end;
     gap: clamp(.75rem, 1.25vw, 1rem);
     pointer-events: none;
   }
+  .story__glass, .story__scene--table .story__botany { display: none; }
 
   .story__botanical {
     flex: none;
@@ -438,7 +437,9 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
     clip-path: inset(var(--story-reveal-top) var(--story-reveal-inline) var(--story-reveal-bottom) round var(--story-panel-radius));
   }
 
-  [data-story-cinema] .story__scene--table > :global(.ambient-light) { display: none; }
+  @media (min-width: 40rem) {
+    [data-story-cinema] .story__scene--table :global(.ambient-light) { display: none; }
+  }
 
   [data-story-cinema] .story__scene--table .story__photo {
     position: absolute;
@@ -465,22 +466,79 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
       --story-edge: var(--page-gutter);
       --story-radius: var(--photo-radius);
       --story-panel-radius: var(--radius-card);
+      --story-panel-inset: var(--space-inset);
     }
-    .story__scene--hands { --ambient-y: 20%; }
+    .story__scene--hands { --ambient-y: 14%; }
+    .story__scene.story__scene--workshop {
+      --ambient-y: 12%;
+      --ambient-bottom: auto;
+      --ambient-shift: 0%;
+    }
     .story__scene:is(.story__scene--workshop, .story__scene--table) { margin-inline: 0; }
     .story__scene:is(.story__scene--workshop, .story__scene--table) .story__composition {
       width: calc(100% - 2 * var(--page-gutter));
     }
-    .story__botany { display: none; }
+    .story__scene .story__botany {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      order: 0;
+      place-items: center;
+      inline-size: 3.5rem;
+      block-size: 2.75rem;
+      padding: calc(var(--space-detail) / 2);
+      border-radius: var(--radius-pill);
+    }
+    .story__botany .story__botanical {
+      inline-size: 2.5rem;
+      block-size: 2.25rem;
+      object-fit: contain;
+      rotate: 0deg;
+    }
+    .story__botany .story__glass {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      display: block;
+      border-radius: inherit;
+    }
+    .story__scene--table .story__glass {
+      --glass-highlight: var(--glass-bevel-dark);
+    }
     .story__scene .story__frame { aspect-ratio: var(--photo-ratio-portrait); }
+    .story__scene--table {
+      padding-block: 0;
+      border-radius: 0;
+      background: none;
+    }
+    .story__scene--table .story__composition {
+      --ambient-y: 0px;
+      --ambient-bottom: auto;
+      --ambient-shift: -32%;
+      --ambient-crop: 10%;
+      position: relative;
+      isolation: isolate;
+      gap: var(--space-inset);
+      padding: var(--story-panel-inset);
+      border-radius: var(--story-panel-radius);
+      background: var(--surface-forest);
+    }
     .story__scene--table .story__visit { gap: var(--space-detail); }
 
     .story[data-story-cinema] {
       --story-travel: clamp(46rem, 112svh, 64rem);
-      --story-photo-height: calc((100vw - 2 * var(--page-gutter)) / (var(--photo-ratio-portrait)));
+      --story-photo-inset: var(--page-gutter);
     }
-    [data-story-cinema] .story__scene { padding-block: var(--section-gap); }
+    [data-story-cinema] .story__stage { background: var(--color-cream); }
+    [data-story-cinema] .story__scene {
+      --story-photo-height: calc((100vw - 2 * var(--story-photo-inset)) / (var(--photo-ratio-portrait)));
+      padding-block: var(--section-gap);
+    }
     [data-story-cinema] .story__scene:is(.story__scene--workshop, .story__scene--table) { inset: 0; }
+    [data-story-cinema] .story__scene--table {
+      --story-photo-inset: calc(var(--page-gutter) + var(--story-panel-inset));
+      background: var(--color-cream);
+    }
     [data-story-cinema] .story__scene .story__composition {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto minmax(0, max-content);
@@ -488,9 +546,13 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
       gap: var(--space-inset);
     }
     [data-story-cinema] .story__scene--table .story__composition {
-      grid-template-rows: auto minmax(0, max-content) auto;
-      align-items: start;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      block-size: auto;
+      max-block-size: 100%;
     }
+    [data-story-cinema] .story__scene--table :is(.story__copy, .story__visit) { flex: none; }
     [data-story-cinema] .story__scene .story__photo {
       position: relative;
       inset: auto;
@@ -508,7 +570,8 @@ const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem)
     }
     [data-story-cinema] .story__frame img { position: absolute; inset: 0; }
     [data-story-cinema] .story__detail { inset-inline-start: var(--space-related); inline-size: 36%; }
-    [data-story-cinema] .story__scene--table .story__frame { border-radius: var(--story-radius); }
+    [data-story-cinema] .story__scene--table .story__photo { block-size: var(--story-photo-height); }
+    [data-story-cinema] .story__scene--table .story__frame { block-size: 100%; border-radius: var(--story-radius); }
     [data-story-cinema] .story__scene--table .story__photo::after { display: none; }
   }
 </style>

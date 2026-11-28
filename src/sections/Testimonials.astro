@@ -293,6 +293,12 @@ const placements = [
     .review-popover { max-inline-size: min(34rem, 100% - var(--page-gutter) * 2); }
   }
 
+  @media (width < 40rem) {
+    .testimonials { padding-block-start: var(--section-gap); }
+    .review-track { grid-auto-columns: min(88%, 21rem); }
+    .review-card { min-block-size: 0; }
+  }
+
   @media (min-width: 40rem) {
     .testimonials { --track-gap: var(--space-inset); }
     .review-opening { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--section-gap); }

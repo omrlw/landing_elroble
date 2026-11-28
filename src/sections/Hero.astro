@@ -139,11 +139,13 @@ const credentials = [
   const promo = document.querySelector<HTMLElement>('[data-first-visit]');
   const promoOrigin = document.querySelector<HTMLElement>('[data-first-visit-origin]');
   const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const promoDock = header?.querySelector<HTMLElement>('[data-first-visit-dock]');
   const dismiss = promo?.querySelector<HTMLButtonElement>('.first-visit__dismiss');
   const storageKey = 'el-roble-first-visit-dismissed';
 
   if (promo && dismiss) {
     const listeners = new AbortController();
+    const phone = matchMedia(phoneLayoutQuery);
     let pendingFrame = 0;
     let placement: Animation | undefined;
 
@@ -152,11 +154,18 @@ const credentials = [
       const origin = promoOrigin.getBoundingClientRect();
       // Move before the branch reaches the sticky header.
       const docked = origin.top <= header.getBoundingClientRect().bottom + 24;
-      if (docked === promo.hasAttribute('data-docked')) return;
+      const destination = docked && phone.matches && promoDock ? promoDock : promoOrigin;
+      if (docked === promo.hasAttribute('data-docked') && promo.parentElement === destination) return;
 
       const previous = promo.getBoundingClientRect();
       placement?.cancel();
       promo.toggleAttribute('data-docked', docked);
+      promo.toggleAttribute('data-header-dock', destination === promoDock);
+      if (promo.parentElement !== destination) {
+        const focused = document.activeElement;
+        destination.append(promo);
+        if (focused instanceof HTMLElement && promo.contains(focused)) focused.focus({ preventScroll: true });
+      }
       if (!animate || reducedMotion.matches) return;
 
       const next = promo.getBoundingClientRect();
@@ -578,14 +587,29 @@ const credentials = [
     .hero-media__year strong { font-size: 2rem; }
     .opening-hero__credentials { margin-block-start: calc(var(--space-related) - var(--opening-gap)); }
     .first-visit-origin { --offer-size: 6rem; margin: var(--space-inset); }
-    .first-visit[data-docked] {
-      inset-block-start: calc(var(--header-block-size) + var(--space-related));
-      inset-inline-end: var(--page-gutter);
-      inline-size: 5.25rem;
+    @media (height < 40rem) {
+      .first-visit-origin { justify-self: start; inset-inline: 0 auto; }
     }
     .first-visit__leaf { inline-size: 2.625rem; }
     .first-visit { --first-visit-label-size: .75rem; }
-    .first-visit[data-docked] .first-visit__copy strong { font-size: 1.75rem; }
+    .first-visit[data-header-dock] {
+      display: flex;
+      align-items: center;
+      position: relative;
+      inset: auto;
+      inline-size: max-content;
+      aspect-ratio: auto;
+    }
+    .first-visit[data-header-dock] .first-visit__link {
+      flex: none;
+      inline-size: auto;
+      block-size: var(--control-size);
+      padding: 0 var(--space-detail);
+      border-radius: var(--radius-pill);
+    }
+    .first-visit[data-header-dock] .first-visit__leaf { display: none; }
+    .first-visit[data-header-dock] .first-visit__copy strong { font-size: 1.125rem; }
+    .first-visit[data-header-dock] .first-visit__dismiss { position: relative; inset: auto; }
   }
   @media (40rem <= width < 73rem) {
     .opening-hero { --opening-gap: 2rem; padding-block-start: 2.25rem; }

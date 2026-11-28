@@ -15,7 +15,7 @@ El hero abre con arcos de vidrio en ambos márgenes sobre una base crema cálida
 | Superficie | Forma y movimiento |
 | --- | --- |
 | Hero | Dos reflejos de la misma curvatura en los márgenes. El de la izquierda es más tenue. |
-| Historia | Un arco de escala común, colocado a la izquierda del retrato y en la esquina inferior derecha del jardín. |
+| Historia | En móvil, los arcos acompañan los títulos y el panel verde. En escritorio, el arco se sitúa a la izquierda del retrato y en la esquina inferior derecha del jardín. |
 | Confianza y Centro de día | Reflejo corto apoyado en la esquina superior derecha de Confianza y barrido amplio a la derecha de Centro de día. |
 | Enfoque y Testimonios | Curva ascendente en la esquina inferior derecha de Enfoque y trazo horizontal en la esquina superior izquierda de Testimonios. |
 | Programa y Recorrido | Par de arcos junto al arte de Programa y reflejo ascendente cerca de la invitación de Recorrido. |

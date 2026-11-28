@@ -14,6 +14,7 @@ import participant from '../assets/lower/community-participant.png';
 const profileUrl = business.socialProfiles.tiktok;
 const profileHandle = new URL(profileUrl).pathname.split('/').filter(Boolean).at(-1);
 const emailHref = `mailto:${business.email}`;
+const [emailUser, emailDomain] = business.email.split('@');
 const [street, ...locality] = business.address.split(', ');
 const posters = [
   { photo: salon, description: 'Salón luminoso del centro' },
@@ -112,7 +113,7 @@ const posters = [
             <span class="contact-icon liquid-glass liquid-glass--forest-panel liquid-glass--lens"><ActionIcon name="mail" size={20} /></span>
             <span class="contact-copy">
               <strong>Correo</strong>
-              <span class="contact-value">{business.email}</span>
+              <span class="contact-value">{emailUser}@<wbr />{emailDomain}</span>
             </span>
           </a>
         </address>

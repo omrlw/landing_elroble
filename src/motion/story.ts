@@ -17,7 +17,6 @@ export function createStory(section: HTMLElement) {
   const [openingCopy, workshopCopy, tableCopy] = copies;
   const [portraitFrame, workshopFrame, tableFrame] = frames;
   const detail = section.querySelector<HTMLElement>('[data-story-detail]');
-  const detailImage = detail?.querySelector('img');
   const visit = section.querySelector<HTMLElement>('[data-story-visit]');
   const cues = [...section.querySelectorAll<HTMLElement>('[data-story-cue]')];
 
@@ -63,9 +62,9 @@ export function createStory(section: HTMLElement) {
     const chapterStops = [0.45, 0.9, 0.94];
     const initialCue = destinations.findIndex((destination) => location.hash === '#' + destination.id);
     // Clipped panels cannot intersect the viewport until their transition begins.
-    activity.loading = 'eager';
-    group.loading = 'eager';
-    if (detailImage) detailImage.loading = 'eager';
+    const stagedImages = [activity, group, detail.querySelector('img')];
+    if (conditions.phoneCinema) stagedImages.push(...section.querySelectorAll<HTMLImageElement>('[data-story-botanical]'));
+    for (const image of stagedImages) if (image) image.loading = 'eager';
     section.setAttribute('data-story-cinema', '');
 
     // Native fragment links land on the settled frames along the scroll track.
@@ -114,9 +113,7 @@ export function createStory(section: HTMLElement) {
 
     return () => {
       cancelAnimationFrame(frame);
-      activity.loading = 'lazy';
-      group.loading = 'lazy';
-      if (detailImage) detailImage.loading = 'lazy';
+      for (const image of stagedImages) if (image) image.loading = 'lazy';
       section.removeAttribute('data-story-cinema');
       cues.forEach((cue, index) => {
         destinations[index].id = cue.id;

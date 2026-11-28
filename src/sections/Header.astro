@@ -100,6 +100,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
       </div>
     </nav>
 
+    <div class="site-header__offer" data-first-visit-dock></div>
     <div class="site-header__actions">
       <a class:list={['site-header__phone', glassLink]} href={phoneUrl} aria-label={`Llamar al ${business.phone}`}>
         <ActionIcon class="site-header__phone-icon" name="phone" />
@@ -195,6 +196,8 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
     min-block-size: calc(var(--header-compact-height) + var(--header-height-growth));
     padding-block: 0.625rem;
   }
+
+  .site-header__offer { display: none; }
 
   .site-header__brand {
     flex: 0 1 auto;
@@ -514,6 +517,7 @@ const glassLink = `${glassControl} liquid-glass--underlay`;
 
     .site-nav__drawer-head { padding-inline: var(--page-gutter); }
     .site-header__phone { display: none; }
+    .site-header__offer:has(> :not([hidden])) { display: block; margin-inline-start: auto; }
 
     .site-header__actions :global(.site-header__cta) {
       --cta-height: 4.25rem;

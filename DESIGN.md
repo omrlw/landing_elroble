@@ -41,7 +41,9 @@ Centro de día abre con `--space-section`, igual que Programa. Usa ese mismo int
 
 Por debajo de 40 rem, la escala se fija en 8 px para detalles, 12 px entre elementos relacionados, 16 px para rellenos y márgenes de página, 24 px entre grupos y 40 px entre secciones en un fondo continuo. Confianza y Enfoque tienen un margen exterior de 8 px. Su contenido se alinea a 16 px del borde de la pantalla, igual que el resto de la página. El fondo de Testimonios llega a ambos bordes de la pantalla.
 
-El titular del hero usa `--text-hero` de 44 a 60 px en móvil. La introducción sigue al titular con `--space-related`. El sello de primera visita parte de la esquina superior de la foto, donde deja libre el ancho del titular.
+El titular del hero usa `--text-hero` de 44 a 60 px en móvil. La introducción sigue al titular con `--space-related`. El sello de primera visita parte de la esquina superior de la foto. En ventanas de menos de 40 rem de alto, parte del lado izquierdo para separarse de WhatsApp. Al avanzar por la página, la promoción se acopla dentro de la cabecera móvil para dejar los títulos libres.
+
+Enfoque deja libre el ancho del título por debajo de 23.5 rem. En Testimonios, las tarjetas ocupan hasta un 88% del carrusel y dejan visible el borde de la siguiente reseña. La reseña más larga marca la altura de la fila.
 
 | Formato | Token | Uso en móvil |
 | --- | --- | --- |
@@ -49,7 +51,7 @@ El titular del hero usa `--text-hero` de 44 a 60 px en móvil. La introducción 
 | 5:4 | `--photo-ratio-gallery` | Confianza, actividades de Centro de día y vista previa de Comunidad |
 | 16:9 | `--photo-ratio-landscape` | Tarjetas de Programa y fotos secundarias de Centro de día |
 
-Los marcos comparten `--photo-radius` donde la composición admite el mismo contorno. Cada fotografía conserva su punto de encuadre. En Historia, el marco se acorta si el texto de una escena necesita más espacio en la ventana.
+Los marcos comparten `--photo-radius` donde la composición admite el mismo contorno. Cada fotografía conserva su punto de encuadre. En Historia, el marco se acorta si el texto de una escena necesita más espacio en la ventana. La escena final reúne el título, la foto y la invitación en un panel verde con el margen exterior de `--page-gutter` y el relleno de `--space-inset`. El alto del panel lo define su contenido.
 
 Confianza y Centro de día muestran un solo rótulo con su descripción bajo el paginador. Las filas se superponen para que la descripción más larga defina la altura del panel. Al elegir un punto, deslizar una foto o dejar correr el carrusel, el texto entra a mitad del fundido de la imagen correspondiente. Con movimiento reducido, ambos cambian a la vez y la reproducción automática se detiene. En Confianza, la invitación móvil conserva el titular y el botón.
 
@@ -104,7 +106,7 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
 - La hoja del hero nace junto al final del título.
-- Historia usa bellotas y una rama de roble debajo del texto de sus dos escenas claras a partir de 40 rem.
+- Historia usa bellotas, una rama y una hoja de roble sobre vidrio claro o bosque encima de los tres títulos en móvil. A partir de 40 rem, las bellotas y la rama se colocan debajo del texto de las dos escenas claras.
 - Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha en escritorio. Entre 40 y 48 rem, el brote acompaña la transición al Recorrido.
 - Preguntas frecuentes tiene una ramita en el encabezado y, desde 40 rem, una bellota de «Genial» junto a la invitación para agendar una visita. Comunidad usa el roble de «Genial» encima del título.
 
@@ -114,7 +116,7 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 [AmbientLight.astro](src/components/AmbientLight.astro) reutiliza el bisel del hero en arcos abiertos. Cambian de tamaño, lado y altura según el espacio libre de cada sección. Sobre bosque, el brillo tiene menos intensidad. Historia usa el mismo arco y la misma escala en sus escenas, con el retrato a la izquierda y el jardín en la esquina inferior derecha. La capa queda detrás de las fotos y los controles. Ancla la decoración a la superficie de la sección con `position: relative` e `isolation: isolate`.
 
-La luz recorre el bisel en reposo y el scroll modula su fase. En ausencia de WebGL, el destello viaja sobre un trazo SVG. Con movimiento reducido el reflejo queda fijo y en colores forzados se oculta. El mapa de fondos y las referencias están en [docs/atmosfera.md](docs/atmosfera.md).
+La luz recorre el bisel en reposo y el scroll modula su fase. En Historia móvil, el arco acompaña los títulos de las escenas claras y recorre el interior del panel verde. En ausencia de WebGL, el destello viaja sobre un trazo SVG. Con movimiento reducido el reflejo queda fijo y en colores forzados se oculta. El mapa de fondos y las referencias están en [docs/atmosfera.md](docs/atmosfera.md).
 
 ## Fotografías de Historia
 
@@ -162,7 +164,7 @@ En el FAQ, cada pregunta usa vidrio claro, el radio `--radius-card` y un contorn
 
 Usa `npm run check`, `npm run build` y `npm run preview` para revisar el resultado de producción. Compara capturas antes y después, con el mismo navegador, tamaño y escala de píxel. Revisa el hero al entrar y al cambiar de foto, la cápsula y el desplegable de escritorio, los rótulos de Recorrido y el botón de Comunidad. Activa transparencia reducida y comprueba que se retiren las capas ópticas. Al volver a una escena tras desplazarte, la refracción debe aparecer de nuevo.
 
-El sello de primera visita tiene una superficie roble, la ramita «Margen izquierdo» de Genial en el borde superior izquierdo y un cierre circular en vidrio claro. «Gratis» lleva la tipografía de títulos en cursiva. El sello parte de su posición en la portada y se acopla debajo de la cabecera al deslizar. La versión acoplada se compacta en móvil. La ramita se mueve brevemente cada doce segundos y respeta la preferencia de movimiento reducido. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
+El sello de primera visita tiene una superficie roble, la ramita «Margen izquierdo» de Genial en el borde superior izquierdo y un cierre circular en vidrio claro. «Gratis» lleva la tipografía de títulos en cursiva. El sello parte de su posición en la portada y, a partir de 40 rem, se acopla debajo de la cabecera al deslizar. La ramita se mueve brevemente cada doce segundos y respeta la preferencia de movimiento reducido. La tarjeta de talleres de arte conserva su fondo bosque y un medallón translúcido.
 
 ## Sombras y estados
 

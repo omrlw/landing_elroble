@@ -229,6 +229,11 @@ const principles = [
     .approach-portrait { height: auto; aspect-ratio: var(--photo-ratio-portrait); }
   }
 
+  @media (width < 23.5rem) {
+    .approach-heading h2 { margin-inline: 0; }
+    .approach-sprig { display: none; }
+  }
+
   @media (min-width: 768px) {
     .approach-inner { padding-inline: 0; }
 
