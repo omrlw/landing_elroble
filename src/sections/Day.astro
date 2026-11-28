@@ -70,7 +70,7 @@ const facilities = [
               <div class="day__scene" data-scene={index} data-photo-scene>
                 <div class="day__photo" data-gallery-tile>
                   <Image src={image} alt={alt} widths={[360, 480, 640, 900].filter((width) => width <= image.width)}
-                    sizes="(max-width: 40rem) calc(100vw - 24px), (width < 73rem) 58vw, 27vw" format="webp" />
+                    sizes="(width < 40rem) calc(100vw - 2rem), (width < 73rem) 58vw, 27vw" format="webp" />
                 </div>
                 <label class="day__preview" for={`day-activity-${next}`} data-gallery-tile>
                   <Image src={preview} alt="" widths={[240, 360, 480, 640]} sizes="(width < 73rem) 32vw, 17vw" format="webp" />
@@ -93,10 +93,10 @@ const facilities = [
         <h3 id="day-panel-title">Así acompañamos sus días.</h3>
         <fieldset class="day__activity-list" aria-labelledby="day-panel-title">
           {activities.map(({ title, mobileTitle, description, icon }, index) => (
-            <div class="day__activity">
+            <div class="day__activity gallery-single__item">
               <input class="day__radio" type="radio" id={`day-activity-${index}`} name="day-activity" checked={index === 0} data-gallery-control
                 aria-label={title} aria-describedby={`day-activity-description-${index}`} aria-controls="day-activity-photos" />
-              <label class="day__activity-label liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row liquid-glass__trigger"
+              <label class="day__activity-label gallery-single__copy liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row liquid-glass__trigger"
                 for={`day-activity-${index}`}>
                 <span class="day__index" aria-hidden="true">0{index + 1}</span>
                 <span class="day__activity-title">
@@ -215,7 +215,8 @@ const facilities = [
   .day__index { display: grid; place-items: center; inline-size: 100%; aspect-ratio: 1; font-size: var(--text-meta); font-variant-numeric: tabular-nums; border-radius: 50%; }
   .day__activity-detail { grid-column: 2 / -1; max-inline-size: 62ch; text-wrap: pretty; }
   .day__activity-detail > span::before { content: ''; display: block; block-size: calc(var(--space-detail) / 2); }
-  :is(.day__radio[data-gallery-current], .day:not([data-gallery-ready]) .day__radio:checked) + .day__activity-label {
+  .day:not([data-gallery-ready]) .day__radio:checked + .day__activity-label,
+  .day__activity-label[data-gallery-copy-current] {
     --glass-rest-visibility: 1;
     --glass-color: var(--color-forest);
     --glass-fill: var(--glass-clear-tint);
@@ -226,6 +227,7 @@ const facilities = [
     --gallery-detail-open: 1;
     --gallery-detail-size: 1fr;
     --gallery-detail-visibility: visible;
+    --gallery-item-visibility: visible;
 
     .day__index { background: var(--color-forest); color: var(--color-paper); }
     &::before { transition: none; }
@@ -258,14 +260,23 @@ const facilities = [
     .day__invite > :global(.day__acorns) { justify-self: end; }
   }
 
-  @media (max-width: 40rem) {
+  @media (width < 40rem) {
     .day__description p:nth-child(2) { display: none; }
-    .day__composition { row-gap: var(--space-related); }
-    .day__facilities { margin-block-start: var(--space-detail); max-inline-size: 94%; }
+    .day__composition { row-gap: var(--section-gap); }
+    .day__gallery { gap: 0; }
+    .day__photo { aspect-ratio: var(--photo-ratio-gallery); border-radius: var(--photo-radius); }
+    .day__panel { margin-block-start: calc(-1 * var(--space-related)); }
+    .day__activity-list { gap: 0; }
+    .day__activity-label { --activity-inset: var(--space-related); block-size: 100%; align-content: start; row-gap: var(--space-detail); }
+    .day__activity-detail { grid-column: 1 / -1; }
+    .day__activity-label::after, .day__activity-detail > span::before { display: none; }
+    .day__activity-list:has(.day__radio:focus-visible) .day__activity-label { outline: 2px solid var(--glass-focus); outline-offset: 2px; }
+    .day__radio:focus:not(:focus-visible) + .day__activity-label .day__index { outline: none; }
+    .day__facilities img { aspect-ratio: var(--photo-ratio-landscape); }
     .day__desktop-title { display: none; }
     .day__mobile-title { display: block; }
   }
-  @media (width > 40rem) {
+  @media (min-width: 40rem) {
     .day__composition {
       grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
       grid-template-areas: "gallery gallery" "panel facilities" "invite invite";

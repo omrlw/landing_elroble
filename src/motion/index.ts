@@ -1,6 +1,6 @@
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { setupScroll } from '../scripts/scroll';
-import { reducedMotion } from '../scripts/media';
+import { phoneLayoutQuery, reducedMotion } from '../scripts/media';
 import { gsap } from './gsap';
 import { playOpening, revealSections } from './sections';
 import { createStory } from './story';
@@ -11,7 +11,7 @@ const stopScroll = setupScroll(() => ScrollTrigger.update());
 
 const story = document.querySelector<HTMLElement>('[data-story]');
 const stopStory = story ? createStory(story) : undefined;
-const compact = matchMedia('(max-width: 40rem)');
+const compact = matchMedia(phoneLayoutQuery);
 let active: gsap.Context | undefined;
 let frame = 0;
 

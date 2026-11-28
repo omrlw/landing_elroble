@@ -106,7 +106,7 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
         <div class="tour-track" id="tour-photos" role="region" aria-label="Galería del centro" tabindex="0">
           {galleryPhotos.map(({ id, photo, alt, label }) => (
             <figure class:list={['tour-slide', (id === 'entrance' || id === 'activities') && `tour-slide--${id}`]} data-glass-scene>
-              {/* Cover scales these 1200:540 photos to the card's 420px height before cropping. */}
+              {/* Size the wide source for the height of the portrait crop. */}
               <Image src={photo} alt={alt} format="webp" widths={[960, 1200]} sizes="934px" data-glass-image />
               <TourCaption icon={id}>{label}</TourCaption>
             </figure>
@@ -253,6 +253,16 @@ const galleryPhotos = [...entrancePhotos, ...interiorPhotos];
 
   .tour-invitation h3 { color: inherit; }
   .tour-invitation p { color: var(--color-text); }
+
+  @media (width < 40rem) {
+    .tour { --tour-photo-radius: var(--photo-radius); }
+    .tour-track {
+      --tour-slide-gap: var(--space-related);
+      --tour-track-tail: var(--space-detail);
+    }
+    .tour-slide { height: auto; aspect-ratio: var(--photo-ratio-portrait); }
+    .tour-pagination { margin-block-start: 0; }
+  }
 
   @media (min-width: 768px) {
     .tour-heading-copy { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }

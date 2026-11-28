@@ -17,7 +17,7 @@ Los valores compartidos viven en [tokens.css](src/styles/tokens.css). [global.cs
 | Controles secundarios y etiquetas | `--text-control` | 16 px |
 | Índices y datos secundarios | `--text-meta` | 14 px |
 
-Los rangos corresponden a una raíz de 16 px. Los títulos usan Cormorant Garamond en peso 700. Los textos de lectura y controles usan Google Sans Flex. Las tres escenas de Historia usan `--text-section`. Los rótulos de Confianza, Centro de día y Preguntas frecuentes comparten tamaño e interlineado. Las llamadas a la acción del contenido comparten una altura mínima de 60 px. La cabecera fija conserva su variante compacta.
+Los rangos corresponden a una raíz de 16 px. Los títulos usan Cormorant Garamond en peso 700. Los textos de lectura y controles usan Google Sans Flex. Las tres escenas de Historia usan `--text-section`. Los rótulos de Confianza, Centro de día y Preguntas frecuentes comparten tamaño e interlineado. Las llamadas a la acción del contenido tienen una altura mínima de 48 px en móvil y 60 px en los demás tamaños. La cabecera fija usa su variante compacta.
 
 ## Espaciado
 
@@ -31,11 +31,27 @@ Los rangos corresponden a una raíz de 16 px. Los títulos usan Cormorant Garamo
 
 Los rangos corresponden a una raíz de 16 px. Programa y Recorrido comparten un solo intervalo amplio en su fondo continuo. Los cambios de fondo permiten acercar los grupos a ambos lados del borde. El hero y Confianza conservan el espaciado de su composición. Las fotos escalonadas de Centro de día, Recorrido y Comunidad mantienen sus desplazamientos. En Historia, `--story-travel` determina la distancia de scroll de la secuencia fija. Los márgenes y separaciones de las escenas controlan el espacio visible.
 
-Confianza y Centro de día usan una altura mínima de 52 px (`--control-row-min-height`). Las filas de Preguntas frecuentes tienen un mínimo adaptable de 68 a 80 px y de 12 a 16 px entre ellas. A partir de 640 px, las dos columnas se expanden de forma independiente. La lectura y el foco recorren cada columna de arriba abajo.
+Las filas de selección de Confianza y Centro de día en pantallas amplias usan una altura mínima de 52 px (`--control-row-min-height`). Las filas de Preguntas frecuentes tienen un mínimo adaptable de 68 a 80 px y de 12 a 16 px entre ellas. A partir de 640 px, las dos columnas se expanden de forma independiente. La lectura y el foco recorren cada columna de arriba abajo.
 
 `--control-size` da a los controles compactos una medida base de 44 px con una raíz de 16 px. `--space-control-gap` mantiene una separación fija de 12 px donde los controles la necesitan. `--radius-pill` se usa en botones, cápsulas y paginadores.
 
 Centro de día abre con `--space-section`, igual que Programa. Usa ese mismo intervalo completo entre su último grupo y el panel verde de Enfoque. Entre Programa y Recorrido, el espacio visible se reparte entre las dos secciones.
+
+### Composición móvil
+
+Por debajo de 40 rem, la escala se fija en 8 px para detalles, 12 px entre elementos relacionados, 16 px para rellenos y márgenes de página, 24 px entre grupos y 40 px entre secciones en un fondo continuo. Confianza y Enfoque tienen un margen exterior de 8 px. Su contenido se alinea a 16 px del borde de la pantalla, igual que el resto de la página. El fondo de Testimonios llega a ambos bordes de la pantalla.
+
+El titular del hero usa `--text-hero` de 44 a 60 px en móvil. La introducción sigue al titular con `--space-related`. El sello de primera visita parte de la esquina superior de la foto, donde deja libre el ancho del titular.
+
+| Formato | Token | Uso en móvil |
+| --- | --- | --- |
+| 9:10 | `--photo-ratio-portrait` | Hero, Historia, retrato de Enfoque y Recorrido |
+| 5:4 | `--photo-ratio-gallery` | Confianza, actividades de Centro de día y vista previa de Comunidad |
+| 16:9 | `--photo-ratio-landscape` | Tarjetas de Programa y fotos secundarias de Centro de día |
+
+Los marcos comparten `--photo-radius` donde la composición admite el mismo contorno. Cada fotografía conserva su punto de encuadre. En Historia, el marco se acorta si el texto de una escena necesita más espacio en la ventana.
+
+Confianza y Centro de día muestran un solo rótulo con su descripción bajo el paginador. Las filas se superponen para que la descripción más larga defina la altura del panel. Al elegir un punto, deslizar una foto o dejar correr el carrusel, el texto entra a mitad del fundido de la imagen correspondiente. Con movimiento reducido, ambos cambian a la vez y la reproducción automática se detiene. En Confianza, la invitación móvil conserva el titular y el botón.
 
 ## Paleta
 
@@ -88,9 +104,9 @@ Los medallones de Enfoque, Programa y Recorrido miden 40 px. Centro de día y Pr
 
 - Las referencias de «Genial» fijan el acabado mate de lámina botánica, las nervaduras y vetas finas y la paleta oliva y miel. Los motivos generados con ImageGen conservan esos rasgos y el recorte transparente.
 - La hoja del hero nace junto al final del título.
-- Historia usa bellotas y una rama de roble como ilustraciones alineadas debajo del texto de sus dos escenas claras.
-- Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha y abre espacio a ambos lados de las tarjetas. En pantallas estrechas, el brote acompaña la transición al Recorrido.
-- Preguntas frecuentes tiene una ramita en el encabezado y una bellota de «Genial» junto a la invitación para agendar una visita. Comunidad usa el roble de «Genial» encima del título.
+- Historia usa bellotas y una rama de roble debajo del texto de sus dos escenas claras a partir de 40 rem.
+- Enfoque y Recorrido usan la ramita original de «Genial». En Enfoque queda reducida y con aire alrededor. Programa combina la rama izquierda original con un brote nuevo a la derecha en escritorio. Entre 40 y 48 rem, el brote acompaña la transición al Recorrido.
+- Preguntas frecuentes tiene una ramita en el encabezado y, desde 40 rem, una bellota de «Genial» junto a la invitación para agendar una visita. Comunidad usa el roble de «Genial» encima del título.
 
 ## Luz de fondo
 
@@ -164,4 +180,4 @@ Las llamadas a la acción se construyen con [Cta.astro](src/components/Cta.astro
 - Mantén las esquinas redondeadas durante toda la apertura de una escena y deja margen entre el marco y la pantalla. Retira el texto saliente antes de que la siguiente imagen lo cubra.
 - Para el texto, usa desplazamientos cortos y la curva `--ease-soft`. Para los cambios de plano ligados al scroll, usa una curva de entrada y salida suave. Reserva las secuencias fijadas para momentos narrativos en pantallas con espacio suficiente.
 - El menú móvil y de tablet se desliza desde el borde derecho con GSAP. La entrada comparte la duración y la curva de desaceleración de las imágenes del carrusel. La X gira al aparecer y al cerrar, y el icono de menú vuelve al terminar la salida. Con movimiento reducido, el panel abre y cierra de inmediato.
-- En pantallas pequeñas, conserva el orden de lectura y vincula el movimiento a cada imagen. Con movimiento reducido, presenta el relato completo en el flujo normal con sus enlaces y acciones.
+- En teléfonos en vertical con al menos 44 rem de altura, Historia reutiliza la línea de tiempo fijada con texto y foto en una columna. El detalle de las manos abre el relato y las fotos del jardín y del bingo se revelan con el scroll. En teléfonos más bajos, las tres escenas siguen el flujo normal y se animan al entrar en pantalla. Con movimiento reducido, el relato queda en el flujo normal con sus enlaces y acciones.

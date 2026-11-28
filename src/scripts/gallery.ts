@@ -1,6 +1,6 @@
 import { createPagination } from './pagination';
 import { setupAutoAdvance } from './autoplay';
-import { reducedMotion } from './media';
+import { phoneLayoutQuery, reducedMotion } from './media';
 import { duration, gsap } from '../motion/gsap';
 
 function decodePhotos(images: HTMLImageElement[]) {
@@ -21,6 +21,11 @@ export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) 
   const scenes = [...surface.querySelectorAll<HTMLElement>('[data-photo-scene]')];
   if (controls.length < 2 || scenes.length !== controls.length) return;
 
+  const copies = [...root.querySelectorAll<HTMLElement>('.gallery-single__copy')];
+  const phone = copies.length === scenes.length ? matchMedia(phoneLayoutQuery) : undefined;
+  const showCopy = (current: number) => {
+    copies.forEach((copy, index) => copy.toggleAttribute('data-gallery-copy-current', index === current));
+  };
   const pagination = createPagination(root.querySelector<HTMLElement>('[data-gallery-pagination]'));
   let selected = Math.max(0, controls.findIndex((control) => control.checked));
   let requested = selected;
@@ -44,11 +49,9 @@ export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) 
   };
 
   const setCurrent = (index: number) => {
-    controls[selected].removeAttribute('data-gallery-current');
     selected = index;
     nextAutomatic = index;
     controls[index].checked = true;
-    controls[index].setAttribute('data-gallery-current', '');
     for (const [position, scene] of scenes.entries()) scene.setAttribute('aria-hidden', String(position !== index));
     scenes[index].dataset.photoState = 'active';
     pagination?.select(index);
@@ -91,18 +94,22 @@ export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) 
 
     staged = undefined;
     const previous = scenes[selected];
+    const outgoingCopy = phone?.matches ? copies[selected] : undefined;
     setCurrent(index);
     warmNeighbors();
     if (reducedMotion.matches) {
       delete previous.dataset.photoState;
+      showCopy(index);
       return;
     }
+    if (!outgoingCopy) showCopy(index);
     previous.dataset.photoState = 'leaving';
 
     let complete!: () => void;
     const finished = new Promise<void>((resolve) => { complete = resolve; });
     const finish = () => {
       delete previous.dataset.photoState;
+      showCopy(index);
       timeline.revert();
       transition = undefined;
       complete();
@@ -121,6 +128,12 @@ export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) 
       timeline.fromTo(images, { scale: 1.045 }, {
         scale: 1, duration: length, stagger, ease: 'power2.out',
       }, 0);
+    }
+    if (outgoingCopy) {
+      // Replace the caption when the incoming photo reaches half opacity.
+      const midpoint = length / 2;
+      timeline.to(outgoingCopy, { opacity: 0, duration: midpoint, ease: 'sine.in' }, 0)
+        .call(() => showCopy(index), [], midpoint);
     }
     transition = { timeline, finished, finish };
   }
@@ -191,6 +204,7 @@ export function setupRadioGallery(root: HTMLElement, onSelect?: (index: number) 
   });
 
   setCurrent(selected);
+  showCopy(selected);
   root.setAttribute('data-gallery-ready', '');
   const preload = new IntersectionObserver(([entry]) => {
     if (!entry.isIntersecting) return;

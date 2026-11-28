@@ -47,8 +47,8 @@ const scenes = [
 ];
 
 const widths = [400, 640, 800, 1024, 1440];
-const portraitSizes = '(min-width: 62rem) 42vw, (min-width: 48rem) 47vw, 96vw';
-const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
+const portraitSizes = '(min-width: 62rem) 42vw, (min-width: 48rem) 47vw, (width < 40rem) calc(100vw - 2rem), 96vw';
+const gardenSizes = '(min-width: 48rem) 49vw, (width < 40rem) calc(100vw - 2rem), 90vw';
 ---
 
 <section class="story" id="historia" tabindex="-1" aria-labelledby="story-title" data-story>
@@ -173,11 +173,6 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
   .story__scene--workshop {
     --ambient-mask: linear-gradient(to left, transparent, black .5rem);
     padding-block-start: calc(var(--space-section) / 2);
-  }
-
-  @media (max-width: 40rem) {
-    .story { --ambient-crop: 22%; }
-    .story__scene--hands { --ambient-y: 20%; }
   }
 
   .story__scene--table {
@@ -464,4 +459,56 @@ const gardenSizes = '(min-width: 48rem) 49vw, 90vw';
     pointer-events: none;
   }
 
+  @media (width < 40rem) {
+    .story {
+      --ambient-crop: 22%;
+      --story-edge: var(--page-gutter);
+      --story-radius: var(--photo-radius);
+      --story-panel-radius: var(--radius-card);
+    }
+    .story__scene--hands { --ambient-y: 20%; }
+    .story__scene:is(.story__scene--workshop, .story__scene--table) { margin-inline: 0; }
+    .story__scene:is(.story__scene--workshop, .story__scene--table) .story__composition {
+      width: calc(100% - 2 * var(--page-gutter));
+    }
+    .story__botany { display: none; }
+    .story__scene .story__frame { aspect-ratio: var(--photo-ratio-portrait); }
+    .story__scene--table .story__visit { gap: var(--space-detail); }
+
+    .story[data-story-cinema] {
+      --story-travel: clamp(46rem, 112svh, 64rem);
+      --story-photo-height: calc((100vw - 2 * var(--page-gutter)) / (var(--photo-ratio-portrait)));
+    }
+    [data-story-cinema] .story__scene { padding-block: var(--section-gap); }
+    [data-story-cinema] .story__scene:is(.story__scene--workshop, .story__scene--table) { inset: 0; }
+    [data-story-cinema] .story__scene .story__composition {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, max-content);
+      align-content: center;
+      gap: var(--space-inset);
+    }
+    [data-story-cinema] .story__scene--table .story__composition {
+      grid-template-rows: auto minmax(0, max-content) auto;
+      align-items: start;
+    }
+    [data-story-cinema] .story__scene .story__photo {
+      position: relative;
+      inset: auto;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      inline-size: 100%;
+      min-block-size: 0;
+      align-self: stretch;
+    }
+    [data-story-cinema] .story__scene .story__frame {
+      position: relative;
+      max-block-size: 100%;
+      block-size: var(--story-photo-height);
+      aspect-ratio: auto;
+    }
+    [data-story-cinema] .story__frame img { position: absolute; inset: 0; }
+    [data-story-cinema] .story__detail { inset-inline-start: var(--space-related); inline-size: 36%; }
+    [data-story-cinema] .story__scene--table .story__frame { border-radius: var(--story-radius); }
+    [data-story-cinema] .story__scene--table .story__photo::after { display: none; }
+  }
 </style>

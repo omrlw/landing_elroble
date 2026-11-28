@@ -115,7 +115,7 @@ const credentials = [
 <script>
   import { setupRadioGallery } from '../scripts/gallery';
   import { setupHeroLight } from '../scripts/hero-light';
-  import { reducedMotion } from '../scripts/media';
+  import { phoneLayoutQuery, reducedMotion } from '../scripts/media';
 
   const media = document.querySelector<HTMLElement>('.hero-media');
   if (media) setupRadioGallery(media);
@@ -127,7 +127,7 @@ const credentials = [
 
   const credentials = document.querySelector<HTMLElement>('#hero-credentials');
   if (credentials) {
-    const manualScroll = matchMedia('(max-width: 40rem) and (prefers-reduced-motion: reduce)');
+    const manualScroll = matchMedia(`${phoneLayoutQuery} and ${reducedMotion.media}`);
     const syncFocus = () => {
       if (manualScroll.matches) credentials.tabIndex = 0;
       else credentials.removeAttribute('tabindex');
@@ -521,7 +521,7 @@ const credentials = [
   }
   .credentials-viewport:focus-visible { outline-offset: -2px; }
 
-  @media (max-width: 40rem) {
+  @media (width < 40rem) {
     .credentials-viewport {
       container-type: inline-size;
       overflow-x: auto;
@@ -542,7 +542,7 @@ const credentials = [
     .credentials-track li { white-space: nowrap; }
   }
 
-  @media (max-width: 40rem) and (prefers-reduced-motion: no-preference) {
+  @media (width < 40rem) and (prefers-reduced-motion: no-preference) {
     .credentials-viewport {
       overflow: clip;
       mask-image: linear-gradient(90deg, transparent, black .625rem, black calc(100% - .625rem), transparent);
@@ -554,8 +554,10 @@ const credentials = [
     }
   }
 
-  @media (max-width: 40rem) {
-    .opening-hero { --opening-gap: 1.5rem; padding-block-start: 1.75rem; }
+  @media (width < 40rem) {
+    .opening-hero { --opening-gap: var(--section-gap); padding-block: var(--space-inset) var(--section-gap); }
+    .opening-hero h1 { line-height: .99; }
+    .opening-hero__intro { gap: var(--space-related); }
     .opening-hero__light { block-size: min(25rem, 100%); }
     .opening-hero__waves {
       --hero-arc-top: -11rem;
@@ -563,28 +565,29 @@ const credentials = [
       --hero-arc-width: 26rem;
       --hero-arc-height: 28rem;
     }
-    .hero-ending { display: block; inline-size: fit-content; }
-    .hero-media { min-block-size: 23.375rem; padding-inline: 1rem; }
-    .hero-media :global(.hero-media__tour) { display: none; }
-    .hero-media__experience { padding: 1rem; inline-size: 100%; }
-    .hero-media__year { display: flex; align-items: center; gap: var(--space-detail); margin-block-end: .5rem; padding-block-end: .5rem; }
-    .hero-media__year strong { font-size: 2rem; }
-    .first-visit-origin { grid-area: lead; margin: 2rem .625rem 0 0; }
-    .first-visit[data-docked] {
-      inset-block-start: calc(var(--header-block-size) + 1.125rem);
-      inline-size: 6rem;
-      --first-visit-label-size: .8125rem;
+    .hero-ending { margin-inline-end: .8em; }
+    .hero-media {
+      min-block-size: 0;
+      aspect-ratio: var(--photo-ratio-portrait);
+      border-radius: var(--radius-card);
+      padding-inline: var(--space-inset);
     }
-    .first-visit[data-docked] .first-visit__leaf { inline-size: 2.625rem; }
-    .first-visit[data-docked] .first-visit__copy strong { font-size: 1.875rem; }
+    .hero-media :global(.hero-media__tour) { display: none; }
+    .hero-media__experience { padding: var(--space-related); inline-size: 100%; }
+    .hero-media__year { display: flex; align-items: center; gap: var(--space-detail); margin-block-end: var(--space-detail); padding-block-end: var(--space-detail); }
+    .hero-media__year strong { font-size: 2rem; }
+    .opening-hero__credentials { margin-block-start: calc(var(--space-related) - var(--opening-gap)); }
+    .first-visit-origin { --offer-size: 6rem; margin: var(--space-inset); }
+    .first-visit[data-docked] {
+      inset-block-start: calc(var(--header-block-size) + var(--space-related));
+      inset-inline-end: var(--page-gutter);
+      inline-size: 5.25rem;
+    }
+    .first-visit__leaf { inline-size: 2.625rem; }
+    .first-visit { --first-visit-label-size: .75rem; }
+    .first-visit[data-docked] .first-visit__copy strong { font-size: 1.75rem; }
   }
-  @media (max-width: 24rem) {
-    .first-visit-origin { grid-area: photo; margin: 1rem; }
-  }
-  @media (24rem < width <= 40rem) {
-    .opening-hero__inner:has(.first-visit:not([hidden])) h1 { min-block-size: 8.5rem; }
-  }
-  @media (min-width: 40.001rem) and (max-width: 72.999rem) {
+  @media (40rem <= width < 73rem) {
     .opening-hero { --opening-gap: 2rem; padding-block-start: 2.25rem; }
     .opening-hero__intro { gap: 1.25rem; }
     .hero-media { padding-inline: 1.5rem; }

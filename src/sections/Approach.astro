@@ -221,8 +221,12 @@ const principles = [
 
   .approach-principle-icon { order: -1; }
 
-  @media (max-width: 40rem) {
-    .approach-inner { padding-inline: 0; }
+  @media (width < 40rem) {
+    .approach-inner {
+      width: calc(100% - 2 * (var(--page-gutter) - var(--section-edge)));
+      padding: var(--section-gap) 0;
+    }
+    .approach-portrait { height: auto; aspect-ratio: var(--photo-ratio-portrait); }
   }
 
   @media (min-width: 768px) {

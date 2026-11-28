@@ -357,6 +357,15 @@ const activities = [
     font: 700 var(--text-subheading) / var(--leading-title) var(--font-display);
   }
 
+  @media (width < 40rem) {
+    .program-decoration { display: none; }
+    .program-card .program-photo {
+      height: auto;
+      aspect-ratio: var(--photo-ratio-landscape);
+      border-radius: var(--photo-radius);
+    }
+  }
+
   @media (min-width: 768px) {
     .program-heading {
       grid-template-columns: minmax(0, 364fr) minmax(0, 316fr);

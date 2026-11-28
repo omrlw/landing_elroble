@@ -46,7 +46,7 @@ const posters = [
                 src={photo}
                 alt=""
                 widths={[240, 320, 480, 640, 768]}
-                sizes="(min-width: 120rem) 344px, (min-width: 80rem) 18vw, (min-width: 40rem) 28vw, calc(100vw - 88px)"
+                sizes="(min-width: 120rem) 344px, (min-width: 80rem) 18vw, (min-width: 40rem) 28vw, calc(100vw - 4rem)"
                 loading="lazy"
                 decoding="async"
               />
@@ -258,6 +258,16 @@ const posters = [
   }
   @media (prefers-reduced-motion: no-preference) {
     :is(.play, .contact-icon) { transition: --glass-wash var(--glass-motion) var(--glass-ease); }
+  }
+
+  @media (width < 40rem) {
+    .community { padding: var(--space-inset); border-radius: var(--radius-card); }
+    .community header { gap: var(--space-detail); }
+    .community-oak { inline-size: 3rem; margin-block-end: 0; }
+    .poster { aspect-ratio: var(--photo-ratio-gallery); border-radius: var(--photo-radius); }
+    .play { width: var(--cta-min-height); }
+    .poster-profile { inset: auto auto var(--space-related) var(--space-related); }
+    .profile-links .follow { padding-inline: var(--space-inset); }
   }
 
   @media (min-width: 40rem) {

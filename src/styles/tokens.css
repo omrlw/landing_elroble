@@ -115,8 +115,22 @@
   --header-block-size: calc(var(--header-compact-height) + 1px);
 }
 
-@media (max-width: 40rem) {
-  :root { --page-gutter: 0.75rem; }
+@media (width < 40rem) {
+  :root {
+    --text-hero: clamp(2.75rem, 1.8rem + 4.8vw, 3.75rem);
+    --text-cta: var(--text-control);
+    --cta-min-height: 3rem;
+    --page-gutter: 1rem;
+    --section-edge: var(--space-detail);
+    --space-related: .75rem;
+    --space-inset: 1rem;
+    --section-gap: 1.5rem;
+    --space-section: 2.5rem;
+    --photo-radius: 1.125rem;
+    --photo-ratio-portrait: 9 / 10;
+    --photo-ratio-gallery: 5 / 4;
+    --photo-ratio-landscape: 16 / 9;
+  }
 }
 
 @media (min-width: 48rem) {

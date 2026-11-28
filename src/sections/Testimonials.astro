@@ -135,7 +135,6 @@ const placements = [
     background: var(--surface-forest);
     color: var(--color-cream);
     padding-block: var(--space-section) var(--section-gap);
-    border-radius: 1.25rem;
   }
 
   .review-opening {
@@ -295,7 +294,7 @@ const placements = [
   }
 
   @media (min-width: 40rem) {
-    .testimonials { --track-gap: var(--space-inset); border-radius: 0; }
+    .testimonials { --track-gap: var(--space-inset); }
     .review-opening { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--section-gap); }
     .review-opening p { display: block; margin: 0; }
     .review-track { grid-auto-columns: clamp(13rem, 27vw, 16rem); }

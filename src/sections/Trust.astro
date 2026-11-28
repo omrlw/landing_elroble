@@ -50,7 +50,7 @@ const reasons = [
   },
 ];
 const photoSizes = [
-  '(min-width: 112rem) 330px, (min-width: 73rem) 19vw, (max-width: 40rem) calc(100vw - 24px), 52vw',
+  '(min-width: 112rem) 330px, (min-width: 73rem) 19vw, (width < 40rem) calc(100vw - 2rem), 52vw',
   '(min-width: 112rem) 445px, (min-width: 73rem) 26vw, 46vw',
   '(min-width: 112rem) 445px, 26vw',
   '(min-width: 112rem) 330px, 19vw',
@@ -97,8 +97,9 @@ const photoSizes = [
 
     <div class="trust__reasons">
       {reasons.map(({ title, text }, index) => (
-        <article class="trust__reason liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row" data-scene={index}>
+        <article class="trust__reason gallery-single__item gallery-single__copy liquid-glass liquid-glass--forest-panel liquid-glass--underlay liquid-glass--row" data-scene={index}>
           <h3>
+            <span class="trust__reason-title">{title}</span>
             <button class="trust__reason-trigger liquid-glass__trigger" type="button" aria-expanded={index === 0}
               aria-controls={'trust-detail-' + index} data-trust-trigger>
               {title}
@@ -274,7 +275,7 @@ const photoSizes = [
   .trust__reason h3 { border-radius: inherit; }
   .trust__reason-trigger:focus-visible { outline-offset: -2px; }
   .trust__reason-trigger[aria-disabled="true"] { cursor: default; }
-  .trust__reason-trigger, .trust[data-gallery-ready] .trust__reason-fallback { display: none; }
+  .trust__reason-title, .trust__reason-trigger, .trust[data-gallery-ready] .trust__reason-fallback { display: none; }
   .trust[data-gallery-ready] .trust__reason-trigger { display: flex; }
 
   .trust__reason-trigger[aria-expanded="true"] .trust__reason-icon {
@@ -286,8 +287,9 @@ const photoSizes = [
   .trust:not([data-gallery-ready]):has(#trust-scene-0:checked) .trust__reason[data-scene="0"],
   .trust:not([data-gallery-ready]):has(#trust-scene-1:checked) .trust__reason[data-scene="1"],
   .trust:not([data-gallery-ready]):has(#trust-scene-2:checked) .trust__reason[data-scene="2"],
-  .trust[data-gallery-ready] .trust__reason:has(.trust__reason-trigger[aria-expanded="true"]) {
+  .trust__reason[data-gallery-copy-current] {
     --reason-active: 1;
+    --gallery-item-visibility: visible;
     --gallery-detail-size: 1fr;
     --gallery-detail-visibility: visible;
   }
@@ -303,10 +305,25 @@ const photoSizes = [
   .trust__invitation p { margin-block-start: .55rem; color: var(--color-on-forest-muted); }
   .trust__invitation :global(.trust__visit) { justify-self: start; }
 
-  @media (max-width: 40rem) {
-    .trust__slides { block-size: clamp(15rem, 60vw, 18rem); }
+  @media (width < 40rem) {
+    .trust__inner {
+      width: calc(100% - 2 * (var(--page-gutter) - var(--section-edge)));
+      padding-block: var(--section-gap);
+    }
+    .trust__message { gap: var(--space-related); margin-block-end: var(--section-gap); }
+    .trust__slides { block-size: auto; aspect-ratio: var(--photo-ratio-gallery); }
     .trust__row { grid-template-columns: minmax(0, 1fr); }
     .trust__row > .trust__tile:nth-child(2) { display: none; }
+    .trust__tile { border-radius: var(--photo-radius); }
+    .trust__media { gap: 0; }
+    .trust__reasons { gap: 0; margin-block-start: 0; }
+    .trust__reason { --reason-inset: var(--space-inset); padding-block: var(--space-related); }
+    .trust__reason-title { display: block; padding-inline: var(--reason-inset); }
+    .trust[data-gallery-ready] .trust__reason-trigger, .trust__reason-fallback { display: none; }
+    .trust__detail p { padding: var(--space-detail) var(--reason-inset) 0; }
+    .trust__invitation { margin-block-start: var(--space-related); padding-block-start: var(--space-related); }
+    .trust__invitation-copy { gap: var(--space-related); }
+    .trust__invitation p { display: none; }
   }
 
   @media (min-width: 48rem) {

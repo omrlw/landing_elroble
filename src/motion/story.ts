@@ -1,8 +1,10 @@
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { phoneLayoutQuery } from '../scripts/media';
 import { ease, gsap } from './gsap';
 
 const allowMotion = '(prefers-reduced-motion: no-preference)';
 const cinema = '(min-width: 62rem) and (min-height: 42rem) and (orientation: landscape)';
+const phoneCinema = `${phoneLayoutQuery} and (min-height: 44rem) and (orientation: portrait)`;
 
 export function createStory(section: HTMLElement) {
   const reel = section.querySelector<HTMLElement>('[data-story-reel]');
@@ -13,25 +15,36 @@ export function createStory(section: HTMLElement) {
   const [hands, workshop, table] = scenes;
   const [portrait, activity, group] = images;
   const [openingCopy, workshopCopy, tableCopy] = copies;
-  const [portraitFrame, , tableFrame] = frames;
+  const [portraitFrame, workshopFrame, tableFrame] = frames;
   const detail = section.querySelector<HTMLElement>('[data-story-detail]');
   const detailImage = detail?.querySelector('img');
   const visit = section.querySelector<HTMLElement>('[data-story-visit]');
   const cues = [...section.querySelectorAll<HTMLElement>('[data-story-cue]')];
 
   if (!reel || !hands || !workshop || !table || !portrait || !activity || !group
-    || !openingCopy || !workshopCopy || !tableCopy || !portraitFrame || !tableFrame || !detail || !visit) return;
+    || !openingCopy || !workshopCopy || !tableCopy || !portraitFrame || !workshopFrame || !tableFrame || !detail || !visit) return;
 
   const media = gsap.matchMedia();
-  media.add({ allowMotion, cinema }, ({ conditions }) => {
+  media.add({ allowMotion, cinema, phoneCinema, phone: phoneLayoutQuery }, ({ conditions }) => {
     if (!conditions?.allowMotion) return;
 
-    if (!conditions.cinema) {
+    if (!conditions.cinema && !conditions.phoneCinema) {
       gsap.fromTo(portrait, { scale: 1.09 }, {
         scale: 1,
         ease: 'none',
         scrollTrigger: { trigger: portraitFrame, start: 'top 95%', end: 'center 44%', scrub: 0.42 },
       });
+
+      if (conditions.phone) {
+        gsap.timeline({
+          defaults: { ease: 'none' },
+          scrollTrigger: { trigger: workshopFrame, start: 'top 96%', end: 'top 38%', scrub: 0.42 },
+        })
+          .fromTo(workshopFrame, { clipPath: 'inset(12% 0% 0% round var(--story-radius))' }, {
+            clipPath: 'inset(0% 0% 0% round var(--story-radius))',
+          }, 0)
+          .fromTo(activity, { scale: 1.095 }, { scale: 1 }, 0);
+      }
 
       gsap.timeline({
         defaults: { ease: 'none' },
@@ -70,7 +83,7 @@ export function createStory(section: HTMLElement) {
         trigger: reel,
         start: () => 'top ' + getComputedStyle(document.documentElement).scrollPaddingTop,
         end: 'bottom bottom',
-        scrub: 0.48,
+        scrub: conditions.phoneCinema ? 0.32 : 0.48,
       },
     });
 

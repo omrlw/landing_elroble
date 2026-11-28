@@ -187,6 +187,10 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
     pointer-events: none;
   }
 
+  @media (width < 40rem) {
+    .faq-acorn { display: none; }
+  }
+
   @media (min-width: 40rem) {
     .faq-heading { grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 1fr); gap: var(--section-gap); }
     .faq-sprig { inline-size: clamp(3.25rem, 6vw, 5.5rem); margin-inline-end: 0; }

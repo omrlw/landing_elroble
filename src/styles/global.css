@@ -186,7 +186,7 @@
 
 .skip-link:focus { clip-path: none; }
 
-@media (max-width: 40rem) {
+@media (width < 40rem) {
   .skip-link { inset-inline-start: var(--page-gutter); }
 }
 

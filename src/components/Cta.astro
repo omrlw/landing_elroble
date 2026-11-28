@@ -56,7 +56,7 @@ const variantClasses = {
     align-items: center;
     justify-content: var(--cta-justify, space-between);
     gap: var(--cta-gap, var(--space-control-gap));
-    padding: var(--cta-padding, 0.65rem clamp(1rem, 2vw, 1.5rem));
+    padding: var(--cta-padding, var(--cta-padding-default, .65rem clamp(1rem, 2vw, 1.5rem)));
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
     font-size: var(--text-cta);
@@ -91,6 +91,14 @@ const variantClasses = {
 
   .cta--light .cta-icon { background: var(--surface-action); }
   .cta--oak .cta-icon { inline-size: 1.25rem; background: none; box-shadow: none; }
+
+  @media (width < 40rem) {
+    .cta { --cta-padding-default: var(--space-detail) var(--space-related); }
+    .cta:not(.cta--compact) {
+      --cta-medallion-size: 1.75rem;
+    }
+    .cta--oak { --glass-depth: var(--shadow-control); }
+  }
 
   @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
     .cta--glass {
