@@ -188,6 +188,12 @@ const questionColumns = [questions.slice(0, columnBreak), questions.slice(column
   }
 
   @media (width < 40rem) {
+    .faq { padding-block-start: var(--section-gap); }
+    .faq-heading { margin-block-end: var(--space-inset); }
+    .questions { --faq-row-gap: calc(var(--space-detail) / 2); }
+    summary { min-block-size: var(--control-row-min-height); padding-block: var(--space-related); }
+    .answer { padding-block-end: var(--space-related); }
+    .faq-close { margin-block-start: var(--space-inset); }
     .faq-acorn { display: none; }
   }
 

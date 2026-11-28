@@ -31,7 +31,7 @@ Los rangos corresponden a una raíz de 16 px. Los títulos usan Cormorant Garamo
 
 Los rangos corresponden a una raíz de 16 px. Programa y Recorrido comparten un solo intervalo amplio en su fondo continuo. Los cambios de fondo permiten acercar los grupos a ambos lados del borde. El hero y Confianza conservan el espaciado de su composición. Las fotos escalonadas de Centro de día, Recorrido y Comunidad mantienen sus desplazamientos. En Historia, `--story-travel` determina la distancia de scroll de la secuencia fija. Los márgenes y separaciones de las escenas controlan el espacio visible.
 
-Las filas de selección de Confianza y Centro de día en pantallas amplias usan una altura mínima de 52 px (`--control-row-min-height`). Las filas de Preguntas frecuentes tienen un mínimo adaptable de 68 a 80 px y de 12 a 16 px entre ellas. A partir de 640 px, las dos columnas se expanden de forma independiente. La lectura y el foco recorren cada columna de arriba abajo.
+Las filas de selección de Confianza y Centro de día en pantallas amplias usan una altura mínima de 52 px (`--control-row-min-height`). En móvil, Preguntas frecuentes usa ese mismo mínimo para el encabezado de cada tarjeta y deja 4 px entre tarjetas. A partir de 640 px, el mínimo adaptable es de 68 a 80 px, con una separación de 12 a 16 px. Las dos columnas se expanden de forma independiente. La lectura y el foco recorren cada columna de arriba abajo.
 
 `--control-size` da a los controles compactos una medida base de 44 px con una raíz de 16 px. `--space-control-gap` mantiene una separación fija de 12 px donde los controles la necesitan. `--radius-pill` se usa en botones, cápsulas y paginadores.
 
